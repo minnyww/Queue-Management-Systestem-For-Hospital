@@ -16,12 +16,12 @@ class profile extends Component {
                 {/* ตรงนี้ต้องดึง HN */}
                 <span class="date">HN : 12345/61</span>
               </div>
-              <div class="extra content">
-                <a>
+              <div class="extra content" id="appointment">
+                <button class="ui blue button">
                   {/* ตรงนี้ดึงข้อมูลบัตรนัดของผู้ป่วยมา */}
-                  <i aria-hidden="true" class="user icon"></i>ดูบัตรนัด</a>
-
+                  <i aria-hidden="true" class="user icon" id="test"></i>ดูบัตรนัด</button>
               </div>
+                
             </div>
 
           </div>
