@@ -5,6 +5,7 @@ import App from './App';
 import Homeuser from './Homeuser';
 import registerServiceWorker from './registerServiceWorker';
 import 'semantic-ui-css/semantic.min.css';
+import Root from './Root';
 
-ReactDOM.render(<Homeuser />, document.getElementById('root'));
+ReactDOM.render(<Root />, document.getElementById('root'));
 registerServiceWorker();
