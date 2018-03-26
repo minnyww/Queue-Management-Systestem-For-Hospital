@@ -2,13 +2,14 @@ h1 {
   text-align: right;
 }
 
-.ui.segment{
-  background-color: lightblue !important; 
-  
+h3 {
+  text-align: right;
 }
 
-
-
+.ui.segment{
+  background-color: lightblue; 
+  
+}
 
 .ui.card { 
   text-align: center;

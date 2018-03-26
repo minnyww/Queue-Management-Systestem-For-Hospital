@@ -1,3 +1,39 @@
+/* ของ Queue.js */
 #box{
-    background-color: red;
+    overflow-y: scroll; 
+    height: 40%; 
+    
+    
 }
+#boxshow{
+    height: 78%;
+   
+}
+/* ของ Labwait.js */
+#boxLab{
+    overflow-y: scroll;
+    height: 38%;
+    
+}
+
+#box2{
+    height: 350px; 
+    width: 900px;
+    margin-Left: 40px;
+    margin-top: 1%;
+}
+
+#boxAdd{
+    margin-Left: 120px;
+    width: 90px;
+}
+.ui.segment#display{
+    background-Color:white ;
+
+}
+.ui.segment#headbar{
+    background-color: #2185d0;
+}
+
+
+

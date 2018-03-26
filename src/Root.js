@@ -3,6 +3,7 @@ import Homeuser from './Homeuser';
 import App from './App';
 import Admin from './Admin';
 import Adminhome from './Adminhome';
+import Adminfilter from './Adminfilter';
 import {
     BrowserRouter as Router,
     Route,
@@ -18,6 +19,7 @@ export default class Root extends Component{
                     <Route path="/App" component={App}/>
                     <Route path="/Admin" component={Admin}/>
                     <Route path="/Adminhome" component={Adminhome}/>
+                    <Route path="/Adminfilter" component={Adminfilter}/>
                 </Switch>
             
             
