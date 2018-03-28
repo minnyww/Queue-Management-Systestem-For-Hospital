@@ -66,13 +66,13 @@ class profile extends Component {
                       <Table.Row>
                         <Table.Cell>1</Table.Cell>
                         <Table.Cell>14 สิงหาคม 2561 10.00-11.00 น.</Table.Cell>
-                        <Table.Cell>สมศรี ฟลอลิดา</Table.Cell>
+                        <Table.Cell>พรภวิษย ์ ศิริราภา</Table.Cell>
                         <Table.Cell>กุมารเวช</Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell>2</Table.Cell>
                         <Table.Cell>15 สิงหาคม 2561 10.00-11.00 น.</Table.Cell>
-                        <Table.Cell>สมศรี ฟลอลิดา</Table.Cell>
+                        <Table.Cell>พรภวิษย์ ศิริราภา</Table.Cell>
                         <Table.Cell>กุมารเวช</Table.Cell>
                       </Table.Row>
 
