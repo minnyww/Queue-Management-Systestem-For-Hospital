@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 import './../css/Q.css';
 import nine from './nine.jpg';
-import { Card, Icon, Image, Button, Form, Segment, Header, Table } from 'semantic-ui-react'
+import { Card, Icon, Image, Button, Form, Segment, Header, Table, Statistic } from 'semantic-ui-react'
 class profile extends Component {
 
   // Modal
@@ -31,11 +31,15 @@ class profile extends Component {
     return (
       <div>
         <center>
-          <Card>
+        
+          
+
+          <Card style={{ height: '30%' }}>
             <img src={nine} class="ui small centered image" />
             <Card.Content>
               <Card.Header>
                 Eric cantona
+
             </Card.Header>
               <Card.Meta>
                 <span className='date'>
@@ -50,9 +54,9 @@ class profile extends Component {
                   contentLabel="Minimal Modal Example" >
                   <i class="large window close icon" onClick={this.handleCloseModal}
                     style={{ float: 'right', marginBottom: '5%', color: 'red' }}></i>
-                  
-                  
-                  <Table celled style={{ width:'40' }}>
+
+
+                  <Table celled style={{ width: '40' }}>
                     <Table.Header>
                       <Table.Row>
                         <Table.HeaderCell>No</Table.HeaderCell>
@@ -82,8 +86,10 @@ class profile extends Component {
                 </Modal>
               </Card.Description>
             </Card.Content> </Card>
-            <Header size='medium'>คิวของท่าน</Header>
-            <Header size='huge'>7</Header>
+          <Header size='medium'>คิวของท่าน</Header>
+          <Statistic size='huge'>
+            <Statistic.Value>7</Statistic.Value>
+          </Statistic>
         </center>
 
 
