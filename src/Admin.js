@@ -2,14 +2,26 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './css/Q.css';
 import Login from './components/login';
-import { Card, Icon, Image, Button, Form, Segment, Header,Grid } from 'semantic-ui-react'
+import { Card, Icon, Image, Button, Form, Segment, Header, Grid } from 'semantic-ui-react'
 import Headerbar from './components/headerbar';
 class test extends Component {
+    state = {
+        Username: '',
+        Password: '',
+        //validate
+        errorUsername: { status: false, message: 'Please fill your Username again ' },
+        errorPassword: { status: false, message: 'Please fill your Password again' }
+    }
+    submit = () => {
+        var Username = this.state.Username
+        var Password = this.state.Password
+    }
     render() {
+        console.log(this.state)
         return (
 
             <div>
-                <Headerbar/>
+                <Headerbar />
                 <br />
                 <br />
                 <center>
@@ -18,69 +30,34 @@ class test extends Component {
                 <br />
                 <br />
                 <center>
-                <Grid.Column style={{ maxWidth:'450px'}}>
-                    <Segment  color='blue'>
-                        <Form >
 
-                            <Form.Input fluid label='Username' placeholder='Username' />
+                    <Grid.Column style={{ maxWidth: '450px' }}>
+                        <Segment color='blue'>
+                            <Form>
+                                <Form.Input fluid label='Username'
+                                    placeholder='Username'
+                                    type="text"
+                                    required
+                                    error={this.state.errorUsername.status}
+                                    value={this.state.Username}
+                                    onChange={(e, { value }) => this.setState({ Username: value })} />
 
-                            <Form.Input fluid label='Password' placeholder='Password' />
+                                <Form.Input fluid label='Password'
+                                    placeholder='Password'
+                                    type="password"
+                                    required
+                                    error={this.state.errorPassword.status}
+                                    value={this.state.Password}
+                                    onChange={(e, { value }) => this.setState({ Password: value })} />
+                                {/* <Link to={'/Adminhome'} class="primary ui button">Sign in</Link> */}
+                                    <Button type='submit'>Sign in</Button>
 
-
-                            
-                            <Link to={'/Adminhome'} class="primary ui button">Sign in</Link>
-
-
-                        </Form>
-                    </Segment>
+                            </Form>
+                        </Segment>
                     </Grid.Column>
 
                 </center>
-                {/* <center>
-                    <form class="ui form">
 
-                        <div class="field" style={{ paddingRight: 40, paddingLeft: 40 }}>
-                            <label>Username</label>
-                            <input placeholder="Username" />
-                        </div>
-                        <div class="field" style={{ paddingRight: 40, paddingLeft: 40 }}>
-                            <label>Password</label>
-                            <input placeholder="Password" />
-                        </div>
-
-                        <Link to={'/Adminhome'} class="primary ui button">Sign in</Link>
-
-                    </form>
-
-                </center> */}
-
-                {/* <div class="ui middle aligned center aligned grid">
-                    <div class="column" style={{ maxWidth: '450px' }}>
-                        <h1 class="ui teal image header">
-
-                            <div class="content">
-                               Log in to your account
-                             </div>
-                        </h1>
-                        <form class="ui large form">
-                            <div class="ui  segment">
-                                <div class="field">
-                                    <div class="ui left icon input">
-                                        <i class="user icon"></i><input name="username" placeholder="Username" type="text" />
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui left icon input">
-                                        <i class="lock icon"></i><input name="password" placeholder="Password" type="password" />
-                                    </div>
-                                </div>
-                                <Link to={'/Adminhome'} class="primary ui button">Sign in</Link>
-                            </div>
-
-                        </form>
-                        
-                    </div>
-                </div> */}
             </div>
 
 

@@ -8,14 +8,12 @@ import { Card, Icon, Image, Button, Form, Segment,Header} from 'semantic-ui-reac
 import ModalExampleShorthand from './components/modal';
 import Login from './components/login';
 class Homeuser extends Component {
-
     render() {
         return (
 
             <div class="">
                 <br />
                 <br />
-
                 <img src={logo1} class="ui small centered image" />
                 <br />
                 <br />
