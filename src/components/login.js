@@ -16,17 +16,16 @@ class Login extends Component {
     var HN = this.state.HN
     var phoneNumber = this.state.phoneNumber
 
-    
 
-    if (this.state.HN.length <= 6 && this.state.HN.match(/[a-zA-Z]{2}[0-9]{4}/)) {
+    //validate pattern
+    //HN
+    //เลขหลัง hn ไม่เกิน 10 
+    if (this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
       this.setState({ errorHN: { status: false, message: '' } })
-    } else if (this.state.HN.length > 6 && (this.state.HN.match(/[a-zA-Z]{2}[0-9]{4}/))) {
-      this.setState({ errorHN: { status: true, message: 'HN Limit 2 Character 4 Number' } })
-    } else if (this.state.HN.length > 6 && !(this.state.HN.match(/[a-zA-Z]{2}[0-9]{4}/))) {
-      this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
-    } else if (this.state.HN.length <= 6 && !(this.state.HN.match(/[a-zA-Z]{2}[0-9]{4}/))) {
-      this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
+    } else if (!this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+      this.setState({ errorHN: { status: true, message: 'HN Does note match' } })
     } 
+    //phone number
     if (this.state.phoneNumber.length <= 10 && this.state.phoneNumber.match(/[0-9]{10}/)) {
         this.setState({ errorPhoneNumber: { status: false, message: '' } })
       }else if(this.state.phoneNumber.length > 10 && this.state.phoneNumber.match(/[0-9]{10}/)){

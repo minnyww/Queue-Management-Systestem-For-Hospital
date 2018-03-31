@@ -165,8 +165,18 @@ class Queue extends Component {
                                                     isOpen={this.state.showModal}
                                                     contentLabel="Minimal Modal Example" >
                                                     <i class="large window close icon" onClick={this.handleCloseModal}
-                                                        style={{ float: 'right', marginBottom: '5%', color: 'red' }}></i>
-
+                                                        style={{ float: 'right', marginBottom: '5%', color: 'red' }}>
+                                                    </i>
+                                                    <br />
+                                                    <br />
+                                                    
+                                                    <Dropdown placeholder='Select Country' fluid search selection options={options} />
+                                                    <br />
+                                                    <center>
+                                                    <Button color='blue' onClick={this.handleCloseModal}>
+                                                        Forward
+                                                    </Button>
+                                                    </center>
                                                 </Modal>
                                             </center>
 
@@ -192,8 +202,8 @@ class Queue extends Component {
 const style = {
     content: {
         margin: 'auto',
-        width: '70%',
-        height: '400px',
+        width: '60%',
+        height: '250px',
 
 
     }
@@ -205,7 +215,26 @@ const customStyles = {
         height: '300px',
     }
 };
-
+const options = [
+    { key: 'angular', text: 'Angular', value: 'angular' },
+    { key: 'css', text: 'CSS', value: 'css' },
+    { key: 'design', text: 'Graphic Design', value: 'design' },
+    { key: 'ember', text: 'Ember', value: 'ember' },
+    { key: 'html', text: 'HTML', value: 'html' },
+    { key: 'ia', text: 'Information Architecture', value: 'ia' },
+    { key: 'javascript', text: 'Javascript', value: 'javascript' },
+    { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
+    { key: 'meteor', text: 'Meteor', value: 'meteor' },
+    { key: 'node', text: 'NodeJS', value: 'node' },
+    { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
+    { key: 'python', text: 'Python', value: 'python' },
+    { key: 'rails', text: 'Rails', value: 'rails' },
+    { key: 'react', text: 'React', value: 'react' },
+    { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
+    { key: 'ruby', text: 'Ruby', value: 'ruby' },
+    { key: 'ui', text: 'UI Design', value: 'ui' },
+    { key: 'ux', text: 'User Experience', value: 'ux' },
+  ]
 export default Queue
 
 
