@@ -3,7 +3,6 @@ import Queue from './components/Queue';
 import Dropdownq from './components/Dropdownq';
 import Labwait from './components/Labwait';
 import './css/Q.css'
-import Patientshow from './components/Patientshow';
 import CardExampleCard from './components/Queue';
 import Headerbar from './components/headerbar';
 class Adminhome extends Component {

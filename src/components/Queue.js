@@ -1,50 +1,124 @@
 import React, { Component } from 'react';
 import Rail, { Segment } from 'semantic-ui-react'
-import { Grid, Button, Dropdown, Menu, Icon, Dimmer, 
-        Header, Label, Item, Form, Input, TextArea,List } from 'semantic-ui-react'
+import {
+    Grid, Button, Dropdown, Menu, Icon, Dimmer,
+    Header, Label, Item, Form, Input, TextArea, List
+} from 'semantic-ui-react'
 import Modal from 'react-modal';
+import axios from 'axios'
 class Queue extends Component {
 
+    submit = async () => {
+        // alert("TEST")
+        console.log('submit')
+        var HN = this.state.HN
+        var check = false;
+
+        // if (this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+        //     this.setState({ errorHN: { status: false, message: '' } })
+        //     check = true
+        // } else if (!this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+        //     this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
+        // }
+
+        // if (check === true) {
+        var data = await axios.post(`http://localhost:3001/getHN`, {
+            HN: this.state.HN
+        })
+        console.log(data.data)
+        if (data.data.length === 0) {
+            console.log('ไม่มีในระบบ')
+        } else {
+            console.log('มีในระบบ')
+            this.setState({ modalIsOpen: false })
+            axios.post('http://localhost:3001/addPatientQ', {
+                queueId: this.state.queueId,
+                roomId: this.state.roomId,
+                Date: this.state.Date,
+                statusId: this.state.statusId,
+                HN: this.state.HN,
+                doctorId: this.state.doctorId,
+                forward: this.state.forward,
+                nurseId: this.state.nurseId
+
+
+                //insert แอทริบิ้วใน ตาราง คิว 
+            })
+            // this.setState({HN : ''})
+        }
+        // }
+    }
     // Modal
-    constructor() {
-        super();
-        this.state = {
-            showModal: false
-        };
+    // constructor() {
 
-        this.state = {
-            modalIsOpen: false
-        };
+    // super();
+    state = {
+        showModal: false,
+        modalIsOpen: false,
+        queueId: '',
+        roomId: '',
+        Date: '',
+        statusId: '',
+        HN: '',
+        doctorId: '',
+        forward: '',
+        nurseId: '',
+        queues: []
+    };
 
-        this.handleOpenModal = this.handleOpenModal.bind(this);
-        this.handleCloseModal = this.handleCloseModal.bind(this);
+    // this.handleOpenModal = this.handleOpenModal.bind(this);
+    // this.handleCloseModal = this.handleCloseModal.bind(this);
 
-        this.openModal = this.openModal.bind(this);
-        this.afterOpenModal = this.afterOpenModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-    }
-    openModal() {
+    // this.openModal = this.openModal.bind(this);
+    // this.afterOpenModal = this.afterOpenModal.bind(this);
+    // this.closeModal = this.closeModal.bind(this);
+
+
+    // }
+    openModal = () => {
         this.setState({ modalIsOpen: true });
+        console.log('open')
     }
 
-    afterOpenModal() {
+    afterOpenModal = () => {
         // references are now sync'd and can be accessed.
-        this.subtitle;
+
     }
 
-    closeModal() {
+    closeModal = () => {
         this.setState({ modalIsOpen: false });
     }
 
-    handleOpenModal() {
+    handleOpenModal = () => {
         this.setState({ showModal: true });
     }
 
-    handleCloseModal() {
+    handleCloseModal = () => {
         this.setState({ showModal: false });
     }
     // --------------
 
+    showPatient = () => {
+        const data = this.state.queues
+        const tmp = data.map(queue => (
+            <Segment >
+                {queue.firstName} {queue.lastName}<br />
+                Room : {queue.room}<br />
+                แผนก : {queue.department}
+                <Label color='blue' style={{ float: 'Right' }}>
+                    <Icon name='time' /> 23 min
+                 </Label>
+            </Segment>
+        ))
+
+        return tmp
+    }
+
+    async componentWillMount() {
+        var datas = await axios.get(`http://localhost:3001/getQueue`);
+        this.setState({ queues: datas.data })
+        Modal.setAppElement('body');
+    }
     render() {
 
         return (
@@ -54,37 +128,7 @@ class Queue extends Component {
                         <Segment.Group id="box">
                             <Segment color='blue'><Header>Queue</Header></Segment>
                             <Segment.Group >
-                                <Segment >
-
-                                    ท้าวทอง กีมา<br />
-                                    Room : A01<br />
-                                    แผนก : จิตเวช
-                        <Label color='blue' style={{ float: 'Right' }}>
-                                        <Icon name='time' /> 23 min
-
-                        </Label>
-                                </Segment>
-                                <Segment >
-
-                                    Nested Middle<br />
-                                    Nested Middle<br />
-                                    Nested Middle
-                        <Label color='blue' style={{ float: 'Right' }}>
-                                        <Icon name='time' /> 23 min
-
-                        </Label>
-                                </Segment>
-                                <Segment >
-
-                                    Nested Bottom<br />
-                                    Nested Bottom<br />
-                                    Nested Bottom
-                        <Label color='blue' style={{ float: 'Right' }}>
-                                        <Icon name='time' /> 23 min
-
-                        </Label>
-                                </Segment>
-
+                                {this.showPatient()}
                             </Segment.Group>
 
                         </Segment.Group>
@@ -112,34 +156,36 @@ class Queue extends Component {
                                 onAfterOpen={this.afterOpenModal}
                                 onRequestClose={this.closeModal}
                                 style={customStyles}
-                                contentLabel="Example Modal"
-                            >
-                                
-                                <Form>
-                                    <Form.Group widths='equal'>
-                                        <Form.Field id='' control={Input} label='กรอก HN' placeholder='HN' />
-                                        <br />
 
-                                    </Form.Group>
+                            >
+                                <Form onSubmit={this.submit}>
+                                    <Form.Input
+                                        fluid label='HN'
+                                        name="HN"
+                                        placeholder='HN'
+                                        value={this.state.HN}
+                                        onChange={(e, { value }) => this.setState({ HN: value })} />
+
+                                    <br />
                                     <center>
-                                    <List>
-                                        <List.Item>
-                                            <List.Icon name='users' />
-                                            <List.Content><Header>First Name</Header></List.Content>
-                                        </List.Item>
-                                        <List.Item>
-                                            <List.Icon name='users' />
-                                            <List.Content><Header>Last Name</Header></List.Content>
-                                        </List.Item>
-                                        
-                                    </List>
+                                        <List>
+                                            <List.Item>
+                                                <List.Icon name='users' />
+                                                <List.Content><Header>First Name</Header></List.Content>
+                                            </List.Item>
+                                            <List.Item>
+                                                <List.Icon name='users' />
+                                                <List.Content><Header>Last Name</Header></List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </center>
+                                    <br />
+                                    <br />
+                                    <center>
+                                        <Button type="submit" color='green' >Add</Button>
                                     </center>
                                 </Form>
-                                <br/>
-                                <br/>
-                                <center>
-                                <Button   color='green' onClick={this.closeModal}>Add</Button>
-                                </center>
+
 
                             </Modal>
 
@@ -164,17 +210,12 @@ class Queue extends Component {
                                                 <Modal style={style}
                                                     isOpen={this.state.showModal}
                                                     contentLabel="Minimal Modal Example" >
-                                                    <i class="large window close icon" onClick={this.handleCloseModal}
-                                                        style={{ float: 'right', marginBottom: '5%', color: 'red' }}>
-                                                    </i>
-                                                    <br />
-                                                    <br />
-                                                    
+
                                                     <Dropdown placeholder='Select Country' fluid search selection options={options} />
                                                     <br />
                                                     <center>
-                                                    <Button color='blue' onClick={this.handleCloseModal}>
-                                                        Forward
+                                                        <Button color='blue' onClick={this.handleCloseModal}>
+                                                            Forward
                                                     </Button>
                                                     </center>
                                                 </Modal>
@@ -234,7 +275,7 @@ const options = [
     { key: 'ruby', text: 'Ruby', value: 'ruby' },
     { key: 'ui', text: 'UI Design', value: 'ui' },
     { key: 'ux', text: 'User Experience', value: 'ux' },
-  ]
+]
 export default Queue
 
 

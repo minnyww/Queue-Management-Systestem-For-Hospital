@@ -19,19 +19,19 @@ class Dropdownq extends Component {
 }
 const options = [
     { key: 1, text: 'Queue', value: 1 },
-    { key: 1, text:  <Link to={'/Adminfilter'}>คัดกรองผู้ป่วย</Link>, value: 2 },
+    { key: 2, text:  <Link to={'/Adminfilter'}>คัดกรองผู้ป่วย</Link>, value: 2 },
     
 ]
 const department = [
-    { key: 1, text: 'กุมารเวช', value: 1 },
-    { key: 1, text: 'อายุรกรรม', value: 2 },
-    { key: 1, text: 'กระดูก', value: 3 },
+    { key: 3, text: 'กุมารเวช', value: 1 },
+    { key: 4, text: 'อายุรกรรม', value: 2 },
+    { key: 5, text: 'กระดูก', value: 3 },
     
 ]
 const room = [
-    { key: 1, text: 'A01', value: 1 },
-    { key: 1, text: 'A02', value: 2 },
-    { key: 1, text: 'A03', value: 3 },
+    { key: 6, text: 'A01', value: 1 },
+    { key: 7, text: 'A02', value: 2 },
+    { key: 8, text: 'A03', value: 3 },
     
 ]
 export default Dropdownq;
