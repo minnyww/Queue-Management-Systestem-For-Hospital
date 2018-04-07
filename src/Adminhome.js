@@ -17,17 +17,9 @@ class Adminhome extends Component {
                 
                 {/* แสดงคิวอันนี้ Queue.js*/}
                 <Queue />
-                
-                
-                
-                
-                
-                
                 <br/>
                 <br/>
-                
-                
-            </div>
+             </div>
 
 
         );

@@ -1,57 +1,16 @@
 import React, { Component } from 'react';
+import Dropdownq from './Dropdownq.js'
 import Rail, { Segment } from 'semantic-ui-react'
 import {
     Grid, Button, Dropdown, Menu, Icon, Dimmer,
-    Header, Label, Item, Form, Input, TextArea, List
+    Header, Label, Item, Form, Input, TextArea, List, Table, Image, Message, Confirm
 } from 'semantic-ui-react'
 import Modal from 'react-modal';
 import axios from 'axios'
+import * as moment from 'moment';
+import _ from 'underscore'
+
 class Queue extends Component {
-
-    submit = async () => {
-        // alert("TEST")
-        console.log('submit')
-        var HN = this.state.HN
-        var check = false;
-
-        // if (this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
-        //     this.setState({ errorHN: { status: false, message: '' } })
-        //     check = true
-        // } else if (!this.state.HN.match(/[a-zA-Z]{2}[0-9]{4,10}[/]{1}[0-9]{2}/)) {
-        //     this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
-        // }
-
-        // if (check === true) {
-        var data = await axios.post(`http://localhost:3001/getHN`, {
-            HN: this.state.HN
-        })
-        console.log(data.data)
-        if (data.data.length === 0) {
-            console.log('ไม่มีในระบบ')
-        } else {
-            console.log('มีในระบบ')
-            this.setState({ modalIsOpen: false })
-            axios.post('http://localhost:3001/addPatientQ', {
-                queueId: this.state.queueId,
-                roomId: this.state.roomId,
-                Date: this.state.Date,
-                statusId: this.state.statusId,
-                HN: this.state.HN,
-                doctorId: this.state.doctorId,
-                forward: this.state.forward,
-                nurseId: this.state.nurseId
-
-
-                //insert แอทริบิ้วใน ตาราง คิว 
-            })
-            // this.setState({HN : ''})
-        }
-        // }
-    }
-    // Modal
-    // constructor() {
-
-    // super();
     state = {
         showModal: false,
         modalIsOpen: false,
@@ -63,8 +22,71 @@ class Queue extends Component {
         doctorId: '',
         forward: '',
         nurseId: '',
-        queues: []
+        queues: [],
+        errorHN: '',
+        namePatient : '',
+        lastNamePatient: ''
     };
+    props = {
+        value : ''
+    };
+    validateAddress = async() =>{
+        console.log('submit')
+        var HN = this.state.HN
+        var check = false;
+
+        if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+            this.setState({ errorHN: { status: false, message: '' } })
+            this.check = true
+            {this.getName(this.check)}
+        } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+            this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
+        }
+        // getHN for Detail 
+        
+
+    } 
+    submit = async () => {
+        // alert("TEST")
+        console.log('submit')
+        var HN = this.state.HN
+        var check = false;
+        console.log(Dropdownq);
+        var data = await axios.post(`http://localhost:3001/getHN`, {
+            HN: this.state.HN
+        })
+
+        console.log(data.data)
+
+
+        if (data.data.length === 0) {
+            console.log('ไม่มีในระบบ')
+        } else {
+            this.setState({dataPaint : data.data[0]})
+            console.log('มีในระบบ')
+            this.setState({ modalIsOpen: false })
+            axios.post('http://localhost:3001/addPatientQ', {
+                queueId: this.state.queues.length <= 0 ? 0 : this.state.queues[this.state.queues.length - 1].queueId + 1,
+                roomId: this.state.dataPaint.roomId,
+                Date: this.state.dataPaint.Date,
+                statusId: this.state.dataPaint.statusId,
+                HN: this.state.dataPaint.HN,
+                doctorId: this.state.dataPaint.doctorId,
+                forward: this.state.dataPaint.forward,
+                nurseId: this.state.dataPaint.nurseId
+                
+
+                //insert แอทริบิ้วใน ตาราง คิว 
+            })
+            console.log('add เข้า db')
+        }
+
+    }
+    // Modal
+    // constructor() {
+
+    // super();
+
 
     // this.handleOpenModal = this.handleOpenModal.bind(this);
     // this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -75,16 +97,11 @@ class Queue extends Component {
 
 
     // }
+    
     openModal = () => {
         this.setState({ modalIsOpen: true });
         console.log('open')
     }
-
-    afterOpenModal = () => {
-        // references are now sync'd and can be accessed.
-
-    }
-
     closeModal = () => {
         this.setState({ modalIsOpen: false });
     }
@@ -96,33 +113,57 @@ class Queue extends Component {
     handleCloseModal = () => {
         this.setState({ showModal: false });
     }
-    // --------------
+
 
     showPatient = () => {
+        const now = moment().startOf('hour').fromNow();
         const data = this.state.queues
         const tmp = data.map(queue => (
             <Segment >
                 {queue.firstName} {queue.lastName}<br />
                 Room : {queue.room}<br />
                 แผนก : {queue.department}
-                <Label color='blue' style={{ float: 'Right' }}>
-                    <Icon name='time' /> 23 min
-                 </Label>
+                <Label attached='bottom right' color='blue'>
+                    <Icon name='time' />{now}</Label>
             </Segment>
         ))
-
         return tmp
+    }
+
+    getName = (check) => {
+        var tmp = ''
+        
+        if(check === true){
+            //this.state.HN
+            const data = this.state.allPatient
+            var test = _.findWhere(data,{HN : this.state.HN})
+            if(test != undefined){
+                this.state.namePatient = test.firstName,
+                this.state.lastNamePatient = test.lastName
+            }else{
+                this.state.namePatient = 'Not have in DataBase',
+                this.state.lastNamePatient = 'not have'
+            }
+            
+        }else{
+            this.state.namePatient = '',
+            this.state.lastNamePatient = ''
+        }
     }
 
     async componentWillMount() {
         var datas = await axios.get(`http://localhost:3001/getQueue`);
         this.setState({ queues: datas.data })
+        var dataPatient = await axios.get(`http://localhost:3001/getPatient`);
+        this.setState({ allPatient: dataPatient.data })
         Modal.setAppElement('body');
     }
+    
     render() {
-
+        
         return (
             <div>
+                <div id="app"></div>
                 < Grid >
                     <Grid.Column width={4}>
                         <Segment.Group id="box">
@@ -150,39 +191,45 @@ class Queue extends Component {
 
                         <center>
                             <Button color='blue' onClick={this.openModal}>Add Patient</Button>
-
+                            
+                            
                             <Modal
                                 isOpen={this.state.modalIsOpen}
-                                onAfterOpen={this.afterOpenModal}
                                 onRequestClose={this.closeModal}
                                 style={customStyles}
 
                             >
-                                <Form onSubmit={this.submit}>
+                            
+                                <Form>
                                     <Form.Input
+                                        onBlur={this.validateAddress}
+                                        icon='search'
                                         fluid label='HN'
                                         name="HN"
                                         placeholder='HN'
                                         value={this.state.HN}
                                         onChange={(e, { value }) => this.setState({ HN: value })} />
-
+                                    <Message negative
+                                        hidden={!this.state.errorHN.status}
+                                    >
+                                        HN Does not match
+                                        </Message>
                                     <br />
+
                                     <center>
                                         <List>
                                             <List.Item>
                                                 <List.Icon name='users' />
-                                                <List.Content><Header>First Name</Header></List.Content>
+                                                <List.Content><Header> Name: {this.state.namePatient} {this.state.lastNamePatient} </Header></List.Content>
+                                                
                                             </List.Item>
-                                            <List.Item>
-                                                <List.Icon name='users' />
-                                                <List.Content><Header>Last Name</Header></List.Content>
-                                            </List.Item>
+
                                         </List>
                                     </center>
                                     <br />
                                     <br />
                                     <center>
-                                        <Button type="submit" color='green' >Add</Button>
+                                        <Button type="submit" onClick= {this.submit} color='green' >Add</Button>
                                     </center>
                                 </Form>
 
@@ -194,11 +241,14 @@ class Queue extends Component {
 
                     <Grid.Column stretched width={12} >
                         <Segment id="boxshow">
+                            {/* show q */}
+
+
                         </Segment>
                         <center>
 
                             <Button primary>Call</Button>
-                            <Button primary>Finish</Button>
+
 
                             <Menu vertical>
                                 <Dropdown text='Option' pointing='left' className='link item'>
@@ -207,9 +257,10 @@ class Queue extends Component {
                                         <Dropdown.Item>
                                             <center>
                                                 <p onClick={this.handleOpenModal}>Forward To</p>
-                                                <Modal style={style}
+                                                    <Modal style={style}
                                                     isOpen={this.state.showModal}
-                                                    contentLabel="Minimal Modal Example" >
+                                                    isClose={this.state.handleCloseModal}
+                                                    >
 
                                                     <Dropdown placeholder='Select Country' fluid search selection options={options} />
                                                     <br />
@@ -240,6 +291,7 @@ class Queue extends Component {
         );
     }
 }
+
 const style = {
     content: {
         margin: 'auto',
@@ -253,28 +305,28 @@ const customStyles = {
     content: {
         margin: 'auto',
         maxWidth: '450px',
-        height: '300px',
+        height: '350px',
     }
 };
 const options = [
-    { key: 'angular', text: 'Angular', value: 'angular' },
-    { key: 'css', text: 'CSS', value: 'css' },
-    { key: 'design', text: 'Graphic Design', value: 'design' },
-    { key: 'ember', text: 'Ember', value: 'ember' },
-    { key: 'html', text: 'HTML', value: 'html' },
-    { key: 'ia', text: 'Information Architecture', value: 'ia' },
-    { key: 'javascript', text: 'Javascript', value: 'javascript' },
-    { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
-    { key: 'meteor', text: 'Meteor', value: 'meteor' },
-    { key: 'node', text: 'NodeJS', value: 'node' },
-    { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
-    { key: 'python', text: 'Python', value: 'python' },
-    { key: 'rails', text: 'Rails', value: 'rails' },
-    { key: 'react', text: 'React', value: 'react' },
-    { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
-    { key: 'ruby', text: 'Ruby', value: 'ruby' },
-    { key: 'ui', text: 'UI Design', value: 'ui' },
-    { key: 'ux', text: 'User Experience', value: 'ux' },
+    { key: '1', text: 'Angular', value: 'angular' },
+    { key: '2', text: 'CSS', value: 'css' },
+    { key: '3', text: 'Graphic Design', value: 'design' },
+    { key: '4', text: 'Ember', value: 'ember' },
+    { key: '5', text: 'HTML', value: 'html' },
+    { key: '6', text: 'Information Architecture', value: 'ia' },
+    { key: '7', text: 'Javascript', value: 'javascript' },
+    { key: '8', text: 'Mechanical Engineering', value: 'mech' },
+    { key: '9', text: 'Meteor', value: 'meteor' },
+    { key: '10', text: 'NodeJS', value: 'node' },
+    { key: '11', text: 'Plumbing', value: 'plumbing' },
+    { key: '12', text: 'Python', value: 'python' },
+    { key: '13', text: 'Rails', value: 'rails' },
+    { key: '14', text: 'React', value: 'react' },
+    { key: '15', text: 'Kitchen Repair', value: 'repair' },
+    { key: '16', text: 'Ruby', value: 'ruby' },
+    { key: '17', text: 'UI Design', value: 'ui' },
+    { key: '18', text: 'User Experience', value: 'ux' },
 ]
 export default Queue
 

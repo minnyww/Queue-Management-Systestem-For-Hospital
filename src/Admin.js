@@ -76,7 +76,7 @@ class Admin extends Component {
                                     value={this.state.Password}
                                     onChange={(e, { value }) => this.setState({ Password: value })} />
                                 {/* <Link to={'/Adminhome'} class="primary ui button">Sign in</Link> */}
-                                <Button color='blue' type='submit'>Sign in</Button>
+                                <Button color='blue' type='submit' >Sign in</Button>
 
                             </Form>
                         </Segment>
