@@ -5,7 +5,7 @@ import Login from './components/login';
 import { Card, Icon, Image, Button, Form, Segment, Header, Grid } from 'semantic-ui-react'
 import Headerbar from './components/headerbar';
 import logo1 from './img/logo1.png';
-import axios from 'axios'
+import axios from './lib/axios'
 class Admin extends Component {
     state = {
         Username: '',
@@ -27,7 +27,7 @@ class Admin extends Component {
 
 
         if (check === true) {
-            var data = await axios.post(`http://localhost:3001/checkUsername`, {
+            var data = await axios.post(`/checkUsername`, {
                 Username: this.state.Username,
                 Password: this.state.Password
             })
@@ -35,7 +35,8 @@ class Admin extends Component {
             if (data.data.length === 0) {
                 console.log('ไม่มีในระบบ')
             } else {
-                console.log('มีในระบบ')
+                console.log('มีในระบบ >> ' + data.data.empId)
+                this.props.history.push('/Adminhome')
             }
         }
     }

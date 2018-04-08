@@ -92,8 +92,8 @@ class Login extends Component {
                   Your Phone number does not match
                 </Message>
                 <br />
-                {/* <Link to={'/App'}></Link> */}
-                <Button color='blue' type='submit' >Enter</Button>
+                <Link to={'/App'}>
+                <Button color='blue' type='submit' >Enter</Button></Link>
                 <br /><br />
                 <Link to={'/Admin'} class="primary ui button">Admin</Link>
               </Form>
