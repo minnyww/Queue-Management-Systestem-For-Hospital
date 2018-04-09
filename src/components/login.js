@@ -48,7 +48,7 @@ class Login extends Component {
         console.log('ไม่มีในระบบ')
       } else {
         console.log('มีในระบบ')
-        this.props.history.push('/Homeuser')
+        // this.props.history.push('/Homeuser')
       }
     }
 
@@ -93,7 +93,7 @@ class Login extends Component {
                   Your Phone number does not match
                 </Message>
                 <br />
-                
+               
                 <Button color='blue' type='submit' >Enter</Button>
                 <br /><br />
                 <Link to={'/Admin'} class="primary ui button">Admin</Link>

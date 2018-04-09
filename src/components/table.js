@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './../css/Q.css'
 import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 'semantic-ui-react'
-class tablepatient extends Component {
-  render() {
+
+
+    const tablepatient = (props) => {
     return (
 
       <div>
@@ -82,5 +83,5 @@ class tablepatient extends Component {
 
     );
   }
-}
+
 export default tablepatient;

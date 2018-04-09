@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import './css/Q.css';
-import Login from './components/login';
+import './../css/Q.css';
+import Login from './../components/login';
 import { Card, Icon, Image, Button, Form, Segment, Header, Grid } from 'semantic-ui-react'
-import Headerbar from './components/headerbar';
-import logo1 from './img/logo1.png';
-import axios from './lib/axios'
+import Headerbar from './../components/headerbar';
+import logo1 from './../img/logo1.png';
+import axios from './../lib/axios'
 class Admin extends Component {
     state = {
         Username: '',

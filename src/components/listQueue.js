@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Dropdownq from './Dropdownq'
+import DropdownQueue from './Dropdown'
 import Rail, { Segment } from 'semantic-ui-react'
 import {
     Grid, Button, Dropdown, Menu, Icon, Dimmer,
@@ -37,15 +37,12 @@ const Queue = (props) => {
                                     <Label circular color='green' style={{ float: 'Right' }}></Label>
                                 </Segment>
                             </Segment.Group>
-
                         </Segment.Group>
 
                         <center>
                             <Button color='blue' onClick={ () => setField('modalIsOpen',true) }>
                             Add Patient</Button>
-
-
-                             <Modal
+                                <Modal
                                 isOpen={props.modalIsOpen}
                                 onRequestClose={() => setField('modalIsOpen',false)}
                                 style={customStyles}>
@@ -104,7 +101,7 @@ const Queue = (props) => {
                                             <center>
                                                 <p onClick={ () => setField('showModal',true)}>Forward To</p>
                                                 <Modal style={style}
-                                                    isOpen={ props.showModal}
+                                                    isOpen={props.showModal}
                                                     isClose={ () => setField('showModal',false)}>
                                                     <Dropdown
                                                         placeholder='Select Country'

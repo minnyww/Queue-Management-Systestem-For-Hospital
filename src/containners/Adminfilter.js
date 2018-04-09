@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import  { Dropdown, Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
-import Headerbar from './components/headerbar';
-import Search from './components/Search';
+import Headerbar from './../components/headerbar';
+import SearchPatient from './../components/Search';
 class Adminfilter extends Component {
 
     render() {
@@ -10,7 +10,7 @@ class Adminfilter extends Component {
             <div>
                 <Headerbar/>
                
-                <Search/>
+                <SearchPatient/>
                
             </div>
 

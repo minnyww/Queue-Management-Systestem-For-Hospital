@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import Profile from './components/profile';
 import Tablepatient from './components/table';
-
 import './css/Q.css';
 //import 'semantic-ui-css/semantic.min.css';
 import './css/App.css';
-import Headerbaruser from './components/headerbaruser';
-
+import Headerbaruser from './components/headerbar';
 class App extends Component {
   render() {
     return (
