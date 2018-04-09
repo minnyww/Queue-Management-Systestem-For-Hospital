@@ -31,6 +31,7 @@ class Dropdownq extends Component {
     // }
 
     render() {
+        console.log('Dropdownq')
         return (
             <div>
                 <Menu compact>

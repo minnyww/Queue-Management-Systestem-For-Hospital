@@ -10,90 +10,9 @@ import axios from './../lib/axios'
 import * as moment from 'moment';
 import _ from 'underscore'
 
-class Queue extends Component {
-    state = {
-        showModal: false,
-        modalIsOpen: false,
-        queues: [],
-        errorHN: '',
-        namePatient: '',
-        lastNamePatient: '',
-        allPatient:[]
-    }
-
-
-    validateHN = async (HN) => {
-        console.log('submit >> ' + HN)
-        if (HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
-            this.setState({ errorHN: { status: false, message: '' } })
-            this.getName(HN)
-        } else if (!HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
-            this.setState({ errorHN: { status: true, message: 'HN Does not match' } })
-        }
-    }
-
-    openModal = () => {
-        this.setState({ modalIsOpen: true });
-        console.log('open')
-    }
-    closeModal = () => {
-        this.setState({ modalIsOpen: false });
-    }
-
-    handleOpenModal = () => {
-        this.setState({ showModal: true });
-    }
-
-    handleCloseModal = () => {
-        this.setState({ showModal: false });
-    }
-
-    getName = (HN) => {
-        const patient = this.state.allPatient.filter(data => data.HN === HN)[0]
-        if (patient) {
-            this.setState({
-                namePatient: patient.firstName,
-                lastNamePatient: patient.lastName
-            })
-        } else {
-            this.setState({
-                namePatient: <Message negative>Not have in DataBase</Message>,
-                lastNamePatient: ''
-            })
-        }
-    }
-
-    // showPatient = () => {
-    //     const now = moment().startOf('hour').fromNow();
-    //     const data = this.state.queues
-    //     const tmp = data.map(queue => (
-    //         <Segment >
-    //             {queue.firstName} {queue.lastName}<br />
-    //             Room : {queue.room}<br />
-    //             แผนก : {queue.department}
-    //             <Label attached='bottom right' color='blue'>
-    //                 <Icon name='time' />{now}</Label>
-    //         </Segment>
-    //     ))
-    //     return tmp
-    // }
-
-    async componentWillMount() {
-        var datas = await axios.get(`/getQueue`);
-        var dataPatient = await axios.get(`/getPatient`);
-        // console.log(dataPatient)
-        this.setState({
-            allPatient: dataPatient.data,
-            queues: datas.data,
-        })
-        Modal.setAppElement('body');
-
-    }
-
-    render() {
-        // console.log(this.state)
-        console.log('Queue')
-        return (
+const Queue = (props) => {
+    const setField = props.setField
+     return (
             <div>
                 <div id="app"></div>
                 < Grid >
@@ -101,7 +20,7 @@ class Queue extends Component {
                         <Segment.Group id="box">
                             <Segment color='blue'><Header>Queue</Header></Segment>
                             <Segment.Group >
-                                {this.props.showPatient()}
+                                {props.showPatient()}
                             </Segment.Group>
 
                         </Segment.Group>
@@ -122,25 +41,29 @@ class Queue extends Component {
                         </Segment.Group>
 
                         <center>
-                            <Button color='blue' onClick={this.openModal}>Add Patient</Button>
+                            <Button color='blue' onClick={ () => setField('modalIsOpen',true) }>
+                            Add Patient</Button>
 
 
-                            <Modal
-                                isOpen={this.state.modalIsOpen}
-                                onRequestClose={this.closeModal}
+                             <Modal
+                                isOpen={props.modalIsOpen}
+                                onRequestClose={() => setField('modalIsOpen',false)}
                                 style={customStyles}>
 
-                                <Form>
+                                <Form onSubmit={(e) => {
+                                                setField('modalIsOpen',false)
+                                                props.addQueue(e)
+                                            }}>
                                     <Form.Input
-                                        onBlur={({ value }) => this.validateHN(this.props.HN)}
+                                        onBlur={() => props.validateHN()}
                                         icon='search'
                                         fluid label='HN'
                                         name="HN"
                                         placeholder='HN'
-                                        value={this.props.HN}
-                                        onChange={(e, { value }) => this.props.setField('HN', value)} />
+                                        value={ props.HN}
+                                        onChange={(e, { value }) => setField('HN', value)} />
                                     <Message negative
-                                        hidden={!this.state.errorHN.status}>
+                                        hidden={! props.errorHN.status}>
                                         HN Does not match
                                     </Message>
                                     <br />
@@ -148,9 +71,9 @@ class Queue extends Component {
                                         <List>
                                             <List.Item>
                                                 <List.Content>
-                                                    <Header> 
-                                                    Name: {this.state.namePatient} 
-                                                    {this.state.lastNamePatient} 
+                                                    <Header>
+                                                        Name: { props.namePatient}
+                                                        { props.lastNamePatient}
                                                     </Header>
                                                 </List.Content>
                                             </List.Item>
@@ -160,47 +83,40 @@ class Queue extends Component {
                                     <br />
                                     <br />
                                     <center>
-                                        <Button type="submit"
-                                                onClick={() => {
-                                                    this.setState({modalIsOpen : false})
-                                                    this.props.addQueue()
-                                                }}
-                                                color='green'>
+                                        <Button type="submit" color='green'>
                                             Add
                                         </Button>
                                     </center>
                                 </Form>
-                            </Modal>
+                            </Modal> 
                         </center>
                     </Grid.Column>
 
                     <Grid.Column stretched width={12} >
                         <Segment id="boxshow">
-                            {/* show q */}
                         </Segment>
                         <center>
-                        <Button primary>Call</Button>
+                            <Button primary>Call</Button>
                             <Menu vertical>
                                 <Dropdown text='Option' pointing='left' className='link item'>
-
                                     <Dropdown.Menu>
                                         <Dropdown.Item>
                                             <center>
-                                                <p onClick={this.handleOpenModal}>Forward To</p>
+                                                <p onClick={ () => setField('showModal',true)}>Forward To</p>
                                                 <Modal style={style}
-                                                    isOpen={this.state.showModal}
-                                                    isClose={this.state.handleCloseModal}>
-                                                    <Dropdown 
-                                                    placeholder='Select Country' 
-                                                    fluid 
-                                                    search 
-                                                    selection 
-                                                    options={options} />
+                                                    isOpen={ props.showModal}
+                                                    isClose={ () => setField('showModal',false)}>
+                                                    <Dropdown
+                                                        placeholder='Select Country'
+                                                        fluid
+                                                        search
+                                                        selection
+                                                        options={options} />
                                                     <br />
                                                     <center>
-                                                        <Button color='blue' 
-                                                        onClick={this.handleCloseModal}>
-                                                        Forward
+                                                        <Button color='blue'
+                                                            onClick={ () => setField('showModal',false)}>
+                                                            Forward
                                                         </Button>
                                                     </center>
                                                 </Modal>
@@ -209,19 +125,14 @@ class Queue extends Component {
                                         <Dropdown.Item>Call Again</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                        </Menu>
+                            </Menu>
                         </center>
                     </Grid.Column>
                 </Grid >
-
-
-
-
-
             </div >
         );
     }
-}
+
 
 const style = {
     content: {

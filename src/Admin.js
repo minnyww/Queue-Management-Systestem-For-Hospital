@@ -12,7 +12,9 @@ class Admin extends Component {
         Password: '',
         //validate
         errorUsername: { status: false, message: '' },
-        errorPassword: { status: false, message: '' }
+        errorPassword: { status: false, message: '' },
+        HN:''
+
     }
 
     submit = async () => {
@@ -35,8 +37,13 @@ class Admin extends Component {
             if (data.data.length === 0) {
                 console.log('ไม่มีในระบบ')
             } else {
-                console.log('มีในระบบ >> ' + data.data.empId)
-                this.props.history.push('/Adminhome')
+                console.log(data.data[0])
+                this.props.history.push({
+                    pathname: '/Adminhome',
+                    state: { nurseId: data.data[0].empId,
+                            departmentId : data.data[0].departmentId }
+                  })
+            
             }
         }
     }
@@ -76,7 +83,7 @@ class Admin extends Component {
                                     error={this.state.errorPassword.status}
                                     value={this.state.Password}
                                     onChange={(e, { value }) => this.setState({ Password: value })} />
-                                {/* <Link to={'/Adminhome'} class="primary ui button">Sign in</Link> */}
+                                
                                 <Button color='blue' type='submit' >Sign in</Button>
 
                             </Form>
