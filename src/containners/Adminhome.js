@@ -18,9 +18,9 @@ class Adminhome extends Component {
         departmentId: 0,
         queueId: 0,
         Date: '2018/04/9',
-        statusId: 1,
+        statusId: 1,// เช็ค status เมื่อแอดเข้า db
         HN: '',
-        doctorId: 1, // เอา empId ของหมอ
+        doctorId: 0, // เอา empId ของหมอ
         forward: null,
         queues: [],
         allPatient: [],
@@ -35,6 +35,8 @@ class Adminhome extends Component {
         this.setState({
             nurseId:this.props.location.state.nurseId,
             departmentId:this.props.location.state.departmentId,
+            
+            
          })
 
         var datas = await axios.get(`/getQueue`);
@@ -66,6 +68,14 @@ class Adminhome extends Component {
     setField = (field, value) => {
         console.log(field + ' / ' + value)
         this.setState({ [field] : value })
+    }
+
+    getDoctorId = async()=> {
+        var doctors = await axios.get(`/getDoctor/${this.state.roomId}`);
+        this.setState({
+            doctorId : doctors.data[0].empId
+            
+        })
     }
 
     addQueue = async (e) => {
@@ -147,6 +157,7 @@ class Adminhome extends Component {
                     setField={this.setField}
                     departments={this.state.departments}
                     rooms={this.state.rooms}
+                    getDoctorId={this.getDoctorId}
                 />
                 <br />
                 <ListQueue
@@ -164,6 +175,7 @@ class Adminhome extends Component {
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
                     getQueue={this.getQueue}
+                    
                 />
                 <br />
                 <br />

@@ -23,9 +23,10 @@ const DropdownQueue = (props) =>{
                             options={props.rooms} 
                             simple item  
                             value={props.roomId}
-                            onChange={(e,{value})=> {
+                            onChange={async (e,{value})=> {
                                 console.log(value)
-                                props.setField('roomId',value)
+                                await props.setField('roomId',value)
+                                props.getDoctorId()
                             }}/>
                 </Dropdown.Menu>
             </Menu>
