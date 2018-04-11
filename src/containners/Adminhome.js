@@ -56,6 +56,7 @@ class Adminhome extends Component {
             text:room.roomId,
             value:room.roomId
         }))
+        
 
         this.setState({
                        departments :departmentsOption , 
@@ -69,6 +70,7 @@ class Adminhome extends Component {
         console.log(field + ' / ' + value)
         this.setState({ [field] : value })
     }
+    
 
     getDoctorId = async()=> {
         var doctors = await axios.get(`/getDoctor/${this.state.roomId}`);
@@ -98,7 +100,11 @@ class Adminhome extends Component {
     showPatient = () => {
         const now = moment().subtract('m');
         const data = this.state.queues
-        const tmp = data.map(queue => (
+        const tmp = data
+        .filter(queue =>(
+                queue.roomId === this.state.roomId
+        ))
+        .map(queue => (
             <Segment >
                 {queue.firstName} {queue.lastName}<br />
                 Room : {queue.roomId}<br />
@@ -109,6 +115,7 @@ class Adminhome extends Component {
             </Segment>
         ))
         return tmp
+        console.log(this.rooms)
     }
 
 
@@ -136,12 +143,15 @@ class Adminhome extends Component {
             })
         }
     }
-
+    //เอาคิวออกมาก 
     getQueue = async () => {
         const datas = await axios.get(`/getQueue`);
         this.setState({queues: datas.data , msg:'' })
+       
     }
 
+    
+    
     render() {
         
         console.log(this.state)
