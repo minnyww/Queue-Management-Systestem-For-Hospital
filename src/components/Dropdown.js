@@ -1,35 +1,38 @@
 import React, { Component } from 'react';
-import { Dropdown, Menu } from 'semantic-ui-react'
+import { Dropdown, Menu, Message } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 
-const DropdownQueue = (props) =>{
+const DropdownQueue = (props) => {
     return (
         <div>
             <Menu compact>
                 <Dropdown.Menu>
-                        <Dropdown 
-                            placeholder='Queue'
-                            options={type} 
-                            simple item 
-                            value={props.type} />
-                        <Dropdown 
-                            placeholder='Department'
-                            options={props.departments} 
-                            simple item 
-                            value={props.departmentId}
-                        />
-                        <Dropdown 
-                            placeholder='Room' 
-                            options={props.rooms} 
-                            simple item  
-                            value={props.roomId}
-                            onChange={async (e,{value})=> {
-                                console.log(value)
-                                await props.setField('roomId',value)
-                                props.getDoctorId()
-                            }}/>
+                    <Dropdown
+                        placeholder='Queue'
+                        options={type}
+                        simple item
+                        value={props.type} />
+                    <Dropdown
+                        placeholder='Department'
+                        options={props.departments}
+                        simple item
+                        value={props.departmentId}
+                    />
+                    <Dropdown
+                        placeholder='Room'
+                        options={props.rooms}
+                        simple item
+                        value={props.roomId}
+                        onChange={async (e, { value }) => {
+                            console.log(value)
+                            await props.setField('roomId', value)
+                            props.getDoctorId()
+                        }} />
+
                 </Dropdown.Menu>
+                
             </Menu>
+            
         </div>
 
 

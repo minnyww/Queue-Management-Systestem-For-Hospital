@@ -12,123 +12,133 @@ import _ from 'underscore'
 
 const Queue = (props) => {
     const setField = props.setField
-     return (
-            <div>
-                <div id="app"></div>
-                < Grid >
-                    <Grid.Column width={4}>
-                        <Segment.Group id="box">
-                            <Segment color='blue'><Header>Queue</Header></Segment>
-                            <Segment.Group >
-                                {props.showPatient()}
-                            </Segment.Group>
+    return (
 
+        <div>
+
+            <div id="app"></div>
+
+            < Grid >
+                <Grid.Column width={4}>
+                    <Segment.Group id="box">
+                        <Segment color='blue'><Header>Queue</Header></Segment>
+                        <Segment.Group >
+                            {props.showPatient()}
                         </Segment.Group>
-                        <Segment.Group id="boxLab" >
-                            <Segment color='blue'><Header>Lab Wait</Header></Segment>
-                            <Segment.Group >
-                                <Segment > Nested Top
+
+                    </Segment.Group>
+                    <Segment.Group id="boxLab" >
+                        <Segment color='blue'><Header>Lab Wait</Header></Segment>
+                        <Segment.Group >
+                            <Segment > Nested Top
                                     <Label circular color='orange' style={{ float: 'Right' }}></Label>
-                                </Segment >
-                                <Segment >Nested Middle
+                            </Segment >
+                            <Segment >Nested Middle
                                     <Label circular color='green' style={{ float: 'Right' }}></Label>
-                                </Segment >
-                                <Segment >Nested Bottom
+                            </Segment >
+                            <Segment >Nested Bottom
                                     <Label circular color='green' style={{ float: 'Right' }}></Label>
-                                </Segment>
-                            </Segment.Group>
+                            </Segment>
                         </Segment.Group>
+                    </Segment.Group>
 
-                        <center>
-                            <Button color='blue' onClick={ () => setField('modalIsOpen',true) }>
+                    <center>
+                        <Button color='blue' onClick={() => setField('modalIsOpen', true)}>
                             Add Patient</Button>
-                                <Modal
-                                isOpen={props.modalIsOpen}
-                                onRequestClose={() => setField('modalIsOpen',false)}
-                                style={customStyles}>
+                        <Modal
+                            isOpen={props.modalIsOpen}
+                            onRequestClose={() => setField('modalIsOpen', false)}
+                            style={customStyles}>
 
-                                <Form onSubmit={(e) => {
-                                                setField('modalIsOpen',false)
-                                                props.addQueue(e)
-                                            }}>
-                                    <Form.Input
-                                        onBlur={() => props.validateHN()}
-                                        icon='search'
-                                        fluid label='HN'
-                                        name="HN"
-                                        placeholder='HN'
-                                        value={ props.HN}
-                                        onChange={(e, { value }) => setField('HN', value)} />
-                                    <Message negative
-                                        hidden={! props.errorHN.status}>
-                                        HN Does not match
+                            <Form onSubmit={(e) => {
+                                setField('modalIsOpen', false)
+                                props.addQueue(e)
+                            }}>
+                                <Form.Input
+                                    onBlur={() => props.validateHN()}
+                                    icon='search'
+                                    fluid label='HN'
+                                    name="HN"
+                                    placeholder='HN'
+                                    value={props.HN}
+                                    onChange={(e, { value }) => setField('HN', value)} />
+                                <Message negative
+                                    hidden={!props.errorHN.status}>
+                                    HN Does not match
                                     </Message>
-                                    <br />
-                                    <center>
-                                        <List>
-                                            <List.Item>
-                                                <List.Content>
-                                                    
-                                                        Name: { props.namePatient}
-                                                        { props.lastNamePatient}
-                                                    
-                                                </List.Content>
-                                            </List.Item>
+                                <Message negative
+                                    hidden={!props.errorGetName.status}>
+                                    Not have in databse
+                                </Message>
+                                <br />
+                                <center>
+                                    <List>
+                                        <List.Item>
+                                            <List.Content>
 
-                                        </List>
-                                    </center>
-                                    <br />
-                                    <br />
-                                    <center>
-                                        <Button type="submit" color='green'>
-                                            Add
+                                                Name: {props.namePatient}
+                                                {props.lastNamePatient}
+
+
+                                            </List.Content>
+                                        </List.Item>
+
+                                    </List>
+                                </center>
+                                <br />
+                                <br />
+                                <center>
+                                    <Button type="submit" color='green'>
+                                        Add
                                         </Button>
-                                    </center>
-                                </Form>
-                            </Modal> 
-                        </center>
-                    </Grid.Column>
+                                </center>
+                            </Form>
+                        </Modal>
+                    </center>
+                </Grid.Column>
 
-                    <Grid.Column stretched width={12} >
-                        <Segment id="boxshow">
-                        </Segment>
-                        <center>
-                            <Button primary>Call</Button>
-                            <Menu vertical>
-                                <Dropdown text='Option' pointing='left' className='link item'>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item>
-                                            <center>
-                                                <p onClick={ () => setField('showModal',true)}>Forward To</p>
-                                                <Modal style={style}
-                                                    isOpen={props.showModal}
-                                                    isClose={ () => setField('showModal',false)}>
-                                                    <Dropdown
-                                                        placeholder='Select Country'
-                                                        fluid
-                                                        search
-                                                        selection
-                                                        options={options} />
-                                                    <br />
-                                                    <center>
-                                                        <Button color='blue'
-                                                            onClick={ () => setField('showModal',false)}>
-                                                            Forward
+                <Grid.Column stretched width={12} >
+                    <Segment id="boxshow">
+
+
+                    </Segment>
+                    <center>
+                        <Button primary>Call</Button>
+                        <Menu vertical>
+                            <Dropdown text='Option' pointing='left' className='link item'>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item>
+                                        <center>
+                                            <p onClick={() => setField('showModal', true)}>Forward To</p>
+                                            <Modal style={style}
+                                                isOpen={props.showModal}
+                                                isClose={() => setField('showModal', false)}>
+                                                <Dropdown
+                                                    placeholder='Select Country'
+                                                    fluid
+                                                    search
+                                                    selection
+                                                    options={options} />
+                                                <br />
+                                                <center>
+                                                    <Button color='blue'
+                                                        onClick={() => setField('showModal', false)}>
+                                                        Forward
                                                         </Button>
-                                                    </center>
-                                                </Modal>
-                                            </center>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item>Call Again</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Menu>
-                        </center>
-                    </Grid.Column>
-                </Grid >
-            </div >
-        );
-    }
+                                                </center>
+                                            </Modal>
+                                        </center>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Call Again</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Menu>
+                    </center>
+                </Grid.Column>
+            </Grid >
+        </div >
+    );
+}
 
 
 const style = {

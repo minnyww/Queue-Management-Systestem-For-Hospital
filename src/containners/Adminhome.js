@@ -8,6 +8,8 @@ import * as moment from 'moment';
 import { Segment, Label, Icon, Message } from 'semantic-ui-react'
 import Modal from 'react-modal';
 
+
+
 class Adminhome extends Component {
     state = {
         showModal: false,
@@ -25,13 +27,16 @@ class Adminhome extends Component {
         queues: [],
         allPatient: [],
         errorHN: '',
+        errorGetName: '',
+        errorAdd: '',
         namePatient: '',
         lastNamePatient: '',
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
         rooms: [{ key: '', text: '', value: '' }],
+        
     }
-
+    
     componentWillMount = async () => {
         this.setState({
             nurseId: this.props.location.state.nurseId,
@@ -106,7 +111,7 @@ class Adminhome extends Component {
         ))
         console.log('@@@@@@' + checks)
         if (this.state.HN != checks) {
-            
+
             var addQ = await axios.post('/addPatientQ', {
                 roomId: this.state.roomId,
                 Date: this.state.Date,
@@ -116,20 +121,22 @@ class Adminhome extends Component {
                 forward: this.state.forward,
                 nurseId: this.state.nurseId
                 //insert แอทริบิ้วใน ตาราง คิว 
-                
+
             })
             console.log('add เข้า db')
         } else {
+            this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
             console.log('ข้อมูลซ้ำ')
         }
         this.getQueue()
 
 
-        
-    }
 
+    }
+    
     showPatient = () => {
-        const now = moment().subtract('m');
+        
+        let now = moment().startOf('hour').fromNow();
         const data = this.state.queues
         const tmp = data
             .filter(queue => (
@@ -141,11 +148,12 @@ class Adminhome extends Component {
                     Room : {queue.roomId}<br />
                     แผนก : {queue.department}
                     <Label attached='bottom right' color='blue'>
-                        <Icon name='time' />{now.fromNow()}
+                        <Icon name='time' />{now}
                     </Label>
                 </Segment>
             ))
         return tmp
+        
         console.log(this.rooms)
     }
 
@@ -168,9 +176,9 @@ class Adminhome extends Component {
             })
         } else {
             this.setState({
-                namePatient: <Message negative size='tiny'>Not have in DataBase</Message>,
+                namePatient: '',
                 lastNamePatient: '',
-                errorHN: { status: false, message: '' }
+                errorGetName: { status: true, message: '' }
             })
         }
     }
@@ -188,11 +196,19 @@ class Adminhome extends Component {
 
 
     render() {
-
+        
         console.log(this.state)
         return (
             <div>
+                NowDate
                 <Headerbar />
+                <Message
+                    style={{ marginLeft:'1.5%' }}
+                    negative
+                    compact
+                    hidden={!this.state.errorAdd.status}>
+                    Cannot add to Queue
+                </Message>
                 {/* dropdown ตรงนี้ Dropdownq.js*/}
                 {/* กดละต้องเปลี่ยน content ด้วย Dropdownq.js*/}
                 <DropdownQueue
@@ -203,6 +219,7 @@ class Adminhome extends Component {
                     departments={this.state.departments}
                     rooms={this.state.rooms}
                     getDoctorId={this.getDoctorId}
+                    errorAdd={this.state.errorAdd}
                 />
                 <br />
                 <ListQueue
@@ -216,6 +233,7 @@ class Adminhome extends Component {
                     validateHN={this.validateHN}
                     modalIsOpen={this.state.modalIsOpen}
                     errorHN={this.state.errorHN}
+                    errorGetName={this.state.errorGetName}
                     namePatient={this.state.namePatient}
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
@@ -228,4 +246,6 @@ class Adminhome extends Component {
         );
     }
 }
+
+
 export default Adminhome;
