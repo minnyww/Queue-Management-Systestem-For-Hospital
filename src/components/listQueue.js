@@ -68,10 +68,10 @@ const Queue = (props) => {
                                         <List>
                                             <List.Item>
                                                 <List.Content>
-                                                    <Header>
+                                                    
                                                         Name: { props.namePatient}
                                                         { props.lastNamePatient}
-                                                    </Header>
+                                                    
                                                 </List.Content>
                                             </List.Item>
 

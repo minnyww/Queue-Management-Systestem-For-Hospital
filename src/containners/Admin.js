@@ -36,12 +36,13 @@ class Admin extends Component {
             console.log(data.data)
             if (data.data.length === 0) {
                 console.log('ไม่มีในระบบ')
+                
             } else {
                 console.log(data.data[0])
                 this.props.history.push({
                     pathname: '/Adminhome',
                     state: { nurseId: data.data[0].empId,
-                            departmentId : data.data[0].departmentId }
+                             departmentId : data.data[0].departmentId }
                   })
             
             }
