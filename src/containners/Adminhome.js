@@ -7,7 +7,7 @@ import axios from './../lib/axios'
 import * as moment from 'moment';
 import { Segment, Label, Icon, Message } from 'semantic-ui-react'
 import Modal from 'react-modal';
-
+import _ from 'underscore'
 
 
 class Adminhome extends Component {
@@ -34,9 +34,9 @@ class Adminhome extends Component {
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
         rooms: [{ key: '', text: '', value: '' }],
-        
+
     }
-    
+
     componentWillMount = async () => {
         this.setState({
             nurseId: this.props.location.state.nurseId,
@@ -105,14 +105,15 @@ class Adminhome extends Component {
         // alert("TEST")
 
         var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
-        const checks = checkHNDepartments.data.map(check => (
-            check.HN
+        const checks = checkHNDepartments.data.filter(check => 
+            
+            check.HN === this.state.HN
+        )
+        console.log(checks)
+        
+        if (checks.length  === 0) {
 
-        ))
-        console.log('@@@@@@' + checks)
-        if (this.state.HN != checks) {
-
-            var addQ = await axios.post('/addPatientQ', {
+            await axios.post('/addPatientQ', {
                 roomId: this.state.roomId,
                 Date: this.state.Date,
                 statusId: this.state.statusId,
@@ -120,7 +121,7 @@ class Adminhome extends Component {
                 doctorId: this.state.doctorId,
                 forward: this.state.forward,
                 nurseId: this.state.nurseId
-                //insert แอทริบิ้วใน ตาราง คิว 
+                //insert แอทริบิ้วใน ตาราง Queue
 
             })
             console.log('add เข้า db')
@@ -133,9 +134,9 @@ class Adminhome extends Component {
 
 
     }
-    
+
     showPatient = () => {
-        
+
         let now = moment().startOf('hour').fromNow();
         const data = this.state.queues
         const tmp = data
@@ -153,7 +154,7 @@ class Adminhome extends Component {
                 </Segment>
             ))
         return tmp
-        
+
         console.log(this.rooms)
     }
 
@@ -189,21 +190,20 @@ class Adminhome extends Component {
             queues: datas.data, msg: '',
             // statusId : datas.data
         })
-
-
     }
 
+    
 
 
     render() {
-        
+
         console.log(this.state)
         return (
             <div>
-                NowDate
+                
                 <Headerbar />
                 <Message
-                    style={{ marginLeft:'1.5%' }}
+                    style={{ marginLeft: '1.5%' }}
                     negative
                     compact
                     hidden={!this.state.errorAdd.status}>

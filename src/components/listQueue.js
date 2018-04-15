@@ -90,7 +90,7 @@ const Queue = (props) => {
                                 <center>
                                     <Button type="submit" color='green'>
                                         Add
-                                        </Button>
+                                    </Button>
                                 </center>
                             </Form>
                         </Modal>
@@ -155,6 +155,8 @@ const customStyles = {
         margin: 'auto',
         maxWidth: '450px',
         height: '350px',
+        borderRadius : '25px',
+        border: '2px solid teal'
     }
 };
 const options = [
