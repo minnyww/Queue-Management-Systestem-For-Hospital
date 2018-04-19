@@ -5,12 +5,13 @@ import './../css/Q.css'
 import Headerbar from './../components/headerbar';
 import axios from './../lib/axios'
 import * as moment from 'moment';
-import { Segment, Label, Icon, Message } from 'semantic-ui-react'
+import { Segment, Label, Icon, Message, Header } from 'semantic-ui-react'
 import Modal from 'react-modal';
 import _ from 'underscore'
 
 
 class Adminhome extends Component {
+
     state = {
         showModal: false,
         modalIsOpen: false,
@@ -21,8 +22,8 @@ class Adminhome extends Component {
         queueId: 0,
         Date: '2018/04/9',
         statusId: 1,
-        HN: '',  //ตั้งเป็น Unique ใน DB
-        doctorId: 0, // เอา empId ของหมอ
+        HN: '',
+        doctorId: 0,
         forward: null,
         queues: [],
         allPatient: [],
@@ -34,8 +35,9 @@ class Adminhome extends Component {
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
         rooms: [{ key: '', text: '', value: '' }],
-
+        currentQueue: {}
     }
+
 
     componentWillMount = async () => {
         this.setState({
@@ -69,7 +71,9 @@ class Adminhome extends Component {
             departments: departmentsOption,
             rooms: roomsOption,
             allPatient: dataPatient.data,
-            queues: datas.data
+            queues: datas.data,
+            roomId:roomsOption[0].value
+
         })
     }
 
@@ -104,14 +108,15 @@ class Adminhome extends Component {
         // e.preventdefault()
         // alert("TEST")
 
+        
         var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
-        const checks = checkHNDepartments.data.filter(check => 
-            
+        const checks = checkHNDepartments.data.filter(check =>
+
             check.HN === this.state.HN
         )
         console.log(checks)
-        
-        if (checks.length  === 0) {
+
+        if (checks.length === 0) {
 
             await axios.post('/addPatientQ', {
                 roomId: this.state.roomId,
@@ -125,6 +130,7 @@ class Adminhome extends Component {
 
             })
             console.log('add เข้า db')
+            this.setState({modalIsOpen:false})
         } else {
             this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
             console.log('ข้อมูลซ้ำ')
@@ -183,6 +189,22 @@ class Adminhome extends Component {
             })
         }
     }
+    getName = (HN) => {
+        const patient = this.state.allPatient.filter(data => data.HN === HN)[0]
+        if (patient) {
+            this.setState({
+                namePatient: patient.firstName,
+                lastNamePatient: patient.lastName,
+                errorHN: { status: false, message: '' }
+            })
+        } else {
+            this.setState({
+                namePatient: '',
+                lastNamePatient: '',
+                errorGetName: { status: true, message: '' }
+            })
+        }
+    }
     //เอาคิวออกมาก 
     getQueue = async () => {
         const datas = await axios.get(`/getQueue`);
@@ -192,7 +214,76 @@ class Adminhome extends Component {
         })
     }
 
-    
+    //onclick to call patient 
+    callPatient = async () => {
+        console.log('call')
+        // await axios.post('/updateQueue', {
+        //     roomId: this.state.roomId,
+        //     Date: this.state.Date,
+        //     statusId: this.state.statusId,
+        //     HN: this.state.HN,
+        //     doctorId: this.state.doctorId,
+        //     forward: this.state.forward,
+        //     nurseId: this.state.nurseId
+        //     //insert แอทริบิ้วใน ตาราง Queue
+
+        // })
+        var data = {}; 
+        if (this.state.currentQueue === {}) {
+            data = {
+                HN:  this.state.queues[0].HN,
+                previousHN : ''
+            }
+        }else {
+            data = {
+                HN:  this.state.queues[0].HN,
+                previousHN : this.state.currentQueue.HN
+            }
+        }
+
+        await axios.post('/updateQueue', data)
+
+        this.setState({
+            currentQueue: this.state.queues[0]
+        })
+        this.getQueue()
+        console.log('คิวปัจจุบัน')
+        console.log(this.state.currentQueue)
+
+
+    }
+
+    //show current queue index[0] and update status 
+    getPatientName = () => {
+        //queues
+        //currentQueue
+        const data = this.state.currentQueue;
+        return (
+            <Segment id="boxshow" >
+                <Header as='h2' textAlign='center'>
+                    <Icon name='user circle' />
+                    {data.firstName} {data.lastName}
+                </Header>
+                <Header as='h3' textAlign='center' >
+                    <Icon name='numbered list' />
+                    HN :{data.HN}
+                </Header>
+                <Header as='h3' textAlign='center' >
+                    <Icon name='arrow right' />
+                    Room : {data.roomId}
+                </Header>
+                <Header as='h3' textAlign='center' >
+                    <Icon name='first aid' />
+                    แผนก : {data.department}
+                </Header>
+            </Segment>
+        )
+
+
+    }
+
+
+
 
 
     render() {
@@ -200,15 +291,9 @@ class Adminhome extends Component {
         console.log(this.state)
         return (
             <div>
-                
+
                 <Headerbar />
-                <Message
-                    style={{ marginLeft: '1.5%' }}
-                    negative
-                    compact
-                    hidden={!this.state.errorAdd.status}>
-                    Cannot add to Queue
-                </Message>
+                
                 {/* dropdown ตรงนี้ Dropdownq.js*/}
                 {/* กดละต้องเปลี่ยน content ด้วย Dropdownq.js*/}
                 <DropdownQueue
@@ -238,6 +323,10 @@ class Adminhome extends Component {
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
                     getQueue={this.getQueue}
+                    getPatientName={this.getPatientName}
+                    callPatient={this.callPatient}
+                    errorAdd={this.state.errorAdd}
+
 
                 />
                 <br />

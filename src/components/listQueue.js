@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import DropdownQueue from './Dropdown'
-import Rail, { Segment } from 'semantic-ui-react'
+import Rail, { Segment, Container } from 'semantic-ui-react'
 import {
     Grid, Button, Dropdown, Menu, Icon, Dimmer,
-    Header, Label, Item, Form, Input, TextArea, List, Table, Image, Message, Confirm
+    Header, Label, Item, Form, Input, TextArea, List, Table, Image, Message, Confirm, Card
 } from 'semantic-ui-react'
 import Modal from 'react-modal';
 import axios from './../lib/axios'
@@ -11,7 +11,9 @@ import * as moment from 'moment';
 import _ from 'underscore'
 
 const Queue = (props) => {
+
     const setField = props.setField
+    console.log(props.queues[0])
     return (
 
         <div>
@@ -19,27 +21,27 @@ const Queue = (props) => {
             <div id="app"></div>
 
             < Grid >
-                <Grid.Column width={4}>
+                <Grid.Column width={5} style={{ marginLeft: '3%' }} >
                     <Segment.Group id="box">
-                        <Segment color='blue'><Header>Queue</Header></Segment>
-                        <Segment.Group >
-                            {props.showPatient()}
-                        </Segment.Group>
+                        <Segment inverted color='teal'><Header textAlign='center'>Queue</Header></Segment>
+
+                        {props.showPatient()}
+
 
                     </Segment.Group>
                     <Segment.Group id="boxLab" >
-                        <Segment color='blue'><Header>Lab Wait</Header></Segment>
-                        <Segment.Group >
-                            <Segment > Nested Top
+                        <Segment inverted color='teal'><Header Header textAlign='center'>Lab Wait</Header></Segment>
+
+                        <Segment > Nested Top
                                     <Label circular color='orange' style={{ float: 'Right' }}></Label>
-                            </Segment >
-                            <Segment >Nested Middle
+                        </Segment >
+                        <Segment >Nested Middle
                                     <Label circular color='green' style={{ float: 'Right' }}></Label>
-                            </Segment >
-                            <Segment >Nested Bottom
+                        </Segment >
+                        <Segment >Nested Bottom
                                     <Label circular color='green' style={{ float: 'Right' }}></Label>
-                            </Segment>
-                        </Segment.Group>
+                        </Segment>
+
                     </Segment.Group>
 
                     <center>
@@ -51,7 +53,6 @@ const Queue = (props) => {
                             style={customStyles}>
 
                             <Form onSubmit={(e) => {
-                                setField('modalIsOpen', false)
                                 props.addQueue(e)
                             }}>
                                 <Form.Input
@@ -69,6 +70,13 @@ const Queue = (props) => {
                                 <Message negative
                                     hidden={!props.errorGetName.status}>
                                     Not have in databse
+                                </Message>
+                                <Message
+
+                                    negative
+
+                                    hidden={!props.errorAdd.status}>
+                                    Cannot add to Queue
                                 </Message>
                                 <br />
                                 <center>
@@ -97,13 +105,25 @@ const Queue = (props) => {
                     </center>
                 </Grid.Column>
 
-                <Grid.Column stretched width={12} >
-                    <Segment id="boxshow">
-
-
-                    </Segment>
+                <Grid.Column width={10} style={{ marginTop: '3%' }}>
                     <center>
-                        <Button primary>Call</Button>
+                        <Segment.Group style={{ width: '80%' }}>
+                            <Segment inverted color='blue'><Header as='h1' textAlign='center'>คิวปัจจุบัน</Header></Segment>
+
+                            {/* show current queue */}
+                            {props.getPatientName()}
+
+                        </Segment.Group>
+                    </center>
+                    <center>
+                        <br />
+
+                        <Button primary
+                            onClick={() => {
+                                props.callPatient()
+                            }}
+                        >Call
+                        </Button>
                         <Menu vertical>
                             <Dropdown text='Option' pointing='left' className='link item'>
                                 <Dropdown.Menu>
@@ -155,8 +175,8 @@ const customStyles = {
         margin: 'auto',
         maxWidth: '450px',
         height: '350px',
-        borderRadius : '25px',
-        border: '2px solid teal'
+        borderRadius: '25px',
+        border: '2px solid #1976D2'
     }
 };
 const options = [

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const DropdownQueue = (props) => {
     return (
         <div>
-            <Menu compact>
+            <Menu  compact style={{marginLeft:'3%'}}>
                 <Dropdown.Menu>
                     <Dropdown
                         placeholder='Queue'
