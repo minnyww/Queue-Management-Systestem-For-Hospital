@@ -10,6 +10,7 @@ import Modal from 'react-modal';
 import _ from 'underscore'
 
 
+
 class Adminhome extends Component {
 
     state = {
@@ -20,7 +21,7 @@ class Adminhome extends Component {
         nurseId: 0,
         departmentId: 0,
         queueId: 0,
-        Date: '2018/04/9',
+        Date: new Date(),//moment //getTime()
         statusId: 1,
         HN: '',
         doctorId: 0,
@@ -37,6 +38,7 @@ class Adminhome extends Component {
         rooms: [{ key: '', text: '', value: '' }],
         currentQueue: {}
     }
+
 
 
     componentWillMount = async () => {
@@ -72,13 +74,13 @@ class Adminhome extends Component {
             rooms: roomsOption,
             allPatient: dataPatient.data,
             queues: datas.data,
-            roomId:roomsOption[0].value
+            roomId: roomsOption[0].value
 
         })
     }
 
     setField = (field, value) => {
-        console.log(field + ' / ' + value)
+       
         this.setState({ [field]: value })
     }
 
@@ -107,8 +109,36 @@ class Adminhome extends Component {
     addQueue = async (e) => {
         // e.preventdefault()
         // alert("TEST")
-
+        var month = new Array(
+            "jan", "feb", "mar",
+            "apr", "may", "jun",
+            "jul", "aug", "sep",
+            "oct", "nov", "dec");
+        var day = new Array(7);
+            day[0] = "sun";
+            day[1] = "mon";
+            day[2] = "tue";
+            day[3] = "wed";
+            day[4] = "thu";
+            day[5] = "fri";
+            day[6] = "sat";
         
+        
+
+
+        var curr_date = this.state.Date.getDay();
+        console.log(day[curr_date])
+        
+        var curr_month = this.state.Date.getMonth();
+        console.log(month[curr_month])
+
+        var curr_year = this.state.Date.getFullYear();
+        console.log(curr_year)
+        
+        // var time = await axios.get(`/getDate`)
+        // var timeFormat = moment();
+        // console.log(timeFormat)
+
         var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
         const checks = checkHNDepartments.data.filter(check =>
 
@@ -117,20 +147,29 @@ class Adminhome extends Component {
         console.log(checks)
 
         if (checks.length === 0) {
-
+            var time = moment().toString()
+            
+            // var timeFormat = (hours*60*60)+(mins*60)+sec
+            console.log(time)
             await axios.post('/addPatientQ', {
                 roomId: this.state.roomId,
-                Date: this.state.Date,
+                date: this.state.Date,
+                day:day[curr_date],
+                month:month[curr_month],
+                year:curr_year,
+                timeFormat:time,
                 statusId: this.state.statusId,
                 HN: this.state.HN,
                 doctorId: this.state.doctorId,
                 forward: this.state.forward,
-                nurseId: this.state.nurseId
+                nurseId: this.state.nurseId,
+                departmentId : this.state.departmentId
+                
                 //insert แอทริบิ้วใน ตาราง Queue
 
             })
             console.log('add เข้า db')
-            this.setState({modalIsOpen:false})
+            this.setState({ modalIsOpen: false })
         } else {
             this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
             console.log('ข้อมูลซ้ำ')
@@ -228,16 +267,16 @@ class Adminhome extends Component {
         //     //insert แอทริบิ้วใน ตาราง Queue
 
         // })
-        var data = {}; 
+        var data = {};
         if (this.state.currentQueue === {}) {
             data = {
-                HN:  this.state.queues[0].HN,
-                previousHN : ''
+                HN: this.state.queues[0].HN,
+                previousHN: ''
             }
-        }else {
+        } else {
             data = {
-                HN:  this.state.queues[0].HN,
-                previousHN : this.state.currentQueue.HN
+                HN: this.state.queues[0].HN,
+                previousHN: this.state.currentQueue.HN
             }
         }
 
@@ -287,13 +326,13 @@ class Adminhome extends Component {
 
 
     render() {
-
+        
         console.log(this.state)
         return (
             <div>
 
                 <Headerbar />
-                
+
                 {/* dropdown ตรงนี้ Dropdownq.js*/}
                 {/* กดละต้องเปลี่ยน content ด้วย Dropdownq.js*/}
                 <DropdownQueue

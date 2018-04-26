@@ -13,7 +13,7 @@ import _ from 'underscore'
 const Queue = (props) => {
 
     const setField = props.setField
-    console.log(props.queues[0])
+    
     return (
 
         <div>
