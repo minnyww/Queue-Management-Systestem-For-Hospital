@@ -1,7 +1,8 @@
 /* ของ Queue.js */
 #box{
     overflow-y: scroll; 
-    height: 40%; 
+    height: 250px; 
+    
     
     
 }
@@ -12,7 +13,7 @@
 /* ของ Labwait.js */
 #boxLab{
     overflow-y: scroll;
-    height: 38%;
+    height: 250px; 
     
 }
 

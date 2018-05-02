@@ -12,16 +12,16 @@ import _ from 'underscore'
 
 
 class Adminhome extends Component {
-
+    //กด call ได้เฉพาะ ที่ห้องตัวเอง
     state = {
         showModal: false,
         modalIsOpen: false,
         roomId: 0,
-        type: '', //คัดกรอง หรือผู้ป่วยนัด
+        type: '',
         nurseId: 0,
         departmentId: 0,
         queueId: 0,
-        Date: new Date(),//moment //getTime()
+        Date: new Date(),
         statusId: 1,
         HN: '',
         doctorId: 0,
@@ -36,7 +36,10 @@ class Adminhome extends Component {
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
         rooms: [{ key: '', text: '', value: '' }],
-        currentQueue: {}
+        doctors: [{ key: '', text: '', value: '' }],
+        currentQueue: {},
+        doctorList : []
+
     }
 
 
@@ -61,37 +64,107 @@ class Adminhome extends Component {
         }))
 
 
-        const rooms = await axios.get(`/getRoom/${this.state.departmentId}`)
-        const roomsOption = rooms.data.map(room => ({
-            key: room.roomId,
-            text: room.roomId,
-            value: room.roomId
+        // const rooms = await axios.get(`/getRoom/${this.state.departmentId}`)
+        // const roomsOption = rooms.data.map(room => ({
+        //     key: room.roomId,
+        //     text: room.roomId,
+        //     value: room.roomId
+        // }))
+        //
+
+        var month = new Array(
+            "jan", "feb", "mar",
+            "apr", "may", "jun",
+            "jul", "aug", "sep",
+            "oct", "nov", "dec");
+        var day = new Array(7);
+        day[0] = "sun";
+        day[1] = "mon";
+        day[2] = "tue";
+        day[3] = "wed";
+        day[4] = "thu";
+        day[5] = "fri";
+        day[6] = "sat";
+
+        var curr_date = this.state.Date.getDay();
+        console.log(day[curr_date])
+
+        var curr_month = this.state.Date.getMonth();
+        console.log(month[curr_month])
+
+        var curr_year = this.state.Date.getFullYear();
+        console.log(curr_year)
+
+        const doctors = await axios.post(`/getListDoctor`, {
+            day: day[curr_date],
+            month: month[curr_month],
+            year: curr_year,
+            departmentId: this.state.departmentId
+
+            
+        })
+        console.log(doctors.data)
+        const doctorsOption = doctors.data.map(doctor => ({
+
+            key: doctor.doctorId,
+            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง '+ doctor.roomId +' ) ',
+            value: doctor.doctorId
         }))
 
 
         this.setState({
+            doctorList : doctors.data,
             departments: departmentsOption,
-            rooms: roomsOption,
+            // rooms: roomsOption,
+            doctors: doctorsOption,
+
             allPatient: dataPatient.data,
             queues: datas.data,
-            roomId: roomsOption[0].value
-
+            roomId: doctors.data[0].roomId,
+            doctorId: doctorsOption[0].value
         })
     }
 
     setField = (field, value) => {
-       
+
         this.setState({ [field]: value })
     }
 
-
-    getDoctorId = async () => {
-        var doctors = await axios.get(`/getDoctor/${this.state.roomId}`);
+    chooseDoctor = (value) => {
+        // console.log(value)
+        // console.log(this.state.doctorList)
+        const findRoom = this.state.doctorList.filter(doctor =>
+            doctor.doctorId === value
+        )
+        .map(doctor => (doctor.roomId))
+        // .map(doctor => {
+        //     if(doctor.doctorId === value){
+        //         console.log(doctor.doctorId)
+        //         return doctor.roomId
+        //     }
+        // }
+    console.log(findRoom)
         this.setState({
-            doctorId: doctors.data[0].empId
-
+            doctorId : value,
+            roomId : findRoom[0]
         })
+    console.log(findRoom)
     }
+    
+
+
+    // getDoctorId = async () => {
+
+
+    //     var doctors = await axios.get(`/getDoctor/${this.state.roomId}`);
+
+    //     this.setState({
+    //         doctorId: doctors.data[0].empId
+
+    //     })
+    // }
+
+
 
     //
     // checkHNDepartment = async () => {
@@ -109,98 +182,133 @@ class Adminhome extends Component {
     addQueue = async (e) => {
         // e.preventdefault()
         // alert("TEST")
+        const min = this.state.queues.filter(queue => {
+                queue.HN === this.state.HN
+            }
+
+
+        )
+        if(min.length === 0 ){
+
+        
+
         var month = new Array(
             "jan", "feb", "mar",
             "apr", "may", "jun",
             "jul", "aug", "sep",
             "oct", "nov", "dec");
         var day = new Array(7);
-            day[0] = "sun";
-            day[1] = "mon";
-            day[2] = "tue";
-            day[3] = "wed";
-            day[4] = "thu";
-            day[5] = "fri";
-            day[6] = "sat";
-        
-        
-
+        day[0] = "sun";
+        day[1] = "mon";
+        day[2] = "tue";
+        day[3] = "wed";
+        day[4] = "thu";
+        day[5] = "fri";
+        day[6] = "sat";
 
         var curr_date = this.state.Date.getDay();
         console.log(day[curr_date])
-        
+
         var curr_month = this.state.Date.getMonth();
         console.log(month[curr_month])
 
         var curr_year = this.state.Date.getFullYear();
         console.log(curr_year)
-        
+
         // var time = await axios.get(`/getDate`)
         // var timeFormat = moment();
         // console.log(timeFormat)
 
         var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
         const checks = checkHNDepartments.data.filter(check =>
-
             check.HN === this.state.HN
         )
-        console.log(checks)
+        console.log('check ',checks)
 
         if (checks.length === 0) {
+
             var time = moment().toString()
-            
+
             // var timeFormat = (hours*60*60)+(mins*60)+sec
             console.log(time)
             await axios.post('/addPatientQ', {
                 roomId: this.state.roomId,
                 date: this.state.Date,
-                day:day[curr_date],
-                month:month[curr_month],
-                year:curr_year,
-                timeFormat:time,
+                day: day[curr_date],
+                month: month[curr_month],
+                year: curr_year,
+                timeFormat: time,
                 statusId: this.state.statusId,
                 HN: this.state.HN,
                 doctorId: this.state.doctorId,
                 forward: this.state.forward,
                 nurseId: this.state.nurseId,
-                departmentId : this.state.departmentId
-                
+                departmentId: this.state.departmentId
+
                 //insert แอทริบิ้วใน ตาราง Queue
 
             })
-            console.log('add เข้า db')
-            this.setState({ modalIsOpen: false })
+
+            this.setState({ modalIsOpen: false,errorAdd: { status: false, message: ''  } })
         } else {
             this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
-            console.log('ข้อมูลซ้ำ')
+
         }
         this.getQueue()
-
-
+        console.log('add เข้า db')
+        }else{
+            console.log('ซ้ำ')
+        }
 
     }
-
+    // checkQueues = () => {
+    //     if(queues === 0){
+    //         <Segment >
+    //                  <br />
+    //                 Room : <br />
+    //                 แผนก : 
+    //                 {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
+    //                 <Label attached='bottom right' color='blue'>
+    //                     <Icon name='time' />
+    //                 </Label>
+    //             </Segment>
+    //     }else {
+    //         <Segment >
+    //                 {queue.firstName} {queue.lastName}<br />
+    //                 Room : {queue.roomId}<br />
+    //                 แผนก : {queue.department}
+    //                 {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
+    //                 <Label attached='bottom right' color='blue'>
+    //                     <Icon name='time' />
+    //                 </Label>
+    //             </Segment>
+    //     }
+    // }
     showPatient = () => {
 
-        let now = moment().startOf('hour').fromNow();
+        //let now = moment().startOf('hour').fromNow();
+
         const data = this.state.queues
         const tmp = data
             .filter(queue => (
                 queue.roomId === this.state.roomId
             ))
             .map(queue => (
+
                 <Segment >
+
                     {queue.firstName} {queue.lastName}<br />
                     Room : {queue.roomId}<br />
                     แผนก : {queue.department}
+                    {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
                     <Label attached='bottom right' color='blue'>
-                        <Icon name='time' />{now}
+                        <Icon name='time' />
                     </Label>
                 </Segment>
             ))
         return tmp
 
-        console.log(this.rooms)
+
     }
 
 
@@ -228,22 +336,7 @@ class Adminhome extends Component {
             })
         }
     }
-    getName = (HN) => {
-        const patient = this.state.allPatient.filter(data => data.HN === HN)[0]
-        if (patient) {
-            this.setState({
-                namePatient: patient.firstName,
-                lastNamePatient: patient.lastName,
-                errorHN: { status: false, message: '' }
-            })
-        } else {
-            this.setState({
-                namePatient: '',
-                lastNamePatient: '',
-                errorGetName: { status: true, message: '' }
-            })
-        }
-    }
+
     //เอาคิวออกมาก 
     getQueue = async () => {
         const datas = await axios.get(`/getQueue`);
@@ -254,26 +347,27 @@ class Adminhome extends Component {
     }
 
     //onclick to call patient 
+    //check เรียกได้เฉพาะ ห้องตัวเอง
     callPatient = async () => {
-        console.log('call')
-        // await axios.post('/updateQueue', {
-        //     roomId: this.state.roomId,
-        //     Date: this.state.Date,
-        //     statusId: this.state.statusId,
-        //     HN: this.state.HN,
-        //     doctorId: this.state.doctorId,
-        //     forward: this.state.forward,
-        //     nurseId: this.state.nurseId
-        //     //insert แอทริบิ้วใน ตาราง Queue
 
-        // })
         var data = {};
+
+        //เช็คว่ามี คิวปัจจุบันหรือยัง
         if (this.state.currentQueue === {}) {
+            console.log('คิวปัจจุบัน')
+            console.log(this.state.currentQueue)
             data = {
                 HN: this.state.queues[0].HN,
                 previousHN: ''
             }
-        } else {
+        } else if (this.state.queues.length === 0) {
+            console.log('cannot')
+            data = {
+                HN: '',
+                previousHN: this.state.currentQueue.HN
+            }
+        }
+        else {
             data = {
                 HN: this.state.queues[0].HN,
                 previousHN: this.state.currentQueue.HN
@@ -283,19 +377,16 @@ class Adminhome extends Component {
         await axios.post('/updateQueue', data)
 
         this.setState({
-            currentQueue: this.state.queues[0]
+            currentQueue: this.state.queues.length !== 0 ? this.state.queues[0] : {}
         })
         this.getQueue()
-        console.log('คิวปัจจุบัน')
-        console.log(this.state.currentQueue)
+
 
 
     }
 
-    //show current queue index[0] and update status 
+
     getPatientName = () => {
-        //queues
-        //currentQueue
         const data = this.state.currentQueue;
         return (
             <Segment id="boxshow" >
@@ -326,7 +417,7 @@ class Adminhome extends Component {
 
 
     render() {
-        
+
         console.log(this.state)
         return (
             <div>
@@ -337,13 +428,17 @@ class Adminhome extends Component {
                 {/* กดละต้องเปลี่ยน content ด้วย Dropdownq.js*/}
                 <DropdownQueue
                     roomId={this.state.roomId}
+                    doctorId={this.state.doctorId}
                     departmentId={this.state.departmentId}
                     type={this.state.type}
                     setField={this.setField}
                     departments={this.state.departments}
                     rooms={this.state.rooms}
-                    getDoctorId={this.getDoctorId}
+                    doctors={this.state.doctors}
+                    // getDoctorId={this.getDoctorId}
+                    getDoctor={this.getDoctor}
                     errorAdd={this.state.errorAdd}
+                    chooseDoctor={this.chooseDoctor}
                 />
                 <br />
                 <ListQueue

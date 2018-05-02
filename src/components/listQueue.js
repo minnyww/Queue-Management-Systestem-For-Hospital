@@ -15,14 +15,14 @@ const Queue = (props) => {
     const setField = props.setField
     
     return (
-
+        
         <div>
 
             <div id="app"></div>
 
             < Grid >
                 <Grid.Column width={5} style={{ marginLeft: '3%' }} >
-                    <Segment.Group id="box">
+                    <Segment.Group id="box" >
                         <Segment inverted color='teal'><Header textAlign='center'>Queue</Header></Segment>
 
                         {props.showPatient()}
@@ -179,6 +179,7 @@ const customStyles = {
         border: '2px solid #1976D2'
     }
 };
+//dropdown department 
 const options = [
     { key: '1', text: 'Angular', value: 'angular' },
     { key: '2', text: 'CSS', value: 'css' },
