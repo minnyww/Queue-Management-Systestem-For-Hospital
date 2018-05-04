@@ -38,7 +38,7 @@ class Adminhome extends Component {
         rooms: [{ key: '', text: '', value: '' }],
         doctors: [{ key: '', text: '', value: '' }],
         currentQueue: {},
-        doctorList : []
+        doctorList: []
 
     }
 
@@ -101,19 +101,19 @@ class Adminhome extends Component {
             year: curr_year,
             departmentId: this.state.departmentId
 
-            
+
         })
         console.log(doctors.data)
         const doctorsOption = doctors.data.map(doctor => ({
 
             key: doctor.doctorId,
-            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง '+ doctor.roomId +' ) ',
+            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง ' + doctor.roomId + ' ) ',
             value: doctor.doctorId
         }))
 
 
         this.setState({
-            doctorList : doctors.data,
+            doctorList: doctors.data,
             departments: departmentsOption,
             // rooms: roomsOption,
             doctors: doctorsOption,
@@ -123,6 +123,7 @@ class Adminhome extends Component {
             roomId: doctors.data[0].roomId,
             doctorId: doctorsOption[0].value
         })
+
     }
 
     setField = (field, value) => {
@@ -130,51 +131,21 @@ class Adminhome extends Component {
         this.setState({ [field]: value })
     }
 
-    chooseDoctor = (value) => {
-        // console.log(value)
-        // console.log(this.state.doctorList)
+    chooseDoctor = async (value) => {
         const findRoom = this.state.doctorList.filter(doctor =>
             doctor.doctorId === value
         )
-        .map(doctor => (doctor.roomId))
-        // .map(doctor => {
-        //     if(doctor.doctorId === value){
-        //         console.log(doctor.doctorId)
-        //         return doctor.roomId
-        //     }
-        // }
-    console.log(findRoom)
+            .map(doctor => (doctor.roomId))
+
+        const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${value}`)
+        console.log('currentQinThisRoom',currentQinThisRoom.data[0])
         this.setState({
-            doctorId : value,
-            roomId : findRoom[0]
+            doctorId: value,
+            roomId: findRoom[0],
+            currentQueue: currentQinThisRoom.data.length === 0? {} : currentQinThisRoom.data[0]
         })
-    console.log(findRoom)
     }
-    
 
-
-    // getDoctorId = async () => {
-
-
-    //     var doctors = await axios.get(`/getDoctor/${this.state.roomId}`);
-
-    //     this.setState({
-    //         doctorId: doctors.data[0].empId
-
-    //     })
-    // }
-
-
-
-    //
-    // checkHNDepartment = async () => {
-    //     var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
-    //     const checks = checkHNDepartments.data.map(check =>(
-    //         check.HN
-
-    //     ))
-    //     console.log('@@@@@@'+    checks)
-    // }
 
 
 
@@ -183,80 +154,78 @@ class Adminhome extends Component {
         // e.preventdefault()
         // alert("TEST")
         const min = this.state.queues.filter(queue => {
-                queue.HN === this.state.HN
-            }
-
-
-        )
-        if(min.length === 0 ){
-
-        
-
-        var month = new Array(
-            "jan", "feb", "mar",
-            "apr", "may", "jun",
-            "jul", "aug", "sep",
-            "oct", "nov", "dec");
-        var day = new Array(7);
-        day[0] = "sun";
-        day[1] = "mon";
-        day[2] = "tue";
-        day[3] = "wed";
-        day[4] = "thu";
-        day[5] = "fri";
-        day[6] = "sat";
-
-        var curr_date = this.state.Date.getDay();
-        console.log(day[curr_date])
-
-        var curr_month = this.state.Date.getMonth();
-        console.log(month[curr_month])
-
-        var curr_year = this.state.Date.getFullYear();
-        console.log(curr_year)
-
-        // var time = await axios.get(`/getDate`)
-        // var timeFormat = moment();
-        // console.log(timeFormat)
-
-        var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
-        const checks = checkHNDepartments.data.filter(check =>
-            check.HN === this.state.HN
-        )
-        console.log('check ',checks)
-
-        if (checks.length === 0) {
-
-            var time = moment().toString()
-
-            // var timeFormat = (hours*60*60)+(mins*60)+sec
-            console.log(time)
-            await axios.post('/addPatientQ', {
-                roomId: this.state.roomId,
-                date: this.state.Date,
-                day: day[curr_date],
-                month: month[curr_month],
-                year: curr_year,
-                timeFormat: time,
-                statusId: this.state.statusId,
-                HN: this.state.HN,
-                doctorId: this.state.doctorId,
-                forward: this.state.forward,
-                nurseId: this.state.nurseId,
-                departmentId: this.state.departmentId
-
-                //insert แอทริบิ้วใน ตาราง Queue
-
-            })
-
-            this.setState({ modalIsOpen: false,errorAdd: { status: false, message: ''  } })
-        } else {
-            this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
-
+            queue.HN === this.state.HN
         }
-        this.getQueue()
-        console.log('add เข้า db')
-        }else{
+        )
+        if (min.length === 0) {
+
+
+
+            var month = new Array(
+                "jan", "feb", "mar",
+                "apr", "may", "jun",
+                "jul", "aug", "sep",
+                "oct", "nov", "dec");
+            var day = new Array(7);
+            day[0] = "sun";
+            day[1] = "mon";
+            day[2] = "tue";
+            day[3] = "wed";
+            day[4] = "thu";
+            day[5] = "fri";
+            day[6] = "sat";
+
+            var curr_date = this.state.Date.getDay();
+            console.log(day[curr_date])
+
+            var curr_month = this.state.Date.getMonth();
+            console.log(month[curr_month])
+
+            var curr_year = this.state.Date.getFullYear();
+            console.log(curr_year)
+
+            // var time = await axios.get(`/getDate`)
+            // var timeFormat = moment();
+            // console.log(timeFormat)
+
+            var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
+            const checks = checkHNDepartments.data.filter(check =>
+                check.HN === this.state.HN
+            )
+            console.log('check ', checks)
+
+            if (checks.length === 0) {
+
+                var time = moment().toString()
+
+                // var timeFormat = (hours*60*60)+(mins*60)+sec
+                console.log(time)
+                await axios.post('/addPatientQ', {
+                    roomId: this.state.roomId,
+                    date: this.state.Date,
+                    day: day[curr_date],
+                    month: month[curr_month],
+                    year: curr_year,
+                    timeFormat: time,
+                    statusId: this.state.statusId,
+                    HN: this.state.HN,
+                    doctorId: this.state.doctorId,
+                    forward: this.state.forward,
+                    nurseId: this.state.nurseId,
+                    departmentId: this.state.departmentId
+
+                    //insert แอทริบิ้วใน ตาราง Queue
+
+                })
+
+                this.setState({ modalIsOpen: false, errorAdd: { status: false, message: '' } })
+            } else {
+                this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
+
+            }
+            this.getQueue()
+            console.log('add เข้า db')
+        } else {
             console.log('ซ้ำ')
         }
 
@@ -312,6 +281,7 @@ class Adminhome extends Component {
     }
 
 
+
     validateHN = async () => {
         if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
             this.getName(this.state.HN)
@@ -349,35 +319,87 @@ class Adminhome extends Component {
     //onclick to call patient 
     //check เรียกได้เฉพาะ ห้องตัวเอง
     callPatient = async () => {
-
         var data = {};
+        var tmp = null;
+        for (let i = 0; i < this.state.queues.length; i++) {
+            if (this.state.queues[i].roomId === this.state.roomId) {
+                tmp = this.state.queues[i];
+                break;
+            }
+        }
 
-        //เช็คว่ามี คิวปัจจุบันหรือยัง
-        if (this.state.currentQueue === {}) {
-            console.log('คิวปัจจุบัน')
-            console.log(this.state.currentQueue)
-            data = {
-                HN: this.state.queues[0].HN,
-                previousHN: ''
+        console.log(tmp)
+        var check = false;
+
+        if (this.state.currentQueue.firstName === undefined) {
+            //ไม่มีคิวปัจจุบัน
+            console.log('ไม่มีคิวปัจจุบัน')
+            if (tmp === null) {
+                //ในห้องนี้ไม่มีคิว
+                console.log('cannot')
+            } else {
+                //ในห้องนี้มีคิว
+                data = {
+                    HN: tmp.HN,
+                    previousHN: ''
+                }
+                check = true;
+                console.log('ห้อง' + this.state.roomId + ' /' + tmp.HN)
             }
-        } else if (this.state.queues.length === 0) {
-            console.log('cannot')
-            data = {
-                HN: '',
-                previousHN: this.state.currentQueue.HN
+        } else {
+            // มีคิวปัจจุบัน
+            console.log('มีคิวปัจจุบัน')
+            if (tmp === null) {
+                //ในห้องนี้ไม่มีคิว
+                console.log('ไม่มีคิว')
+                data = {
+                    HN: '',
+                    previousHN: this.state.currentQueue.HN
+                }
+            } else {
+                //ในห้องนี้มีคิว
+                check = true;
+                console.log('มีคิว')
+                data = {
+                    HN: tmp.HN,
+                    previousHN: this.state.currentQueue.HN
+                }
             }
         }
-        else {
-            data = {
-                HN: this.state.queues[0].HN,
-                previousHN: this.state.currentQueue.HN
-            }
-        }
+
+
+
+
+        // var data = {};
+        // if (this.state.currentQueue === {}) {
+        //     console.log('คิวปัจจุบัน')
+        //     console.log(this.state.currentQueue)
+        //     data = {
+        //         HN: this.state.queues[0].HN,
+        //         previousHN: ''
+        //     }
+        // } else if (this.state.queues.length === 0) {
+        //     console.log('cannot')
+        //     console.log(this.state.currentQueue)
+        //     console.log(this.state.queues)
+        //     data = {
+        //         HN: '',
+        //         previousHN: this.state.currentQueue.HN
+        //     }
+        // }else{
+        //     console.log(this.state.currentQueue)
+        //     console.log(this.state.currentQueue)
+        //     console.log(this.state.queues)
+        //     data = {
+        //         HN: this.state.queues[0].HN,
+        //         previousHN: this.state.currentQueue.HN
+        //     }
+        // }
 
         await axios.post('/updateQueue', data)
-
+        console.log('สรุปมีคิวปัจจุบันไหม ', tmp)
         this.setState({
-            currentQueue: this.state.queues.length !== 0 ? this.state.queues[0] : {}
+            currentQueue: check === true ? tmp : {}
         })
         this.getQueue()
 
@@ -387,6 +409,7 @@ class Adminhome extends Component {
 
 
     getPatientName = () => {
+
         const data = this.state.currentQueue;
         return (
             <Segment id="boxshow" >
