@@ -12,12 +12,12 @@ import _ from 'underscore'
 
 
 class Adminhome extends Component {
-    //กด call ได้เฉพาะ ที่ห้องตัวเอง
+    //กดเลือกห้องอีกทีแล้ว แผนกหาย
     state = {
+         //Queue
         showModal: false,
         modalIsOpen: false,
         roomId: 0,
-        type: '',
         nurseId: 0,
         departmentId: 0,
         queueId: 0,
@@ -28,6 +28,7 @@ class Adminhome extends Component {
         forward: null,
         queues: [],
         allPatient: [],
+        currentQueue: {},
         errorHN: '',
         errorGetName: '',
         errorAdd: '',
@@ -37,8 +38,11 @@ class Adminhome extends Component {
         departments: [{ key: '', text: '', value: '' }],
         rooms: [{ key: '', text: '', value: '' }],
         doctors: [{ key: '', text: '', value: '' }],
-        currentQueue: {},
-        doctorList: []
+        type: '',
+        doctorList: [],
+       
+        
+        
 
     }
 
@@ -152,7 +156,7 @@ class Adminhome extends Component {
     //Add เข้าคิว
     addQueue = async (e) => {
         // e.preventdefault()
-        // alert("TEST")
+       
         const min = this.state.queues.filter(queue => {
             queue.HN === this.state.HN
         }
@@ -184,9 +188,7 @@ class Adminhome extends Component {
             var curr_year = this.state.Date.getFullYear();
             console.log(curr_year)
 
-            // var time = await axios.get(`/getDate`)
-            // var timeFormat = moment();
-            // console.log(timeFormat)
+         
 
             var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
             const checks = checkHNDepartments.data.filter(check =>
@@ -214,7 +216,7 @@ class Adminhome extends Component {
                     nurseId: this.state.nurseId,
                     departmentId: this.state.departmentId
 
-                    //insert แอทริบิ้วใน ตาราง Queue
+                   
 
                 })
 
@@ -316,8 +318,7 @@ class Adminhome extends Component {
         })
     }
 
-    //onclick to call patient 
-    //check เรียกได้เฉพาะ ห้องตัวเอง
+   
     callPatient = async () => {
         var data = {};
         var tmp = null;
@@ -409,7 +410,7 @@ class Adminhome extends Component {
 
 
     getPatientName = () => {
-
+        console.log(this.state.currentQueue)
         const data = this.state.currentQueue;
         return (
             <Segment id="boxshow" >
@@ -447,42 +448,48 @@ class Adminhome extends Component {
 
                 <Headerbar />
 
-                {/* dropdown ตรงนี้ Dropdownq.js*/}
-                {/* กดละต้องเปลี่ยน content ด้วย Dropdownq.js*/}
+               
                 <DropdownQueue
+                    //state
                     roomId={this.state.roomId}
                     doctorId={this.state.doctorId}
                     departmentId={this.state.departmentId}
-                    type={this.state.type}
-                    setField={this.setField}
                     departments={this.state.departments}
                     rooms={this.state.rooms}
                     doctors={this.state.doctors}
-                    // getDoctorId={this.getDoctorId}
+                    //Method
                     getDoctor={this.getDoctor}
                     errorAdd={this.state.errorAdd}
                     chooseDoctor={this.chooseDoctor}
+                    type={this.state.type}
+                    setField={this.setField}
                 />
                 <br />
                 <ListQueue
+                    //state
                     HN={this.state.HN}
-                    setField={this.setField}
-                    addQueue={this.addQueue}
-                    validateHN={this.validateHN}
                     allPatient={this.state.allPatient}
-                    queues={this.state.queues}
-                    showPatient={this.showPatient}
-                    validateHN={this.validateHN}
                     modalIsOpen={this.state.modalIsOpen}
                     errorHN={this.state.errorHN}
                     errorGetName={this.state.errorGetName}
+                    errorAdd={this.state.errorAdd}
                     namePatient={this.state.namePatient}
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
+                    //Method
+                    validateHN={this.validateHN}
+                    setField={this.setField}
+                    addQueue={this.addQueue}
+                    queues={this.state.queues}
+                    showPatient={this.showPatient}
+                    validateHN={this.validateHN}
                     getQueue={this.getQueue}
                     getPatientName={this.getPatientName}
                     callPatient={this.callPatient}
-                    errorAdd={this.state.errorAdd}
+                    
+                    
+                    
+                    
 
 
                 />
