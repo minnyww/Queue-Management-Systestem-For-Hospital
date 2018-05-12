@@ -13,41 +13,46 @@ import _ from 'underscore'
 
 class Adminhome extends Component {
     //กดเลือกห้องอีกทีแล้ว แผนกหาย
+    
     state = {
-         //Queue
+         //Adminhome
+        
+        statusId: 1,
+        Date: new Date(),
+        forward: null,
+        nurseId: 0,
+        allPatient: [],
+        currentQueue: {},
+        //queueId: 0,
+
+        //ListQueue
         showModal: false,
         modalIsOpen: false,
         roomId: 0,
-        nurseId: 0,
         departmentId: 0,
-        queueId: 0,
-        Date: new Date(),
-        statusId: 1,
         HN: '',
         doctorId: 0,
-        forward: null,
         queues: [],
-        allPatient: [],
-        currentQueue: {},
         errorHN: '',
         errorGetName: '',
         errorAdd: '',
         namePatient: '',
         lastNamePatient: '',
+
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
-        rooms: [{ key: '', text: '', value: '' }],
         doctors: [{ key: '', text: '', value: '' }],
         type: '',
         doctorList: [],
+        //rooms: [{ key: '', text: '', value: '' }],
        
         
         
 
     }
+    
 
-
-
+    
     componentWillMount = async () => {
         this.setState({
             nurseId: this.props.location.state.nurseId,
@@ -59,7 +64,7 @@ class Adminhome extends Component {
         var datas = await axios.get(`/getQueue`);
         var dataPatient = await axios.get(`/getPatient`);
         Modal.setAppElement('body');
-
+        console.log(datas)
         const departments = await axios.get(`/getDepartment/${this.state.departmentId}`)
         const departmentsOption = departments.data.map(department => ({
             key: department.departmentId,
@@ -108,10 +113,11 @@ class Adminhome extends Component {
 
         })
         console.log(doctors.data)
+        
         const doctorsOption = doctors.data.map(doctor => ({
-
+            
             key: doctor.doctorId,
-            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง ' + doctor.roomId + ' ) ',
+            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง ' + doctor.roomId + ' ) ' ,
             value: doctor.doctorId
         }))
 
@@ -127,6 +133,7 @@ class Adminhome extends Component {
             roomId: doctors.data[0].roomId,
             doctorId: doctorsOption[0].value
         })
+        console.log(this.state.queues)
 
     }
 
@@ -254,29 +261,38 @@ class Adminhome extends Component {
     //                 </Label>
     //             </Segment>
     //     }
-    // }
-    showPatient = () => {
-
+    // } 
+    
+    showPatient =  ()  => {
+        
         //let now = moment().startOf('hour').fromNow();
-
+        // const date = moment().fromNow()
+        
+        
         const data = this.state.queues
+        const date = new Date().getMinutes()
+        
+        console.log(date)
         const tmp = data
             .filter(queue => (
                 queue.roomId === this.state.roomId
+                 
             ))
+            
             .map(queue => (
-
+                
                 <Segment >
-
-                    {queue.firstName} {queue.lastName}<br />
+                    Queue : {queue.queueId} <br />
+                    Name : {queue.firstName} {queue.lastName}<br />
                     Room : {queue.roomId}<br />
-                    แผนก : {queue.department}
+                    department : {queue.department}
                     {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
                     <Label attached='bottom right' color='blue'>
-                        <Icon name='time' />
+                        <Icon name='time' />{queue.queueId * queue.avgtime } Min 
                     </Label>
                 </Segment>
             ))
+            
         return tmp
 
 
@@ -451,24 +467,24 @@ class Adminhome extends Component {
                
                 <DropdownQueue
                     //state
-                    roomId={this.state.roomId}
                     doctorId={this.state.doctorId}
                     departmentId={this.state.departmentId}
                     departments={this.state.departments}
-                    rooms={this.state.rooms}
                     doctors={this.state.doctors}
-                    //Method
-                    getDoctor={this.getDoctor}
                     errorAdd={this.state.errorAdd}
-                    chooseDoctor={this.chooseDoctor}
                     type={this.state.type}
-                    setField={this.setField}
+                    //rooms={this.state.rooms}
+                    //roomId={this.state.roomId}
+                    
+                    //Method
+                    chooseDoctor={this.chooseDoctor}
+                    //setField={this.setField}
+                    //getDoctor={this.getDoctor}
                 />
                 <br />
                 <ListQueue
                     //state
                     HN={this.state.HN}
-                    allPatient={this.state.allPatient}
                     modalIsOpen={this.state.modalIsOpen}
                     errorHN={this.state.errorHN}
                     errorGetName={this.state.errorGetName}
@@ -476,16 +492,16 @@ class Adminhome extends Component {
                     namePatient={this.state.namePatient}
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
+                    //allPatient={this.state.allPatient}
+                    //queues={this.state.queues}
                     //Method
                     validateHN={this.validateHN}
                     setField={this.setField}
                     addQueue={this.addQueue}
-                    queues={this.state.queues}
                     showPatient={this.showPatient}
-                    validateHN={this.validateHN}
-                    getQueue={this.getQueue}
                     getPatientName={this.getPatientName}
                     callPatient={this.callPatient}
+                    //getQueue={this.getQueue}
                     
                     
                     
