@@ -13,10 +13,10 @@ import _ from 'underscore'
 
 class Adminhome extends Component {
     //กดเลือกห้องอีกทีแล้ว แผนกหาย
-    
+
     state = {
-         //Adminhome
-        
+        //Adminhome
+
         statusId: 1,
         Date: new Date(),
         forward: null,
@@ -45,14 +45,14 @@ class Adminhome extends Component {
         type: '',
         doctorList: [],
         //rooms: [{ key: '', text: '', value: '' }],
-       
-        
-        
+
+
+
 
     }
-    
 
-    
+
+
     componentWillMount = async () => {
         this.setState({
             nurseId: this.props.location.state.nurseId,
@@ -113,11 +113,11 @@ class Adminhome extends Component {
 
         })
         console.log(doctors.data)
-        
+
         const doctorsOption = doctors.data.map(doctor => ({
-            
+
             key: doctor.doctorId,
-            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง ' + doctor.roomId + ' ) ' ,
+            text: doctor.firstname + '  ' + doctor.lastname + ' (ห้อง ' + doctor.roomId + ' ) ',
             value: doctor.doctorId
         }))
 
@@ -149,11 +149,11 @@ class Adminhome extends Component {
             .map(doctor => (doctor.roomId))
 
         const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${value}`)
-        console.log('currentQinThisRoom',currentQinThisRoom.data[0])
+        console.log('currentQinThisRoom', currentQinThisRoom.data[0])
         this.setState({
             doctorId: value,
             roomId: findRoom[0],
-            currentQueue: currentQinThisRoom.data.length === 0? {} : currentQinThisRoom.data[0]
+            currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
         })
     }
 
@@ -163,7 +163,7 @@ class Adminhome extends Component {
     //Add เข้าคิว
     addQueue = async (e) => {
         // e.preventdefault()
-       
+
         const min = this.state.queues.filter(queue => {
             queue.HN === this.state.HN
         }
@@ -195,7 +195,7 @@ class Adminhome extends Component {
             var curr_year = this.state.Date.getFullYear();
             console.log(curr_year)
 
-         
+
 
             var checkHNDepartments = await axios.get(`/checkHNatDepartment/${this.state.departmentId}`)
             const checks = checkHNDepartments.data.filter(check =>
@@ -223,7 +223,7 @@ class Adminhome extends Component {
                     nurseId: this.state.nurseId,
                     departmentId: this.state.departmentId
 
-                   
+
 
                 })
 
@@ -262,25 +262,22 @@ class Adminhome extends Component {
     //             </Segment>
     //     }
     // } 
-    
-    showPatient =  ()  => {
-        
+
+    showPatient = () => {
+
         //let now = moment().startOf('hour').fromNow();
         // const date = moment().fromNow()
-        
-        
+
+
         const data = this.state.queues
-        const date = new Date().getMinutes()
-        
-        console.log(date)
         const tmp = data
             .filter(queue => (
                 queue.roomId === this.state.roomId
-                 
+
             ))
-            
+
             .map(queue => (
-                
+
                 <Segment >
                     Queue : {queue.queueId} <br />
                     Name : {queue.firstName} {queue.lastName}<br />
@@ -288,11 +285,11 @@ class Adminhome extends Component {
                     department : {queue.department}
                     {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
                     <Label attached='bottom right' color='blue'>
-                        <Icon name='time' />{queue.queueId * queue.avgtime } Min 
+                        <Icon name='time' />{queue.queueId * queue.avgtime} Min
                     </Label>
                 </Segment>
             ))
-            
+
         return tmp
 
 
@@ -334,7 +331,7 @@ class Adminhome extends Component {
         })
     }
 
-   
+
     callPatient = async () => {
         var data = {};
         var tmp = null;
@@ -464,7 +461,7 @@ class Adminhome extends Component {
 
                 <Headerbar />
 
-               
+
                 <DropdownQueue
                     //state
                     doctorId={this.state.doctorId}
@@ -475,11 +472,11 @@ class Adminhome extends Component {
                     type={this.state.type}
                     //rooms={this.state.rooms}
                     //roomId={this.state.roomId}
-                    
+
                     //Method
                     chooseDoctor={this.chooseDoctor}
-                    //setField={this.setField}
-                    //getDoctor={this.getDoctor}
+                //setField={this.setField}
+                //getDoctor={this.getDoctor}
                 />
                 <br />
                 <ListQueue
@@ -501,11 +498,11 @@ class Adminhome extends Component {
                     showPatient={this.showPatient}
                     getPatientName={this.getPatientName}
                     callPatient={this.callPatient}
-                    //getQueue={this.getQueue}
-                    
-                    
-                    
-                    
+                //getQueue={this.getQueue}
+
+
+
+
 
 
                 />
