@@ -18,6 +18,7 @@ const DropdownQueue = (props) => {
                         options={props.departments}
                         simple item
                         value={props.departmentId}
+                        disabled
                     />
                     {/* <Dropdown
                         placeholder='Room'

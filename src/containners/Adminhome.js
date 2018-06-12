@@ -13,7 +13,7 @@ import _ from 'underscore'
 
 class Adminhome extends Component {
     //กดเลือกห้องอีกทีแล้ว แผนกหาย
-
+    //check department add ข้ามแผนกไม่ได้ call ข้ามแผนกไม่ได้ 
     state = {
         //Adminhome
 
@@ -38,6 +38,13 @@ class Adminhome extends Component {
         errorAdd: '',
         namePatient: '',
         lastNamePatient: '',
+        allDepartment: [{ key: '', text: '', value: '' }],
+        forwardId : 0,
+        forwardLabId : 0,
+        // typeDepartmentSelect : false,
+        // typeLabSelect : false,
+        typeForward : '',
+
 
         //Dropdown.js
         departments: [{ key: '', text: '', value: '' }],
@@ -65,6 +72,21 @@ class Adminhome extends Component {
         var dataPatient = await axios.get(`/getPatient`);
         Modal.setAppElement('body');
         console.log(datas)
+        
+        const allDepartment = await axios.get(`/getDepartment`)
+        const allDepartmentOption = allDepartment.data.map(department => ({
+            key: department.departmentId,
+            text: department.department,
+            value: department.departmentId
+        }))
+
+        const allLab = await axios.get(`/getLab`)
+        const allLabOption = allLab.data.map(Lab => ({
+            key: Lab.departmentId,
+            text: Lab.department,
+            value: Lab.departmentId
+        }))
+
         const departments = await axios.get(`/getDepartment/${this.state.departmentId}`)
         const departmentsOption = departments.data.map(department => ({
             key: department.departmentId,
@@ -125,6 +147,8 @@ class Adminhome extends Component {
         this.setState({
             doctorList: doctors.data,
             departments: departmentsOption,
+            allDepartment : allDepartmentOption,
+            allLab : allLabOption,
             // rooms: roomsOption,
             doctors: doctorsOption,
 
@@ -163,15 +187,11 @@ class Adminhome extends Component {
     //Add เข้าคิว
     addQueue = async (e) => {
         // e.preventdefault()
-
         const min = this.state.queues.filter(queue => {
             queue.HN === this.state.HN
         }
         )
         if (min.length === 0) {
-
-
-
             var month = new Array(
                 "jan", "feb", "mar",
                 "apr", "may", "jun",
@@ -204,9 +224,7 @@ class Adminhome extends Component {
             console.log('check ', checks)
 
             if (checks.length === 0) {
-
                 var time = moment().toString()
-
                 // var timeFormat = (hours*60*60)+(mins*60)+sec
                 console.log(time)
                 await axios.post('/addPatientQ', {
@@ -222,11 +240,7 @@ class Adminhome extends Component {
                     forward: this.state.forward,
                     nurseId: this.state.nurseId,
                     departmentId: this.state.departmentId
-
-
-
                 })
-
                 this.setState({ modalIsOpen: false, errorAdd: { status: false, message: '' } })
             } else {
                 this.setState({ errorAdd: { status: true, message: 'Cannot Add HN To Queue' } })
@@ -309,9 +323,10 @@ class Adminhome extends Component {
         const patient = this.state.allPatient.filter(data => data.HN === HN)[0]
         if (patient) {
             this.setState({
-                namePatient: patient.firstName,
+                namePatient: patient.firstName + ' ',
                 lastNamePatient: patient.lastName,
-                errorHN: { status: false, message: '' }
+                errorHN: { status: false, message: '' },
+                errorGetName: { status: false, message: '' }
             })
         } else {
             this.setState({
@@ -341,10 +356,8 @@ class Adminhome extends Component {
                 break;
             }
         }
-
         console.log(tmp)
         var check = false;
-
         if (this.state.currentQueue.firstName === undefined) {
             //ไม่มีคิวปัจจุบัน
             console.log('ไม่มีคิวปัจจุบัน')
@@ -380,35 +393,6 @@ class Adminhome extends Component {
                 }
             }
         }
-
-
-
-
-        // var data = {};
-        // if (this.state.currentQueue === {}) {
-        //     console.log('คิวปัจจุบัน')
-        //     console.log(this.state.currentQueue)
-        //     data = {
-        //         HN: this.state.queues[0].HN,
-        //         previousHN: ''
-        //     }
-        // } else if (this.state.queues.length === 0) {
-        //     console.log('cannot')
-        //     console.log(this.state.currentQueue)
-        //     console.log(this.state.queues)
-        //     data = {
-        //         HN: '',
-        //         previousHN: this.state.currentQueue.HN
-        //     }
-        // }else{
-        //     console.log(this.state.currentQueue)
-        //     console.log(this.state.currentQueue)
-        //     console.log(this.state.queues)
-        //     data = {
-        //         HN: this.state.queues[0].HN,
-        //         previousHN: this.state.currentQueue.HN
-        //     }
-        // }
 
         await axios.post('/updateQueue', data)
         console.log('สรุปมีคิวปัจจุบันไหม ', tmp)
@@ -448,14 +432,61 @@ class Adminhome extends Component {
 
 
     }
-
-
-
+    // ยังทำไม่เสร็จจ
+    forward = () => {
+        var data = {};
+        var tmp = null;
+        for (let i = 0; i < this.state.queues.length; i++) {
+            if (this.state.queues[i].roomId === this.state.roomId) {
+                tmp = this.state.queues[i];
+                break;
+            }
+        }
+        console.log(tmp)
+        var check = false;
+        if (this.state.currentQueue.firstName === undefined) {
+            //ไม่มีคิวปัจจุบัน
+            console.log('ไม่มีคิวปัจจุบัน')
+            if (tmp === null) {
+                //ในห้องนี้ไม่มีคิว
+                console.log('cannot')
+            } else {
+                //ในห้องนี้มีคิว
+                data = {
+                    HN: tmp.HN,
+                    previousHN: ''
+                }
+                check = true;
+                console.log('ห้อง' + this.state.roomId + ' /' + tmp.HN)
+            }
+        } else {
+            // มีคิวปัจจุบัน
+            console.log('มีคิวปัจจุบัน')
+            if (tmp === null) {
+                //ในห้องนี้ไม่มีคิว
+                console.log('ไม่มีคิว')
+                data = {
+                    HN: '',
+                    previousHN: this.state.currentQueue.HN
+                }
+            } else {
+                //ในห้องนี้มีคิว
+                check = true;
+                console.log('มีคิว')
+                data = {
+                    HN: tmp.HN,
+                    previousHN: this.state.currentQueue.HN
+                }
+            }
+    }
+   
+ 
 
 
     render() {
-
-        console.log(this.state)
+        console.log(this.state.forwardId)
+        console.log(this.state.forwardLabId)
+        
         return (
             <div>
 
@@ -489,9 +520,24 @@ class Adminhome extends Component {
                     namePatient={this.state.namePatient}
                     lastNamePatient={this.state.lastNamePatient}
                     showModal={this.state.showModal}
+                    departmentId={this.state.departmentId}
+                    departments={this.state.departments}
+                    doctors={this.state.doctors}
+                    allDepartment={this.state.allDepartment}
+                    forwardId={this.state.forwardId}
+                    allLab={this.state.allLab}
+                    forwardLabId={this.state.forwardLabId}
+                    typeDepartmentSelect={this.state.typeDepartmentSelect}
+                    typeLabSelect={this.state.typeLabSelect}
+                    typeForward={this.state.typeForward}
+                    
                     //allPatient={this.state.allPatient}
                     //queues={this.state.queues}
+
+
                     //Method
+                    // handleChange={[this.props.handleChange]}
+                    
                     validateHN={this.validateHN}
                     setField={this.setField}
                     addQueue={this.addQueue}

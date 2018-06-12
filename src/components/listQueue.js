@@ -3,19 +3,20 @@ import DropdownQueue from './Dropdown'
 import Rail, { Segment, Container } from 'semantic-ui-react'
 import {
     Grid, Button, Dropdown, Menu, Icon, Dimmer,
-    Header, Label, Item, Form, Input, TextArea, List, Table, Image, Message, Confirm, Card
+    Header, Label, Item, Form, Input, TextArea, List, Table, Image,
+    Message, Confirm, Card, Radio
 } from 'semantic-ui-react'
 import Modal from 'react-modal';
 import axios from './../lib/axios'
 import * as moment from 'moment';
 import _ from 'underscore'
-
+import swal from 'sweetalert'
 const Queue = (props) => {
 
     const setField = props.setField
-    
+
     return (
-        
+
         <div>
 
             <div id="app"></div>
@@ -46,7 +47,8 @@ const Queue = (props) => {
 
                     <center>
                         <Button color='blue' onClick={() => setField('modalIsOpen', true)}>
-                            Add Patient</Button>
+                            Add Patient
+                        </Button>
                         <Modal
                             isOpen={props.modalIsOpen}
                             onRequestClose={() => setField('modalIsOpen', false)}
@@ -60,7 +62,7 @@ const Queue = (props) => {
                                     icon='search'
                                     fluid label='HN'
                                     name="HN"
-                                    placeholder='HN'
+                                    placeholder='ex. 1234/61'
                                     value={props.HN}
                                     onChange={(e, { value }) => setField('HN', value)} />
                                 <Message negative
@@ -72,9 +74,7 @@ const Queue = (props) => {
                                     Not have in databse
                                 </Message>
                                 <Message
-
                                     negative
-
                                     hidden={!props.errorAdd.status}>
                                     Cannot add to Queue
                                 </Message>
@@ -124,27 +124,71 @@ const Queue = (props) => {
                             }}
                         >Call
                         </Button>
+
                         <Menu vertical>
-                            <Dropdown text='Option' pointing='left' className='link item'>
+                            <Dropdown text='Option' pointing='down' className='link item'>
                                 <Dropdown.Menu>
                                     <Dropdown.Item>
                                         <center>
                                             <p onClick={() => setField('showModal', true)}>Forward To</p>
+
                                             <Modal style={style}
                                                 isOpen={props.showModal}
+                                                onRequestClose={() => setField('showModal', false)}
                                                 isClose={() => setField('showModal', false)}>
+
+                                                <Radio
+                                                    label='Select Department :'
+                                                    name='radioGroup'
+                                                    value='Department'
+                                                    checked={props.typeForward === 'Department'}
+                                                    onChange={async (e, { value }) => {
+                                                        props.setField('typeForward', value)
+                                                    }}
+                                                />
+                                                <br />
                                                 <Dropdown
-                                                    placeholder='Select Country'
+                                                    disabled={props.typeForward === 'Department' ? false : true}
                                                     fluid
                                                     search
                                                     selection
-                                                    options={options} />
+                                                    placeholder=" Search or Select Department"
+                                                    // value={props.departmentId}
+                                                    options={props.allDepartment}
+                                                    onChange={async (e, { value }) => {
+                                                        props.setField('forwardId', value),
+                                                            props.selectDepartment
+                                                    }}
+                                                />
+                                                <br />
+                                                <Radio
+                                                    label='Select Lab :'
+                                                    name='radioGroup'
+                                                    value='Lab'
+                                                    checked={props.typeForward === 'Lab'}
+                                                    onChange={async (e, { value }) => {
+                                                        props.setField('typeForward', value)
+                                                    }}
+                                                />
+                                                <Dropdown
+                                                    disabled={props.typeForward === 'Lab' ? false : true}
+                                                    fluid
+                                                    search
+                                                    selection
+                                                    placeholder="Search or Select Lab"
+                                                    // value={props.departmentId}
+                                                    options={props.allLab}
+                                                    onChange={async (e, { value }) => {
+                                                        props.setField('forwardLabId', value)
+                                                    }}
+                                                />
                                                 <br />
                                                 <center>
                                                     <Button color='blue'
                                                         onClick={() => setField('showModal', false)}>
+                                                        {/* ทำ fucntion forward ในการอัพเดท */}
                                                         Forward
-                                                        </Button>
+                                                    </Button>
                                                 </center>
                                             </Modal>
                                         </center>
@@ -164,7 +208,7 @@ const Queue = (props) => {
 const style = {
     content: {
         margin: 'auto',
-        width: '60%',
+        width: '30%',
         height: '250px',
 
 
@@ -180,26 +224,7 @@ const customStyles = {
     }
 };
 //dropdown department 
-const options = [
-    { key: '1', text: 'Angular', value: 'angular' },
-    { key: '2', text: 'CSS', value: 'css' },
-    { key: '3', text: 'Graphic Design', value: 'design' },
-    { key: '4', text: 'Ember', value: 'ember' },
-    { key: '5', text: 'HTML', value: 'html' },
-    { key: '6', text: 'Information Architecture', value: 'ia' },
-    { key: '7', text: 'Javascript', value: 'javascript' },
-    { key: '8', text: 'Mechanical Engineering', value: 'mech' },
-    { key: '9', text: 'Meteor', value: 'meteor' },
-    { key: '10', text: 'NodeJS', value: 'node' },
-    { key: '11', text: 'Plumbing', value: 'plumbing' },
-    { key: '12', text: 'Python', value: 'python' },
-    { key: '13', text: 'Rails', value: 'rails' },
-    { key: '14', text: 'React', value: 'react' },
-    { key: '15', text: 'Kitchen Repair', value: 'repair' },
-    { key: '16', text: 'Ruby', value: 'ruby' },
-    { key: '17', text: 'UI Design', value: 'ui' },
-    { key: '18', text: 'User Experience', value: 'ux' },
-]
+
 export default Queue
 
 
