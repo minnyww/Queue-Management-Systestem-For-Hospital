@@ -22,6 +22,7 @@ export default class Root extends Component{
                     <Route path="/Adminhome" component={Adminhome}/>
                     <Route path="/Home" component={Home}/>
                     <Route path="/Adminfilter" component={Adminfilter}/>
+                    <Route path="/Homeuser" component={Homeuser}/>
                 </Switch>
             
             

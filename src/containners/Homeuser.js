@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import logo1 from './../img/logo1.png';
 import './../css/home.css';
-import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 import { Card, Icon, Image, Button, Form, Segment, Header } from 'semantic-ui-react'
 import Login from './../components/login';
+import axios from './../lib/axios'
 class Homeuser extends Component {
+
+    state = {
+        HN : ''
+    }
+
+
+    componentWillMount = async () => {
+        this.setState({
+        //   HN: this.props.location.state.HN,
+        });
+    }
     render() {
         return (
 

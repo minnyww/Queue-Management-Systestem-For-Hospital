@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "moment": "^2.22.0",
     "moment-range": "^4.0.1",
+    "rc-datepicker": "^5.0.13",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-modal": "^3.3.2",
