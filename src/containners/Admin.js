@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './../css/Q.css';
 import Login from './../components/login';
-import { Card, Icon, Image, Button, Form, Segment, Header, Grid } from 'semantic-ui-react'
+import { Card, Icon, Image, Button, Form, Segment, Header, Grid,Message,Label } from 'semantic-ui-react'
 import Headerbar from './../components/headerbar';
 import logo1 from './../img/logo1.png';
 import axios from './../lib/axios'
@@ -10,10 +10,11 @@ class Admin extends Component {
     state = {
         Username: '',
         Password: '',
+        HN:'',
         //validate
         errorUsername: { status: false, message: '' },
         errorPassword: { status: false, message: '' },
-        HN:''
+        
 
     }
 
@@ -35,21 +36,22 @@ class Admin extends Component {
             })
             console.log(data.data)
             if (data.data.length === 0) {
-                console.log('ไม่มีในระบบ')
+                this.setState({ errorUsername: { status: true, message: '' }})
                 
             } else {
                 console.log(data.data[0])
                 this.props.history.push({
                     pathname: '/Adminhome',
                     state: { nurseId: data.data[0].empId,
-                             departmentId : data.data[0].departmentId }
+                             userType : data.data[0].type,
+                             departmentId : data.data[0].departmentId 
+                            }
                   })
             
             }
         }
     }
     render() {
-        console.log(this.state)
         return (
 
             <div>
@@ -81,10 +83,13 @@ class Admin extends Component {
                                     placeholder='Password'
                                     type="password"
                                     required
-                                    error={this.state.errorPassword.status}
+                                    
                                     value={this.state.Password}
                                     onChange={(e, { value }) => this.setState({ Password: value })} />
-                                
+
+                                <Message negative hidden={!this.state.errorUsername.status}>
+                                    Username or Password does not match
+                                </Message>
                                 <Button color='blue' type='submit' >Sign in</Button>
 
                             </Form>
