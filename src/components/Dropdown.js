@@ -56,6 +56,8 @@ const type = [
     text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
     value: "คัดกรองผู้ป่วย"
   },
-  { key: 3, text: "Appointment", value: "Appointment" }
+  { key: 3, 
+    text:  <Link to={"/Appointment"}>Appointment</Link>, 
+    value: "Appointment" }
 ];
 export default DropdownQueue;

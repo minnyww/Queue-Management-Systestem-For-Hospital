@@ -174,8 +174,7 @@ class Adminhome extends Component {
     this.setState({
       doctorId: value,
       roomId: findRoom[0],
-      currentQueue:
-      currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
+      currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
     });
     this.getLabQueue(findRoom[0]);
   };
@@ -279,12 +278,15 @@ class Adminhome extends Component {
     } else {
       console.log("ซ้ำ");
     }
+
+    
   };
 
   showPatient = () => {
     let tmp = "";
     if (this.state.userType === 1) {
       const data = this.state.queues;
+      if(data.length !== 0){
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map(queue => (
@@ -332,41 +334,13 @@ class Adminhome extends Component {
               </Modal>
             </List.Item>
           </List>
-          // <Segment>
-          //   Queue : {queue.queueId}
-          //   <Label
-          //     circular
-          //     attached="top right"
-          //     color="red"
-          //     onClick={() => this.setField("modalOpen", true)}
-          //   >
-          //     !
-          //   </Label>
-          //   <Modal
-          //     isOpen={this.state.modalOpen}
-          //     onRequestClose={() => this.setField("modalOpen", false)}
-          //     isClose={() => this.setField("modalOpen", false)}
-          //     style={customStyles}
-          //   >
-          //     Message is here...
-          //   </Modal>
-          //   <br />
-          //   Name : {queue.firstName} {queue.lastName}
-          //   <br />
-          //   Room : {queue.roomId}
-          //   <br />
-          //   HN : {queue.HN}
-          //   {/* เวลา : {queue.timeStart + queue.avgtime * 60000} */}
-          //   <Label attached="bottom right" color="blue">
-          //     <Icon name="time" />
-          //     {queue.queueId * queue.avgtime} Min
-          //   </Label>
-          // </Segment>
         ));
+      }else{
+        tmp = <p> ไม่มีคิว </p>
+      }
     } else if (this.state.userType === 2) {
-      console.log(this.state.listLabQueue);
       const data = this.state.listLabQueue;
-      console.log(data);
+      if(data.length !== 0){
       tmp = data.map(queue => (
         <List
           divided
@@ -418,39 +392,12 @@ class Adminhome extends Component {
             </Modal>
           </List.Item>
         </List>
-        // <Segment>
-        //   Queue : {queue.queueId}
-        //   <Label
-        //     circular
-        //     attached="top right"
-        //     color="red"
-        //     onClick={() => this.setField("modalOpen", true)}
-        //   >
-        //     !
-        //   </Label>
-        //   <Modal
-        //     isOpen={this.state.modalOpen}
-        //     onRequestClose={() => this.setField("modalOpen", false)}
-        //     isClose={() => this.setField("modalOpen", false)}
-        //     style={customStyles}
-        //   >
-        //     Message is here...
-        //   </Modal>
-        //   <br />
-        //   Name Lab : {queue.firstName} {queue.lastName}
-        //   <br />
-        //   Room : {queue.roomId}
-        //   <br />
-        //   HN : {queue.HN}
-        //   <Label attached="bottom right" color="blue">
-        //     <Icon name="time" />
-        //     {queue.queueId * queue.avgtime} Min
-        //   </Label>
-        // </Segment>
       ));
+    }else{
+      tmp = <p> ไม่มีคิว </p>
     }
-
-    return tmp;
+  }
+  return tmp;
   };
 
   validateHN = async () => {

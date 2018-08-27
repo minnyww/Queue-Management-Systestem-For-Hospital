@@ -16,26 +16,30 @@ import {
   Statistic
 } from "semantic-ui-react";
 
-const profile = props => {
-  const { setField, showIsModal } = props;
 
+
+
+const profile = props => {
+  
+  
+const { setField, showIsModal } = props;
+  console.log(props.queueData)
   return (
     <div>
       <center>
         <Card style={{ height: "30%" }}>
-          <Image src={nine} size="big" style={{ height: "250px" }} />
           <Card.Content>
-            <Card.Header>Eric cantona</Card.Header>
+            {/* <Card.Header></Card.Header> */}
             <Card.Meta>
-              <span className="date">HN : 12345/61</span>
+              {props.getPatientData()}
             </Card.Meta>
             <Card.Description>
               <Button
                 color="blue"
                 onClick={() => setField("showIsModal", true)}
               >
-                {" "}
-                ดูบัตรนัด{" "}
+                ดูบัตรนัด
+                
               </Button>
               <Modal isOpen={props.showIsModal} style={style}>
                 <i
@@ -79,7 +83,7 @@ const profile = props => {
         </Card>
         <Header size="medium">คิวของท่าน</Header>
         <Statistic size="huge">
-          <Statistic.Value>7</Statistic.Value>
+          <Statistic.Value>{props.queueData.queueId}</Statistic.Value>
         </Statistic>
       </center>
     </div>

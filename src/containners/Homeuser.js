@@ -7,16 +7,7 @@ import Login from './../components/login';
 import axios from './../lib/axios'
 class Homeuser extends Component {
 
-    state = {
-        HN : ''
-    }
-
-
-    componentWillMount = async () => {
-        this.setState({
-        //   HN: this.props.location.state.HN,
-        });
-    }
+    
     render() {
         return (
 

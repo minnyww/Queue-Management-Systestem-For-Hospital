@@ -5,6 +5,7 @@ import Admin from './containners/Admin';
 import Adminhome from './containners/Adminhome';
 import Adminfilter from './containners/Adminfilter';
 import Home from './containners/Home';
+import Appointment from './containners/Appointment'
 import {
     BrowserRouter as Router,
     Route,
@@ -23,6 +24,9 @@ export default class Root extends Component{
                     <Route path="/Home" component={Home}/>
                     <Route path="/Adminfilter" component={Adminfilter}/>
                     <Route path="/Homeuser" component={Homeuser}/>
+                    <Route path="/Homeuser" component={Homeuser}/>
+                    <Route path="/Appointment" component={Appointment}/>
+                    
                 </Switch>
             
             

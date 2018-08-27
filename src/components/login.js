@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import './../css/Q.css';
 import { Card, Icon, Image, Button, Form, Segment, Header, Grid,Message,Label } from 'semantic-ui-react'
 import axios from './../lib/axios'
-
+import { Messages, Permission, Util, Push } from  'push.js';
 class Login extends Component {
   state = {
       HN: '',
@@ -13,14 +14,12 @@ class Login extends Component {
       errorPhoneNumber: { status: false, message: '' }
   }
   submit = async () => {
+      // Push.create('Hello World!')
       var HN = this.state.HN
       var phoneNumber = this.state.phoneNumber
       var check = false;
     
-    //validate pattern
-    //Check HN
-    //เลขหลัง hn ไม่เกิน 10 
-    if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+      if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
       this.setState({ errorHN: { status: false, message: '' } })
       check = true
     } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
@@ -48,26 +47,29 @@ class Login extends Component {
 
       } else {
         console.log(data.data[0])
-                this.context.history.push({
-                      pathname: '/Homeuser',
+        console.log('aaaaaa:', this.props)
+        this.props.history.push({
+                      pathname: '/Home',
                       state: { HN: data.data[0].HN,
                                phoneNumber: data.data[0].phonenumber
                       }
                 })
+        
       }
     }
 
-
+    
   }
+  
   render() {
     console.log(this.state)
     return (
       <div>
         <center>
-
+          
           <Grid.Column style={{ maxWidth: '450px' }}>
                         <Segment color='blue'>
-                            <Form onSubmit={this.submit}>
+                            <Form onSubmit={this.submit.bind(this)}>
                                 <Form.Input fluid label='HN'
                                     name="HN"
                                     placeholder='HN'
@@ -102,4 +104,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default withRouter(Login)

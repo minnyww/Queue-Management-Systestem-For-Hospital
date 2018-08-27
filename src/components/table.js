@@ -3,11 +3,15 @@ import './../css/Q.css'
 import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 'semantic-ui-react'
 
 
-    const tablepatient = (props) => {
+    const tablepatient = props => {
+      console.log('props',props)
     return (
 
       <div>
         <center>
+          {/* {props.getQueueData()} */}
+          {/* {props.getQueueDataTest()} */}
+
           <Grid columns={2} divided style={{ width:'100%' }} celled='internally'>
           
             <Grid.Row >
@@ -26,7 +30,7 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 คิวปัจจุบัน
               </Grid.Column>
               <Grid.Column>
-                3
+                {props.queueData.currentQueue}
               </Grid.Column>
               
             </Grid.Row>
@@ -35,7 +39,8 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 แพทย์
               </Grid.Column>
               <Grid.Column>
-                นายแพทย์ สมศรี
+                {props.queueData.firstname} {props.queueData.lastname}
+                
               </Grid.Column>
               
             </Grid.Row>
@@ -44,7 +49,7 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 แผนก
               </Grid.Column>
               <Grid.Column>
-                กุมารเวช
+                {props.queueData.statusId ===2 ? "lab" : props.queueData.department}
               </Grid.Column>
               
             </Grid.Row>
@@ -53,7 +58,7 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 ห้อง
               </Grid.Column>
               <Grid.Column>
-              A01
+              {props.queueData.statusId ===2 ? "lab" : props.queueData.roomId}
               </Grid.Column>
               
             </Grid.Row>
@@ -62,7 +67,7 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 ระยะเวลารอ
               </Grid.Column>
               <Grid.Column>
-                20 นาที
+                {props.queueData.avgtime}
               </Grid.Column>
               
             </Grid.Row>
@@ -71,12 +76,12 @@ import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 's
                 สถานะ
               </Grid.Column>
               <Grid.Column>
-               รอตรวจ
+               {props.queueData.description}
               </Grid.Column>
               
             </Grid.Row>
            
-          </Grid>
+           </Grid>
         </center>
         </div >
 
