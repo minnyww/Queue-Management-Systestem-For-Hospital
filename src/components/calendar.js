@@ -2,6 +2,8 @@ import React from "react";
 import { Dropdown, Menu } from "semantic-ui-react";
 import BigCalendar from "react-big-calendar";
 import moment from "moment";
+import './../css/Q.css';
+
 
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 
@@ -25,6 +27,7 @@ const BigCalendarView = props => (
           marginTop: "2%"
         }}
       />
+      
     </center>
   </div>
 );

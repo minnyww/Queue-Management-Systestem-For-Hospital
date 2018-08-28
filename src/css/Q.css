@@ -1,41 +1,41 @@
 /* ของ Queue.js */
-#box{
-    overflow-y: scroll; 
-    height: 230px; 
-    background-color: white;
-    
-    
-    
+#box {
+  overflow-y: scroll;
+  height: 230px;
+  background-color: white;
 }
-#boxshow{
-    height: 78%;
-   
+#boxshow {
+  height: 78%;
 }
 /* ของ Labwait.js */
-#boxLab{
-    overflow-y: scroll;
-    height: 230px; 
-    background-color: white;
+#boxLab {
+  overflow-y: scroll;
+  height: 230px;
+  background-color: white;
 }
 
-#box2{
-    height: 350px; 
-    width: 900px;
-    margin-Left: 40px;
-    margin-top: 1%;
+#box2 {
+  height: 350px;
+  width: 900px;
+  margin-left: 40px;
+  margin-top: 1%;
 }
 
-#boxAdd{
-    margin-Left: 120px;
-    width: 90px;
+#boxAdd {
+  margin-left: 120px;
+  width: 90px;
 }
-.ui.segment#display{
-    background-Color:white ;
-
+.ui.segment#display {
+  background-color: white;
 }
-.ui.segment#headbar{
-    background-color: #2185d0;
+.ui.segment#headbar {
+  background-color: #2185d0;
 }
 
-
-
+span.rbc-btn-group {
+  background-color: white;
+}
+.react-datepicker-component {
+  width: 50%;
+  margin-top: 2%;
+}
