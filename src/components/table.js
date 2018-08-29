@@ -3,15 +3,16 @@ import './../css/Q.css'
 import { Card, Icon, Image, Button, Form, Segment, Header, Table, Grid } from 'semantic-ui-react'
 
 
-    const tablepatient = props => {
+const tablepatient = props => {
       console.log('props',props)
     return (
-
+      
       <div>
+      
         <center>
           {/* {props.getQueueData()} */}
           {/* {props.getQueueDataTest()} */}
-
+        
           <Grid columns={2} divided style={{ width:'100%' }} celled='internally'>
           
             <Grid.Row >

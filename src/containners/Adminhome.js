@@ -5,16 +5,7 @@ import "./../css/Q.css";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
 import * as moment from "moment";
-import {
-  Segment,
-  Label,
-  Icon,
-  Message,
-  Header,
-  Image,
-  List,
-  Button
-} from "semantic-ui-react";
+import { Segment, Icon, Header, List } from "semantic-ui-react";
 import Modal from "react-modal";
 
 class Adminhome extends Component {
@@ -112,13 +103,13 @@ class Adminhome extends Component {
       "dec"
     );
     var day = new Array(7);
-      day[0] = "sun";
-      day[1] = "mon";
-      day[2] = "tue";
-      day[3] = "wed";
-      day[4] = "thu";
-      day[5] = "fri";
-      day[6] = "sat";
+    day[0] = "sun";
+    day[1] = "mon";
+    day[2] = "tue";
+    day[3] = "wed";
+    day[4] = "thu";
+    day[5] = "fri";
+    day[6] = "sat";
 
     var curr_date = this.state.Date.getDay();
     var curr_month = this.state.Date.getMonth();
@@ -134,7 +125,7 @@ class Adminhome extends Component {
 
     var datasLab = await axios.get(`/getLabQueue/${doctors.data[0].roomId}`);
     var dataLabQueue = await axios.get(`/getListLabQueue`);
-    
+
     this.setState({
       doctorList: doctors.data,
       departments: departmentsOption,
@@ -166,15 +157,16 @@ class Adminhome extends Component {
   };
 
   chooseDoctor = async value => {
-      const findRoom = this.state.doctorList
-        .filter(doctor => doctor.doctorId === value)
-        .map(doctor => doctor.roomId);
+    const findRoom = this.state.doctorList
+      .filter(doctor => doctor.doctorId === value)
+      .map(doctor => doctor.roomId);
 
     const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${value}`);
     this.setState({
       doctorId: value,
       roomId: findRoom[0],
-      currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
+      currentQueue:
+        currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
     });
     this.getLabQueue(findRoom[0]);
   };
@@ -182,7 +174,13 @@ class Adminhome extends Component {
   dropdownDoctors = doctors => {
     const roomAndDoctorOption = doctors.data.map(roomDoctor => ({
       key: roomDoctor.doctorId,
-      text: roomDoctor.firstname + " " + roomDoctor.lastname + " (ห้อง " + roomDoctor.roomId + " ) ",
+      text:
+        roomDoctor.firstname +
+        " " +
+        roomDoctor.lastname +
+        " (ห้อง " +
+        roomDoctor.roomId +
+        " ) ",
       value: roomDoctor.doctorId
     }));
     return roomAndDoctorOption;
@@ -191,7 +189,13 @@ class Adminhome extends Component {
   dropdownRooms = doctors => {
     const dropdownAndRooms = doctors.data.map(roomDoctor => ({
       key: roomDoctor.doctorId,
-      text:roomDoctor.firstname + " " + roomDoctor.lastname + " (ห้อง " + roomDoctor.roomId + " ) ",
+      text:
+        roomDoctor.firstname +
+        " " +
+        roomDoctor.lastname +
+        " (ห้อง " +
+        roomDoctor.roomId +
+        " ) ",
       value: roomDoctor.doctorId + "/" + roomDoctor.roomId
     }));
     return dropdownAndRooms;
@@ -214,7 +218,9 @@ class Adminhome extends Component {
 
   //Add เข้าคิว
   addQueue = async e => {
-    const min = this.state.queues.filter(queue => { queue.HN === this.state.HN; });
+    const min = this.state.queues.filter(queue => {
+      queue.HN === this.state.HN;
+    });
     if (min.length === 0) {
       var month = new Array(
         "jan",
@@ -231,23 +237,25 @@ class Adminhome extends Component {
         "dec"
       );
       var day = new Array(7);
-        day[0] = "sun";
-        day[1] = "mon";
-        day[2] = "tue";
-        day[3] = "wed";
-        day[4] = "thu";
-        day[5] = "fri";
-        day[6] = "sat";
+      day[0] = "sun";
+      day[1] = "mon";
+      day[2] = "tue";
+      day[3] = "wed";
+      day[4] = "thu";
+      day[5] = "fri";
+      day[6] = "sat";
 
       var curr_date = this.state.Date.getDay();
       var curr_month = this.state.Date.getMonth();
       var curr_year = this.state.Date.getFullYear();
-      
-      var checkHNDepartments = await axios.get( `/checkHNatDepartment/${this.state.departmentId}`);
+
+      var checkHNDepartments = await axios.get(
+        `/checkHNatDepartment/${this.state.departmentId}`
+      );
       const checks = checkHNDepartments.data.filter(
         check => check.HN === this.state.HN
       );
-      
+
       if (checks.length === 0) {
         var time = moment().toString();
         await axios.post("/addPatientQ", {
@@ -278,18 +286,78 @@ class Adminhome extends Component {
     } else {
       console.log("ซ้ำ");
     }
-
-    
   };
 
   showPatient = () => {
     let tmp = "";
     if (this.state.userType === 1) {
       const data = this.state.queues;
-      if(data.length !== 0){
-      tmp = data
-        .filter(queue => queue.roomId === this.state.roomId)
-        .map(queue => (
+      if (data.length !== 0) {
+        tmp = data
+          .filter(queue => queue.roomId === this.state.roomId)
+          .map(queue => (
+            <List
+              divided
+              horizontal
+              style={{
+                backgroundColor: "white",
+                width: "100%",
+                borderBottom: "1px solid #E0E0E0",
+                padding: "5px"
+              }}
+            >
+              <List.Item style={{ paddingRight: "7%" }}>
+                <List.Header
+                  style={{
+                    fontSize: "36px",
+                    color: "teal",
+                    paddingLeft: "40%"
+                  }}
+                >
+                  {queue.queueId}
+                </List.Header>
+              </List.Item>
+              <List.Item>
+                <List.Header style={{ fontSize: "16px", marginTop: "3%" }}>
+                  Name : {queue.firstName} {queue.lastName}
+                </List.Header>
+                <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+                  HN: {queue.HN}
+                </List.Content>
+                <List.Content floated="left">
+                  <Icon name="time" size="medium" style={{ marginTop: "3%" }} />
+                  {queue.queueId * queue.avgtime} Min
+                </List.Content>
+                <List.Content
+                  floated="right"
+                  onClick={() => this.setField("modalOpen", true)}
+                >
+                  <Icon
+                    name="exclamation circle"
+                    size="medium"
+                    color="red"
+                    style={{ marginTop: "3%" }}
+                  />
+                  Message
+                </List.Content>
+                <Modal
+                  isOpen={this.state.modalOpen}
+                  onRequestClose={() => this.setField("modalOpen", false)}
+                  isClose={() => this.setField("modalOpen", false)}
+                  style={customStyles}
+                >
+                  {queue.forward}
+                </Modal>
+              </List.Item>
+            </List>
+          ));
+      } else {
+        tmp = <p> ไม่มีคิว </p>;
+      }
+    } else if (this.state.userType === 2) {
+      const data = this.state.listLabQueue;
+      if (data.length !== 0) {
+        tmp = data.map(queue => (
           <List
             divided
             horizontal
@@ -298,14 +366,17 @@ class Adminhome extends Component {
               width: "100%",
               borderBottom: "1px solid #E0E0E0",
               padding: "5px"
-            }}>
-            <List.Item style={{ paddingRight: "7%" }}>
-              <List.Header style={{ fontSize: "36px", color: "teal", paddingLeft: "40%" }} >
+            }}
+          >
+            <List.Item>
+              <List.Header
+                style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}
+              >
                 {queue.queueId}
               </List.Header>
             </List.Item>
             <List.Item>
-              <List.Header style={{ fontSize: "16px", marginTop: "3%" }}>
+              <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
                 Name : {queue.firstName} {queue.lastName}
               </List.Header>
               <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
@@ -317,87 +388,32 @@ class Adminhome extends Component {
               </List.Content>
               <List.Content
                 floated="right"
-                onClick={() => this.setField("modalOpen", true)}>
-              <Icon
+                onClick={() => this.setField("modalOpen", true)}
+              >
+                <Icon
                   name="exclamation circle"
                   size="medium"
                   color="red"
-                  style={{ marginTop: "3%" }}/>
-                  Message
+                  style={{ marginTop: "3%" }}
+                />
+                Message
               </List.Content>
               <Modal
                 isOpen={this.state.modalOpen}
                 onRequestClose={() => this.setField("modalOpen", false)}
                 isClose={() => this.setField("modalOpen", false)}
-                style={customStyles} >
-                {queue.forward}
+                style={customStyles}
+              >
+                {queue.Forward}
               </Modal>
             </List.Item>
           </List>
         ));
-      }else{
-        tmp = <p> ไม่มีคิว </p>
+      } else {
+        tmp = <p> ไม่มีคิว </p>;
       }
-    } else if (this.state.userType === 2) {
-      const data = this.state.listLabQueue;
-      if(data.length !== 0){
-      tmp = data.map(queue => (
-        <List
-          divided
-          horizontal
-          style={{
-            backgroundColor: "white",
-            width: "100%",
-            borderBottom: "1px solid #E0E0E0",
-            padding: "5px"
-          }}
-        >
-          <List.Item>
-            <List.Header
-              style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}
-            >
-              {queue.queueId}
-            </List.Header>
-          </List.Item>
-          <List.Item>
-            <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-              Name : {queue.firstName} {queue.lastName}
-            </List.Header>
-            <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-              HN: {queue.HN}
-            </List.Content>
-            <List.Content floated="left">
-              <Icon name="time" size="medium" style={{ marginTop: "3%" }} />
-              {queue.queueId * queue.avgtime} Min
-            </List.Content>
-            <List.Content
-              floated="right"
-              onClick={() => this.setField("modalOpen", true)}
-            >
-              <Icon
-                name="exclamation circle"
-                size="medium"
-                color="red"
-                style={{ marginTop: "3%" }}
-              />
-              Message
-            </List.Content>
-            <Modal
-              isOpen={this.state.modalOpen}
-              onRequestClose={() => this.setField("modalOpen", false)}
-              isClose={() => this.setField("modalOpen", false)}
-              style={customStyles}
-            >
-              {queue.Forward}
-            </Modal>
-          </List.Item>
-        </List>
-      ));
-    }else{
-      tmp = <p> ไม่มีคิว </p>
     }
-  }
-  return tmp;
+    return tmp;
   };
 
   validateHN = async () => {
@@ -514,7 +530,7 @@ class Adminhome extends Component {
   };
   getPatientName = () => {
     const data = this.state.currentQueue;
-    console.log(data)
+    console.log(data);
     if (this.state.userType === 1) {
       return (
         <Segment id="boxshow">
@@ -536,7 +552,7 @@ class Adminhome extends Component {
           </Header>
         </Segment>
       );
-    }else if(this.state.userType === 2){
+    } else if (this.state.userType === 2) {
       return (
         <Segment id="boxshow">
           <Header as="h2" textAlign="center">
@@ -553,7 +569,7 @@ class Adminhome extends Component {
           </Header>
           <Header as="h3" textAlign="center">
             <Icon name="edit outline" />
-             Message : {data.Forward}
+            Message : {data.Forward}
           </Header>
         </Segment>
       );
@@ -594,7 +610,7 @@ class Adminhome extends Component {
     }
     console.log(data);
     await axios.post("/updateForwardQueue", data);
-    
+
     this.setState({
       currentQueue: {},
       showModal: false,

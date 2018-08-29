@@ -39,49 +39,34 @@ class Home extends Component {
     var dataQueue = await axios.post(`/getQueueData`,{
       HN : this.state.HN
     })
-    let tmp = {}
-    tmp = dataQueue.data[0]
 
-    if(tmp){
-      var currentQueue = await axios.get(`/getCurrentQueue/${tmp.roomId}`)
-      tmp.currentQueue = currentQueue.data[0].queueId
+    let tmp = {}
+    if(dataQueue.data.length !== 0){
+      tmp = dataQueue.data[0]
+  
+      console.log(tmp)
+      if(tmp){
+        var currentQueue = await axios.get(`/getCurrentQueue/${tmp.roomId}`)
+        tmp.currentQueue = 0;
+        if(currentQueue.data.length!==0){
+          tmp.currentQueue = currentQueue.data[0].queueId
+        }
+      }
+      console.log('dataQueue',tmp)
     }
-    console.log('dataQueue',tmp)
-    
     this.setState({
       patientData: dataPatient.data,
       queueData: tmp,
-      // currentQueue: currentQueue.data[0]
-      // HN: dataPatient.data[0].HN,
-      
-    // firstNameDoctor : this.state.queueData.firstname
     });
-    // console.log(datas)
-    // console.log(this.state.firstNameDoctor)
-    // console.log(this.state.queueData)
-    // console.log(this.state.patientData)
-    
-    
   };
   
-  // getQueueDataTest = () => {
-  //   const datas = this.state.queueData.filter(data => data.HN === this.state.HN)
-  //   if(datas){
-  //   this.setState ({
-  //     firstNameDoctor : datas.firstName
-  //   })
-  // }
-  //   console.log(this.state.firstNameDoctor)
-  // }
 
   getQueueData = () => {
     const datas = this.state.queueData;
     let tmp = "";
     console.log(datas)
     console.log(this.state.HN)
-    // tmp = datas.filter(data => data.HN === this.state.HN).map(data => (
-      
-    // ));
+   
     
     console.log(datas)
     return tmp;
@@ -127,7 +112,7 @@ class Home extends Component {
           queueData = { this.state.queueData}
 
         //method
-        getQueueData={this.getQueueData}
+          getQueueData={this.getQueueData}
 
         // getQueueDataTest={this.getQueueDataTest}
         />

@@ -19,6 +19,7 @@ const BigCalendarView = props => (
             end: new Date(2018, 0, 1, 14, 0) // 2.00 PM
           }
         ]}
+        
         date={new Date(2018, 0, 1)}
         style={{
           height: "70vh",
