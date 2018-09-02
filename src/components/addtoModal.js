@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
-import { Grid, Button, Dropdown, Menu, Icon, Dimmer, Header, Label, Item, Form, Input, TextArea, List, Table, Image, Message, Confirm, Card } from 'semantic-ui-react'
+import { Grid, Button, Form, List,} from 'semantic-ui-react'
 import swal from 'sweetalert';
 
 

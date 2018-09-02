@@ -1,24 +1,18 @@
 import React, { Component } from "react";
-import DropdownQueue from "./Dropdown";
-import Rail, { Segment, Container } from "semantic-ui-react";
+// import DropdownQueue from "./Dropdown";
+
 import {
   Grid,
   Button,
   Dropdown,
   Menu,
-  Icon,
   Header,
-  Label,
-  Item,
   Form,
-  Input,
   TextArea,
   List,
-  Table,
-  Image,
   Message,
   Radio,
-  Responsive
+  Segment
 } from "semantic-ui-react";
 import Modal from "react-modal";
 
@@ -35,9 +29,9 @@ const showCurrentQueue = props => {
         {props.getPatientName()}
       </Segment.Group>
     );
-  }else if(props.userType === 2 ){
+  } else if (props.userType === 2) {
     tmp = (
-      <Segment.Group style={{ width: "80%",marginTop:"-5%" }}>
+      <Segment.Group style={{ width: "80%", marginTop: "-5%" }}>
         <Segment inverted color="blue">
           <Header as="h1" textAlign="center">
             Current Queue

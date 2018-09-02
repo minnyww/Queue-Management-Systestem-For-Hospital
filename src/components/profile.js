@@ -1,45 +1,26 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import ReactDOM from "react-dom";
+// import { Link } from "react-router-dom";
+// import ReactDOM from "react-dom";
 import Modal from "react-modal";
 import "./../css/Q.css";
-import nine from "./../img/nine.jpg";
-import {
-  Card,
-  Icon,
-  Image,
-  Button,
-  Form,
-  Segment,
-  Header,
-  Table,
-  Statistic
-} from "semantic-ui-react";
-
-
-
+import { Card, Button, Header, Table, Statistic } from "semantic-ui-react";
 
 const profile = props => {
-  
-  
-const { setField, showIsModal } = props;
-  console.log(props.queueData)
+  const { setField } = props;
+  console.log(props.queueData);
   return (
     <div>
       <center>
         <Card style={{ height: "30%" }}>
           <Card.Content>
             {/* <Card.Header></Card.Header> */}
-            <Card.Meta>
-              {props.getPatientData()}
-            </Card.Meta>
+            <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
               <Button
                 color="blue"
                 onClick={() => setField("showIsModal", true)}
               >
                 ดูบัตรนัด
-                
               </Button>
               <Modal isOpen={props.showIsModal} style={style}>
                 <i

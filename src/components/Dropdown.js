@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Dropdown, Menu, Message } from "semantic-ui-react";
+import { Dropdown, Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 const DropdownQueue = props => {
@@ -50,9 +50,11 @@ const DropdownQueue = props => {
 };
 
 const type = [
-  { key: 1, 
-    text: "Queue", 
-    value: "Queue" },
+  {
+    key: 1,
+    text: "Queue",
+    value: "Queue"
+  },
   {
     key: 2,
     text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,

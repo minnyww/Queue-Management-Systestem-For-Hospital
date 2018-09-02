@@ -7,79 +7,67 @@ import "./../css/App.css";
 import Headerbaruser from "./../components/headerbaruser";
 import Modal from "react-modal";
 import axios from "./../lib/axios";
-import {
-  Segment,
-  Label,
-  Icon,
-  Message,
-  Header,
-  Image,
-  List,
-  Button,
-  Card,Grid
-} from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 class Home extends Component {
   state = {
     showIsModal: false,
     HN: this.props.location.state.HN,
     patientData: [],
     queueData: {},
-    currentQueue:0,
+    currentQueue: 0
 
     // firstNamePatient: " ",
     // lastNamePatient: " ",
-    
+
     // firstNameDoctor: " "
   };
 
   componentWillMount = async () => {
-    console.log("Will mount")
+    console.log("Will mount");
     Modal.setAppElement("body");
     var dataPatient = await axios.get(`/getPatient`);
-    var dataQueue = await axios.post(`/getQueueData`,{
-      HN : this.state.HN
-    })
+    var dataQueue = await axios.post(`/getQueueData`, {
+      HN: this.state.HN
+    });
 
-    let tmp = {}
-    if(dataQueue.data.length !== 0){
-      tmp = dataQueue.data[0]
-  
-      console.log(tmp)
-      if(tmp){
-        var currentQueue = await axios.get(`/getCurrentQueue/${tmp.roomId}`)
+    let tmp = {};
+    if (dataQueue.data.length !== 0) {
+      tmp = dataQueue.data[0];
+
+      console.log(tmp);
+      if (tmp) {
+        var currentQueue = await axios.get(`/getCurrentQueue/${tmp.roomId}`);
         tmp.currentQueue = 0;
-        if(currentQueue.data.length!==0){
-          tmp.currentQueue = currentQueue.data[0].queueId
+        if (currentQueue.data.length !== 0) {
+          tmp.currentQueue = currentQueue.data[0].queueId;
         }
       }
-      console.log('dataQueue',tmp)
+      console.log("dataQueue", tmp);
     }
     this.setState({
       patientData: dataPatient.data,
-      queueData: tmp,
+      queueData: tmp
     });
   };
-  
 
   getQueueData = () => {
     const datas = this.state.queueData;
     let tmp = "";
-    console.log(datas)
-    console.log(this.state.HN)
-   
-    
-    console.log(datas)
+    console.log(datas);
+    console.log(this.state.HN);
+
+    console.log(datas);
     return tmp;
   };
 
   getPatientData = () => {
     const datas = this.state.patientData;
     let tmp = "";
-    
+
     tmp = datas.filter(data => data.HN === this.state.HN).map(data => (
       <Header>
         {data.firstName} {data.lastName} <br />
-        <span >HN : {data.HN}</span>
+        <span>HN : {data.HN}</span>
       </Header>
     ));
     console.log(datas);
@@ -101,20 +89,19 @@ class Home extends Component {
           showIsModal={this.state.showIsModal}
           firstNamePatient={this.state.firstNamePatient}
           lastNamePatient={this.state.lastNamePatient}
-          queueData = { this.state.queueData}
+          queueData={this.state.queueData}
           //method
           setField={this.setField}
           getPatientData={this.getPatientData}
         />
         <br />
-        <Tablepatient 
-        //state
-          queueData = { this.state.queueData}
-
-        //method
+        <Tablepatient
+          //state
+          queueData={this.state.queueData}
+          //method
           getQueueData={this.getQueueData}
 
-        // getQueueDataTest={this.getQueueDataTest}
+          // getQueueDataTest={this.getQueueDataTest}
         />
       </div>
     );
