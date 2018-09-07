@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 
-
-import { Grid, Button, Form,  Label, Dropdown } from "semantic-ui-react";
+import { Grid, Button, Form, Label, Dropdown } from "semantic-ui-react";
 const formAddAppointment = props => {
-  console.log("props", props);
   return (
     <div>
       <center>
@@ -20,19 +18,19 @@ const formAddAppointment = props => {
             type="date"
             fluid
             value={props.Date}
-            onChange={(e, { value }) => props.setField( "Date", value )}
+            onChange={(e, { value }) => props.setField("Date", value)}
           />
           <Form.Input
             placeholder="HH:MM"
             fluid
             value={props.startTime}
-            onChange={(e, { value }) => props.setField( "startTime", value )}
+            onChange={(e, { value }) => props.setField("startTime", value)}
           />
           <Form.Input
             placeholder="HH:MM"
             fluid
             value={props.endTime}
-            onChange={(e, { value }) => props.setField( "endTime", value )}
+            onChange={(e, { value }) => props.setField("endTime", value)}
           />
         </Form>
 
@@ -42,7 +40,7 @@ const formAddAppointment = props => {
           simple
           item
           value={props.doctorId}
-          onChange={(e, { value }) => props.setField( "doctorId", value )}
+          onChange={(e, { value }) => props.setField("doctorId", value)}
         />
         <br />
         <Button

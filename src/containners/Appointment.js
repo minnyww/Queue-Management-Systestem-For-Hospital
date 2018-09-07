@@ -27,20 +27,21 @@ const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 class Appointment extends Component {
   state = {
     events: [
-      {
-        title: "Today",
-        start: new Date(new Date()),
-        end: new Date()
-      }
+      // {
+      //   id: 1,
+      //   title: "Today",
+      //   start: new Date(),
+      //   end: new Date()
+      // }
     ],
-    // date: new Date(),
+
     doctorId: 0,
     doctors: [{ key: 1, text: 1001, value: 1001 }],
-    currentDate: {
-      day: "",
-      month: "",
-      year: ""
-    },
+    // currentDate: {
+    //   day: "",
+    //   month: "",
+    //   year: ""
+    // },
     startTime: "",
     endTime: "",
     Date: new Date(),
@@ -50,6 +51,66 @@ class Appointment extends Component {
     super(props);
     this.moveEvent = this.moveEvent.bind(this);
   }
+
+  // componentWillMount = async () => {
+  //   var getAppointment = await axios.get(`/getAppointment`);
+  //   console.log(getAppointment.data[0].day)
+  //   var month = new Array(
+  //     "Jan",
+  //     "Feb",
+  //     "Mar",
+  //     "Apr",
+  //     "May",
+  //     "Jun",
+  //     "Jul",
+  //     "Aug",
+  //     "Sep",
+  //     "Oct",
+  //     "Nov",
+  //     "Dec"
+  //   );
+  //   var day = new Array(7);
+  //   day[0] = "Sun";
+  //   day[1] = "Mon";
+  //   day[2] = "Tue";
+  //   day[3] = "Wed";
+  //   day[4] = "Thu";
+  //   day[5] = "Fri";
+  //   day[6] = "Sat";
+
+  //   var curr_date = new Date(this.state.Date).getDay();
+  //   var curr_month = new Date(this.state.Date).getMonth();
+  //   var curr_year = new Date(this.state.Date).getFullYear();
+  //   const getDayDate = new Date(this.state.Date).getDate();
+  //   this.setState({
+  //     events: [
+  //       ...this.state.events,
+  //       {
+  //         start: new Date(
+  //           month[curr_month] +
+  //             " " +
+  //             getDayDate +
+  //             ", " +
+  //             curr_year +
+  //             " " +
+  //             this.checkTimeFormat(this.state.startTime)
+  //         ),
+  //         end: new Date(
+  //           month[curr_month] +
+  //             " " +
+  //             getDayDate +
+  //             ", " +
+  //             curr_year +
+  //             " " +
+  //             this.checkTimeFormat(this.state.endTime)
+  //         ),
+  //         title: "Hi"
+  //       }
+  //     ]
+  //   });
+
+  // }
+
   moveEvent({ event, start, end, isAllDay: droppedOnAllDaySlot }) {
     const { events } = this.state;
 
@@ -102,31 +163,32 @@ class Appointment extends Component {
 
   addAppoinment = async () => {
     var month = new Array(
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
     );
     var day = new Array(7);
-    day[0] = "sun";
-    day[1] = "mon";
-    day[2] = "tue";
-    day[3] = "wed";
-    day[4] = "thu";
-    day[5] = "fri";
-    day[6] = "sat";
+    day[0] = "Sun";
+    day[1] = "Mon";
+    day[2] = "Tue";
+    day[3] = "Wed";
+    day[4] = "Thu";
+    day[5] = "Fri";
+    day[6] = "Sat";
 
-    var curr_date = new Date(this.state.Date).getDate();
+    var curr_date = new Date(this.state.Date).getDay();
     var curr_month = new Date(this.state.Date).getMonth();
     var curr_year = new Date(this.state.Date).getFullYear();
+    const getDayDate = new Date(this.state.Date).getDate();
     await axios.post("/addAppointment", {
       date: new Date(this.state.Date).getDate(),
       day: day[curr_date],
@@ -137,16 +199,59 @@ class Appointment extends Component {
       doctorId: this.state.doctorId,
       HN: this.state.HN
     });
+
+    this.setState({
+      events: [
+        ...this.state.events,
+        {
+          start: new Date(
+            month[curr_month] +
+              " " +
+              getDayDate +
+              ", " +
+              curr_year +
+              " " +
+              this.checkTimeFormat(this.state.startTime)
+          ),
+          end: new Date(
+            month[curr_month] +
+              " " +
+              getDayDate +
+              ", " +
+              curr_year +
+              " " +
+              this.checkTimeFormat(this.state.endTime)
+          ),
+          title: "Hi"
+        }
+      ]
+    });
+
     console.log("เข้า DB");
   };
 
+  handleSelect = ({ start, end }) => {
+    const title = window.prompt("New Event name");
+    if (title)
+      this.setState({
+        events: [
+          ...this.state.events,
+          {
+            start,
+            end,
+            title
+          }
+        ]
+      });
+  };
+
   render() {
-    console.log(this.state.events);
-    console.log("HN" + this.state.HN);
-    console.log("startTime" + this.state.startTime);
-    console.log("endTime" + this.state.endTime);
-    console.log("Date" + this.state.Date);
-    console.log("doctorId" + this.state.doctorId);
+    console.log("Events " + this.state.events);
+    console.log("HN " + this.state.HN);
+    console.log("startTime " + this.state.startTime);
+    console.log("endTime " + this.state.endTime);
+    console.log("Date " + this.state.Date);
+    console.log("doctorId " + this.state.doctorId);
 
     return (
       <div>
@@ -178,14 +283,14 @@ class Appointment extends Component {
               marginTop: "2%"
             }}
             selectable
-            localizer={this.props.localizer}
             events={this.state.events}
             onEventDrop={this.moveEvent}
             resizable
             onEventResize={this.resizeEvent}
-            onSelectSlot={this.newEvent}
             defaultView={BigCalendar.Views.MONTH}
             defaultDate={this.state.date}
+            onSelectEvent={event => alert(event.title)}
+            onSelectSlot={this.handleSelect}
           />
         </center>
       </div>

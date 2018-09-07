@@ -50,7 +50,7 @@ const listQueue = props => {
     tmp = (
       <Segment.Group id="boxLab">
         <Segment inverted color="teal">
-          <Header Header textAlign="center">
+          <Header textAlign="center">
             Lab Wait
           </Header>
         </Segment>
@@ -183,7 +183,7 @@ const Queue = props => {
             {goBack(props)}
 
             <Menu vertical>
-              <Dropdown text="Option" pointing="down" className="link item">
+              <Dropdown text="Option"  className="link item">
                 <Dropdown.Menu>
                   <Dropdown.Item>
                     <center>
@@ -207,6 +207,8 @@ const Queue = props => {
                           }}
                         />
                         <br />
+                      {/* <Menu compact style={{ marginLeft: "3%" }}>
+                        <Dropdown.Menu> */}
                         <Dropdown
                           disabled={
                             props.typeForward === "Department" ? false : true
@@ -239,7 +241,8 @@ const Queue = props => {
                             props.setField("forwardId", value);
                           }}
                         />
-
+                        {/* </Dropdown.Menu>
+                        </Menu> */}
                         <br />
 
                         <Radio
@@ -312,7 +315,7 @@ const Queue = props => {
 const style = {
   content: {
     margin: "auto",
-    width: "40%",
+    width: "75%",
     height: "500px"
   }
 };

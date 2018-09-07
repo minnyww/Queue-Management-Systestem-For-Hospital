@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { Dropdown, Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
+
+
+
 const DropdownQueue = props => {
+  
+  
   return (
     <div>
       <Menu compact style={{ marginLeft: "3%" }}>
@@ -43,7 +48,7 @@ const DropdownQueue = props => {
               props.chooseDoctor(value);
             }}
           />
-        </Dropdown.Menu>
+          </Dropdown.Menu>
       </Menu>
     </div>
   );

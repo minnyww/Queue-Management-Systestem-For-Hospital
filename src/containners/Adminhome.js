@@ -138,11 +138,6 @@ class Adminhome extends Component {
       labQueues: datasLab.data,
       roomId: doctors.data[0].roomId,
       doctorId: doctorsOption[0].value,
-      // roomsWithDoctos:roomDoctorsOption,
-      // rooms: roomsOption,
-      // doctorRooms : doctorsRoomOption,
-      // roomAndDoctors:roomAndDoctorOption,
-
       currentDate: {
         day: day[curr_date],
         month: month[curr_month],
@@ -221,6 +216,7 @@ class Adminhome extends Component {
     const min = this.state.queues.filter(queue => {
       queue.HN === this.state.HN;
     });
+    
     if (min.length === 0) {
       var month = new Array(
         "jan",
@@ -292,6 +288,7 @@ class Adminhome extends Component {
     let tmp = "";
     if (this.state.userType === 1) {
       const data = this.state.queues;
+      
       if (data.length !== 0) {
         tmp = data
           .filter(queue => queue.roomId === this.state.roomId)
@@ -325,8 +322,8 @@ class Adminhome extends Component {
                   HN: {queue.HN}
                 </List.Content>
                 <List.Content floated="left">
-                  <Icon name="time" size="medium" style={{ marginTop: "3%" }} />
-                  {queue.queueId * queue.avgtime} Min
+                  <Icon name="time" size="large" style={{ marginTop: "3%" }} />
+                  {queue.queueId * queue.avgtime} Min 
                 </List.Content>
                 <List.Content
                   floated="right"
@@ -334,7 +331,7 @@ class Adminhome extends Component {
                 >
                   <Icon
                     name="exclamation circle"
-                    size="medium"
+                    size="large"
                     color="red"
                     style={{ marginTop: "3%" }}
                   />
@@ -461,7 +458,13 @@ class Adminhome extends Component {
     console.log(this.state.labQueues);
   };
   //-----------
+
+  calCulateAvgTime = async () => {
+
+  }
+
   callPatient = async () => {
+    
     var data = {};
     var tmp = null;
     if (this.state.userType === 1) {
@@ -530,7 +533,6 @@ class Adminhome extends Component {
   };
   getPatientName = () => {
     const data = this.state.currentQueue;
-    console.log(data);
     if (this.state.userType === 1) {
       return (
         <Segment id="boxshow">
@@ -675,20 +677,17 @@ class Adminhome extends Component {
             </List.Item>
           </List>
 
-          // <Segment>
-          //   Queue : {queue.queueId}
-          //   <Label circular color="orange" style={{ float: "Right" }} />
-          //   <br />
-          //   Name : {queue.firstName} {queue.lastName}
-          //   <br />
-          //   Department : {queue.department}
-          //   <br />
-          //   HN : {queue.HN}
-          // </Segment>
         ));
     }
     return tmp;
   };
+
+  handleAddition = (e, { value }) => {
+    this.setState({
+      allDepartment: [{ text: value, value }, ...this.state.allDepartment],
+    })
+  }
+
 
   render() {
     return (
@@ -704,6 +703,7 @@ class Adminhome extends Component {
           type={this.state.type}
           //Method
           chooseDoctor={this.chooseDoctor}
+          handleAdditio={this.handleAddition}
         />
         <br />
         <ListQueue

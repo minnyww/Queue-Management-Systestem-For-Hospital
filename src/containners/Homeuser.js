@@ -14,7 +14,7 @@ class Homeuser extends Component {
             <div>
                 <br />
                 <br />
-                <img src={logo1} class="ui small centered image" />
+                <img src={logo1} className="ui small centered image" />
                 <br />
                 <br />
                 <center>
