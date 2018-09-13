@@ -92,14 +92,6 @@ const Queue = props => {
             {props.showPatient()}
           </Segment.Group>
           {listQueue(props)}
-          {/* <Segment.Group id="boxLab">
-            <Segment inverted color="teal">
-              <Header Header textAlign="center">
-                Lab Wait
-              </Header>
-            </Segment>
-            {props.showPatientLabQueue()}
-          </Segment.Group> */}
 
           <center>
             <Button color="blue" onClick={() => setField("modalIsOpen", true)}>
@@ -160,14 +152,7 @@ const Queue = props => {
         <Grid.Column width={10} style={{ marginTop: "3%" }}>
           <center>
             {showCurrentQueue(props)}
-            {/* <Segment.Group style={{ width: "80%" }}>
-              <Segment inverted color="blue">
-                <Header as="h1" textAlign="center">
-                  คิวปัจจุบัน
-                </Header>
-              </Segment>
-              {props.getPatientName()}
-            </Segment.Group> */}
+
           </center>
           <center>
             <br />
@@ -183,7 +168,7 @@ const Queue = props => {
             {goBack(props)}
 
             <Menu vertical>
-              <Dropdown text="Option"  className="link item">
+              <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>
                   <Dropdown.Item>
                     <center>
@@ -197,7 +182,7 @@ const Queue = props => {
                         onRequestClose={() => setField("showModal", false)}
                         isClose={() => setField("showModal", false)}
                       >
-                        <Radio
+                        {/* <Radio
                           label="Select Department :"
                           name="radioGroup"
                           value="Department"
@@ -207,8 +192,7 @@ const Queue = props => {
                           }}
                         />
                         <br />
-                      {/* <Menu compact style={{ marginLeft: "3%" }}>
-                        <Dropdown.Menu> */}
+                        
                         <Dropdown
                           disabled={
                             props.typeForward === "Department" ? false : true
@@ -228,7 +212,7 @@ const Queue = props => {
                         <Dropdown
                           disabled={
                             props.forwardDepartmentId > 0 &&
-                            props.typeForward === "Department"
+                              props.typeForward === "Department"
                               ? false
                               : true
                           }
@@ -241,8 +225,7 @@ const Queue = props => {
                             props.setField("forwardId", value);
                           }}
                         />
-                        {/* </Dropdown.Menu>
-                        </Menu> */}
+                       
                         <br />
 
                         <Radio
@@ -269,7 +252,7 @@ const Queue = props => {
                         <Dropdown
                           disabled={
                             props.forwardDepartmentId > 0 &&
-                            props.typeForward === "Lab"
+                              props.typeForward === "Lab"
                               ? false
                               : true
                           }
@@ -291,7 +274,31 @@ const Queue = props => {
                           onChange={async (e, { value }) => {
                             props.setField("message", value);
                           }}
+                        /> */}
+                        <Radio
+                          label="Comeback here"
+                          name="comeBack"
+                          value="comeBack"
+                        // checked={props.typeForward === "Department"}
+                        // onChange={async (e, { value }) => {
+                        //   props.setField("typeForward", value);
+                        // }}
                         />
+                        <Radio
+                          label="Comeback here"
+                          name="comeBack"
+                          value="comeBack"
+
+                        />
+                        <Menu compact style={{ marginLeft: "3%" }}>
+                          <Dropdown.Menu>
+
+
+                          </Dropdown.Menu>
+                        </Menu>
+
+
+
                         <center>
                           {/* ทำ fucntion forward ในการอัพเดท */}
                           <Button color="blue" onClick={() => props.forward()}>

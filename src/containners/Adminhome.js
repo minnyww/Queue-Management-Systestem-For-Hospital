@@ -4,9 +4,14 @@ import ListQueue from "./../components/listQueue";
 import "./../css/Q.css";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
-import * as moment from "moment";
+
 import { Segment, Icon, Header, List } from "semantic-ui-react";
 import Modal from "react-modal";
+
+import { extendMoment } from 'moment-range';
+import * as Moment from "moment";
+const moment = extendMoment(Moment);
+ 
 
 class Adminhome extends Component {
   //check department add ข้ามแผนกไม่ได้ call ข้ามแผนกไม่ได้
@@ -58,7 +63,7 @@ class Adminhome extends Component {
       nurseId: this.props.location.state.nurseId,
       departmentId: this.props.location.state.departmentId,
       userType: this.props.location.state.userType
-    });
+    }); 
 
     var datas = await axios.get(`/getQueue`);
     // var datasLab = await axios.get(`/getLabQueue/${this.state.roomId}`);
@@ -256,7 +261,7 @@ class Adminhome extends Component {
         var time = moment().toString();
         await axios.post("/addPatientQ", {
           roomId: this.state.roomId,
-          date: this.state.Date,
+          // date: this.state.Date,
           day: day[curr_date],
           month: month[curr_month],
           year: curr_year,
@@ -288,7 +293,7 @@ class Adminhome extends Component {
     let tmp = "";
     if (this.state.userType === 1) {
       const data = this.state.queues;
-      
+      console.log(data)
       if (data.length !== 0) {
         tmp = data
           .filter(queue => queue.roomId === this.state.roomId)
@@ -323,7 +328,7 @@ class Adminhome extends Component {
                 </List.Content>
                 <List.Content floated="left">
                   <Icon name="time" size="large" style={{ marginTop: "3%" }} />
-                  {queue.queueId * queue.avgtime} Min 
+                  {queue.avgtime.toFixed(0)} Min 
                 </List.Content>
                 <List.Content
                   floated="right"
@@ -381,7 +386,7 @@ class Adminhome extends Component {
               </List.Content>
               <List.Content floated="left">
                 <Icon name="time" size="medium" style={{ marginTop: "3%" }} />
-                {queue.queueId * queue.avgtime} Min
+                {queue.avgtime.toFixed(0)} Min
               </List.Content>
               <List.Content
                 floated="right"
@@ -459,9 +464,7 @@ class Adminhome extends Component {
   };
   //-----------
 
-  calCulateAvgTime = async () => {
-
-  }
+  
 
   callPatient = async () => {
     
@@ -490,7 +493,8 @@ class Adminhome extends Component {
         //ในห้องนี้มีคิว
         data = {
           HN: tmp.HN,
-          previousHN: ""
+          previousHN: "",
+          Date : this.state.Date
         };
         check = true;
         console.log("ห้อง" + this.state.roomId + " /" + tmp.HN);
@@ -503,20 +507,26 @@ class Adminhome extends Component {
         console.log("ไม่มีคิว");
         data = {
           HN: "",
-          previousHN: this.state.currentQueue.HN
+          previousHN: this.state.currentQueue.HN,
+          Date : this.state.Date
         };
+        
       } else {
         //ในห้องนี้มีคิว
         check = true;
         console.log("มีคิว");
         data = {
           HN: tmp.HN,
-          previousHN: this.state.currentQueue.HN
+          previousHN: this.state.currentQueue.HN,
+          Date : this.state.Date
         };
+        
       }
     }
-
+    console.log(data)
+    this.updateAvgTime();
     await axios.post("/updateQueue", data);
+    
     console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
     this.setState({
       currentQueue: check === true ? tmp : {}
@@ -524,6 +534,9 @@ class Adminhome extends Component {
     this.getQueue();
     this.getListLabQueue();
   };
+  updateAvgTime = async () => {
+    await axios.get(`/updateAllPerDay`);
+  }
 
   getListLabQueue = async () => {
     const datas = await axios.get(`/getListLabQueue`);
@@ -576,6 +589,7 @@ class Adminhome extends Component {
         </Segment>
       );
     }
+    
   };
 
   forward = async () => {
