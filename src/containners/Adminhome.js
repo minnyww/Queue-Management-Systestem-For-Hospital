@@ -5,16 +5,16 @@ import "./../css/Q.css";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
 
-import { Segment, Icon, Header, List } from "semantic-ui-react";
+import { Segment, Icon, Header, List, Message, Dropdown, Menu } from "semantic-ui-react";
 import Modal from "react-modal";
 
 import { extendMoment } from 'moment-range';
 import * as Moment from "moment";
 const moment = extendMoment(Moment);
- 
+
 
 class Adminhome extends Component {
-  //check department add ข้ามแผนกไม่ได้ call ข้ามแผนกไม่ได้
+
   state = {
     showModal: false,
     modalIsOpen: false,
@@ -45,6 +45,7 @@ class Adminhome extends Component {
     forwardDepartmentId: 0,
     typeForward: "",
     message: "",
+    amountDepartment: 1,
 
     HN: "",
     namePatient: "",
@@ -55,7 +56,11 @@ class Adminhome extends Component {
     //Dropdown.js
     departments: [{ key: "", text: "", value: "" }],
     doctors: [{ key: "", text: "", value: "" }],
-    type: ""
+    type: "",
+
+    forwardDepartments: [{ type: '', departmentId: '', doctorId: '' }],
+    reState:''
+
   };
 
   componentWillMount = async () => {
@@ -63,10 +68,9 @@ class Adminhome extends Component {
       nurseId: this.props.location.state.nurseId,
       departmentId: this.props.location.state.departmentId,
       userType: this.props.location.state.userType
-    }); 
+    });
 
     var datas = await axios.get(`/getQueue`);
-    // var datasLab = await axios.get(`/getLabQueue/${this.state.roomId}`);
     var dataPatient = await axios.get(`/getPatient`);
     Modal.setAppElement("body");
 
@@ -216,12 +220,24 @@ class Adminhome extends Component {
     });
   };
 
+  doctorInDepartment = async value => {
+    const roomAndDoctors = await axios.post(`/getRoomAndDoctor`, {
+      day: this.state.currentDate.day,
+      month: this.state.currentDate.month,
+      year: this.state.currentDate.year,
+      forwardDepartmentId: value
+    });
+
+    return this.dropdownRooms(roomAndDoctors);
+    
+  };
+
   //Add เข้าคิว
   addQueue = async e => {
     const min = this.state.queues.filter(queue => {
       queue.HN === this.state.HN;
     });
-    
+
     if (min.length === 0) {
       var month = new Array(
         "jan",
@@ -328,7 +344,7 @@ class Adminhome extends Component {
                 </List.Content>
                 <List.Content floated="left">
                   <Icon name="time" size="large" style={{ marginTop: "3%" }} />
-                  {queue.avgtime.toFixed(0)} Min 
+                  {queue.avgtime.toFixed(0)} Min
                 </List.Content>
                 <List.Content
                   floated="right"
@@ -354,7 +370,7 @@ class Adminhome extends Component {
             </List>
           ));
       } else {
-        tmp = <p> ไม่มีคิว </p>;
+        tmp = <Message> ไม่มีคิว </Message>;
       }
     } else if (this.state.userType === 2) {
       const data = this.state.listLabQueue;
@@ -464,10 +480,10 @@ class Adminhome extends Component {
   };
   //-----------
 
-  
+
 
   callPatient = async () => {
-    
+
     var data = {};
     var tmp = null;
     if (this.state.userType === 1) {
@@ -494,7 +510,7 @@ class Adminhome extends Component {
         data = {
           HN: tmp.HN,
           previousHN: "",
-          Date : this.state.Date
+          Date: this.state.Date
         };
         check = true;
         console.log("ห้อง" + this.state.roomId + " /" + tmp.HN);
@@ -508,9 +524,9 @@ class Adminhome extends Component {
         data = {
           HN: "",
           previousHN: this.state.currentQueue.HN,
-          Date : this.state.Date
+          Date: this.state.Date
         };
-        
+
       } else {
         //ในห้องนี้มีคิว
         check = true;
@@ -518,15 +534,15 @@ class Adminhome extends Component {
         data = {
           HN: tmp.HN,
           previousHN: this.state.currentQueue.HN,
-          Date : this.state.Date
+          Date: this.state.Date
         };
-        
+
       }
     }
     console.log(data)
     this.updateAvgTime();
     await axios.post("/updateQueue", data);
-    
+
     console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
     this.setState({
       currentQueue: check === true ? tmp : {}
@@ -589,7 +605,7 @@ class Adminhome extends Component {
         </Segment>
       );
     }
-    
+
   };
 
   forward = async () => {
@@ -696,12 +712,78 @@ class Adminhome extends Component {
     return tmp;
   };
 
-  handleAddition = (e, { value }) => {
-    this.setState({
-      allDepartment: [{ text: value, value }, ...this.state.allDepartment],
-    })
+  addMoreForward = () => {
+    console.log('min min')
+    console.log([...this.state.forwardDepartments, { type: '', departmentId: '', doctorId: '' }])
+    this.setState({ forwardDepartments: [...this.state.forwardDepartments, { type: '', departmentId: '', doctorId: '' }] })
   }
 
+  setValueInArray = (index,attr,value) => {
+    let arr = this.state.forwardDepartments
+    arr[index][attr] = value;
+    this.setState({ forwardDepartments : arr })
+  }
+
+  showListDepartment =  () => {
+    console.log('เข้า', this.state.forwardDepartments.length)
+    let tmp = this.state.forwardDepartments.map((dep, i) => {
+      // {type:'',departmentId:'', doctorId:''}
+      console.log("roomAndDoctors",dep.roomAndDoctors)
+      return <Menu compact>
+        <Dropdown.Menu>
+          <Dropdown
+            simple
+            item
+            placeholder=" Search or Select Department/Lab"
+            options={labOrDepartment}
+            onChange={async (e, { value }) => {
+              let arr = this.state.forwardDepartments
+              arr[i].type = value;
+              arr[i].roomAndDoctors = undefined
+              this.setState({ forwardDepartments : arr })
+            }}
+
+          />
+          <Dropdown
+            disabled={
+              dep.type === "Department" || dep.type === "Lab" ? false : true
+            }
+            simple
+            item
+            placeholder=" Search or Select Department or Lab"
+            options={dep.type === "Department" ? this.state.allDepartment : this.state.allLab}
+            onChange={async (e, { value }) => {
+              this.setValueInArray(i,"departmentId",value)
+              let arr = this.state.forwardDepartments
+              arr[i].departmentId = value;
+              arr[i].roomAndDoctors = await this.doctorInDepartment(value)
+              console.log("arr",arr)
+              this.setState({ forwardDepartments : arr })
+              // this.checkDoctorWithRoom(value);
+            }}
+          />
+
+          <br />
+
+          <Dropdown
+            disabled={
+                dep.roomAndDoctors === undefined }
+            simple
+            item
+            placeholder="Search or Select Room with doctor"
+            options={dep.roomAndDoctors}
+            onChange={async (e, { value }) => {
+              this.setValueInArray(i,"doctorId",value)
+            }}
+          />
+        </Dropdown.Menu>
+      </Menu>
+    })
+
+
+    console.log(tmp)
+    return tmp
+  }
 
   render() {
     return (
@@ -743,6 +825,7 @@ class Adminhome extends Component {
           doctorRooms={this.state.doctorRooms}
           message={this.state.message}
           userType={this.state.userType}
+          amountDepartment={this.state.amountDepartment}
           //Method
 
           forward={this.forward}
@@ -755,6 +838,8 @@ class Adminhome extends Component {
           checkDoctorWithRoom={this.checkDoctorWithRoom}
           showPatientLabQueue={this.showPatientLabQueue}
           goBack={this.goBack}
+          addMoreForward={this.addMoreForward}
+          showListDepartment={this.showListDepartment}
         />
         <br />
         <br />
@@ -774,4 +859,17 @@ const customStyles = {
     height: "30%"
   }
 };
+const labOrDepartment = [
+  {
+    key: 1,
+    text: "Lab",
+    value: "Lab"
+  },
+  {
+    key: 2,
+    text: "Department",
+    value: "Department"
+  },
+
+];
 export default Adminhome;

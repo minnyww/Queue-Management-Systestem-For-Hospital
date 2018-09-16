@@ -8,12 +8,11 @@ const formAddAppointment = props => {
         <Form style={{ width: "50%" }}>
           <Form.Input
             fluid
-            placeholder="HN"
+            placeholder="Enter HN"
             value={props.HN}
             onChange={(e, { value }) => props.setField("HN", value)}
-            // onChange={async (e, { value }) => props.setField({ HN: value })}
+            
           />
-          <Label style={{ marginTop: "-5%" }}>Name : </Label>
           <Form.Input
             type="date"
             fluid
@@ -21,29 +20,32 @@ const formAddAppointment = props => {
             onChange={(e, { value }) => props.setField("Date", value)}
           />
           <Form.Input
-            placeholder="HH:MM"
+            placeholder="Enter Start Time HH:MM"
             fluid
             value={props.startTime}
             onChange={(e, { value }) => props.setField("startTime", value)}
           />
           <Form.Input
-            placeholder="HH:MM"
+            placeholder="Enter End Time HH:MM"
             fluid
             value={props.endTime}
             onChange={(e, { value }) => props.setField("endTime", value)}
           />
         </Form>
-
+        <br/>
+        <Label style={{ marginRight : 10 }}>Choose Doctor :</Label>
         <Dropdown
           placeholder="Doctor"
           options={props.doctors}
           simple
+          selection
           item
           value={props.doctorId}
           onChange={(e, { value }) => props.setField("doctorId", value)}
         />
         <br />
         <Button
+        style={{ marginTop : 5 }}
           onClick={() => {
             props.addAppoinment();
           }}
