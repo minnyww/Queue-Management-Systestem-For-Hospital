@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './../css/Q.css';
 import Login from './../components/login';
-import { Card, Icon, Image, Button, Form, Segment, Header, Grid,Message,Label } from 'semantic-ui-react'
+import { Card, Icon, Image, Button, Form, Segment, Header, Grid, Message, Label } from 'semantic-ui-react'
 import Headerbar from './../components/headerbar';
 import logo1 from './../img/logo1.png';
 import axios from './../lib/axios'
@@ -10,11 +10,11 @@ class Admin extends Component {
     state = {
         Username: '',
         Password: '',
-        HN:'',
+        HN: '',
         //validate
         errorUsername: { status: false, message: '' },
         errorPassword: { status: false, message: '' },
-        
+
 
     }
 
@@ -36,18 +36,14 @@ class Admin extends Component {
             })
             console.log(data.data)
             if (data.data.length === 0) {
-                this.setState({ errorUsername: { status: true, message: '' }})
-                
+                this.setState({ errorUsername: { status: true, message: '' } })
+
             } else {
                 console.log(data.data[0])
+                localStorage.setItem('userData', JSON.stringify(data.data[0]))
                 this.props.history.push({
-                    pathname: '/Adminhome',
-                    state: { nurseId: data.data[0].empId,
-                             userType : data.data[0].type,
-                             departmentId : data.data[0].departmentId 
-                            }
-                  })
-            
+                    pathname: '/Adminhome'
+                })
             }
         }
     }
@@ -60,7 +56,7 @@ class Admin extends Component {
                 <br />
                 <center>
                     <Header color='teal'>Login To Your Account</Header>
-                    <img src={logo1} class="ui small centered image" />
+                    <img src={logo1} className="ui small centered image" />
                 </center>
                 <br />
                 <br />
@@ -83,7 +79,7 @@ class Admin extends Component {
                                     placeholder='Password'
                                     type="password"
                                     required
-                                    
+
                                     value={this.state.Password}
                                     onChange={(e, { value }) => this.setState({ Password: value })} />
 

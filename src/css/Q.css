@@ -39,3 +39,15 @@ span.rbc-btn-group {
   width: 50%;
   margin-top: 2%;
 }
+
+.rbc-off-range-bg {
+  background: #f1f0f0 !important ;
+}
+.rbc-month-view {
+  background-color: white;
+}
+
+/* hiiden scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}

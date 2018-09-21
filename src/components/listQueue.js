@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import DropdownQueue from "./Dropdown";
 
 import {
   Grid,
@@ -8,11 +7,11 @@ import {
   Menu,
   Header,
   Form,
-  TextArea,
   List,
   Message,
   Radio,
-  Segment
+  Segment,
+  Table
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from "react-responsive-modal";
@@ -61,22 +60,18 @@ const listQueue = props => {
   }
   return tmp;
 };
-const goBack = props => {
-  let tmp = "";
-  if (props.userType === 2) {
-    tmp = (
-      <Button
-        primary
-        onClick={() => {
-          props.goBack();
-        }}
-      >
-        Go back
-      </Button>
-    );
-  }
-  return tmp;
-};
+
+// const goBack = props => {
+//   let tmp = "";
+//   if (props.userType === 2) {
+//     tmp = (
+//       <Button primary onClick={() => { props.goBack(); }} >
+//         Go back
+//       </Button>
+//     );
+//   }
+//   return tmp;
+// };
 
 const Queue = props => {
   const setField = props.setField;
@@ -103,12 +98,9 @@ const Queue = props => {
               onClose={() => setField("modalIsOpen", false)}
               styles={{ modal: { width: 600, top: "30%" } }}
             >
-              <Form onSubmit={e => { props.addQueue(e); }}
-              >
+              <Form onSubmit={e => { props.addQueue(e); }}>
                 <br />
-
-                <Form.Input
-                  onBlur={() => props.validateHN()}
+                <Form.Input onBlur={() => props.validateHN()}
                   icon="search"
                   fluid
                   label="HN"
@@ -157,15 +149,10 @@ const Queue = props => {
           <center>
             <br />
 
-            <Button
-              primary
-              onClick={() => {
-                props.callPatient();
-              }}
-            >
+            <Button primary onClick={() => { props.callPatient(); }}>
               Call
             </Button>
-            {goBack(props)}
+            {/* {goBack(props)} */}
 
             <Menu vertical>
               <Dropdown text="Option" className="link item">
@@ -175,97 +162,36 @@ const Queue = props => {
                       <p onClick={() => setField("showModal", true)}>
                         Forward To
                       </p>
-
                       <Modal
-                        styles={{ modal: { width: 800, top: '30%' } }}
+                        styles={{ modal: { width: 800, top: '10%' } }}
                         open={props.showModal}
                         onClose={() => setField("showModal", false)}
-
                       >
-                        {/* <Radio
-                          label="Select Department :"
-                          name="radioGroup"
-                          value="Department"
-                          checked={props.typeForward === "Department"}
-                          onChange={async (e, { value }) => {
-                            props.setField("typeForward", value);
-                          }}
-                        /> */}
                         <br />
                         <br />
-
+                        <Table color='teal' >
+                          <Table.Header>
+                            <Table.Row>
+                              <Table.HeaderCell>Lab Or Department</Table.HeaderCell>
+                              <Table.HeaderCell>Department</Table.HeaderCell>
+                              <Table.HeaderCell>Doctor / Room</Table.HeaderCell>
+                              <Table.HeaderCell>Message</Table.HeaderCell>
+                              <Table.HeaderCell>Edit Or Delete</Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                            {props.showListDepartment()}
+                          </Table.Body>
+                        </Table>
+                        <br />
+                        {props.showDropdownDepartment()}
+                        <br />
+                        <br />
+                        <br />
                         <center>
-                          <Button basic color='blue' style={{ marginBottom: "3%" }}
-                            onClick={() => props.addMoreForward()}
-                          >
-                            +
-                        </Button>
-                        </center>
-
-                        {/* <Menu compact>
-                          <Dropdown.Menu>
-                            <Dropdown
-                              simple
-                              item
-                              placeholder=" Search or Select Department/Lab"
-                              options={labOrDepartment}
-                              onChange={async (e, { value }) => {
-                                props.setField("typeForward", value);
-                              }}
-
-                            />
-                            <Dropdown
-                              disabled={
-                                props.typeForward === "Department" || props.typeForward === "Lab" ? false : true
-                              }
-                              simple
-                              item
-                              placeholder=" Search or Select Department or Lab"
-                              options={props.typeForward === "Department" ? props.allDepartment : props.allLab}
-                              onChange={async (e, { value }) => {
-                                props.checkDoctorWithRoom(value);
-                              }}
-                            />
-
-                            <br />
-
-                            <Dropdown
-                              disabled={
-                                props.forwardDepartmentId > 0 &&
-                                  props.typeForward === "Department" || props.typeForward === "Lab"
-                                  ? false
-                                  : true
-                              }
-                              simple
-                              item
-                              placeholder="Search or Select Room with doctor"
-                              options={props.roomAndDoctors}
-                              onChange={async (e, { value }) => {
-                                props.setField("forwardId", value);
-                              }}
-                            />
-                          </Dropdown.Menu>
-                          <br />
-                          
-                         </Menu> */}
-                         {props.showListDepartment()}
-                        <br />
-                        <br />
-
-                        <center>
-                          <TextArea
-                            style={{ width: "50%", padding: "10px" }}
-                            placeholder="Tell us more"
-                            onChange={async (e, { value }) => {
-                              props.setField("message", value);
-                            }}
-                          />
-                        </center>
-                        <center>
-
                           <Button color="blue" onClick={() => props.forward()}>
                             Forward
-                          </Button>
+                            </Button>
                         </center>
                       </Modal>
                     </center>
@@ -281,35 +207,7 @@ const Queue = props => {
   );
 };
 
-const style = {
-  content: {
-    margin: "auto",
-    width: "75%",
-    height: "500px"
-  }
-};
-const customStyles = {
-  content: {
-    margin: "auto",
-    maxWidth: "450px",
-    height: "350px",
-    borderRadius: "25px",
-    border: "2px solid #1976D2"
-  }
-};
-//dropdown department
+
 
 export default Queue;
-const labOrDepartment = [
-  {
-    key: 1,
-    text: "Lab",
-    value: "Lab"
-  },
-  {
-    key: 2,
-    text: "Department",
-    value: "Department"
-  },
 
-];

@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 // import { Link } from "react-router-dom";
 // import ReactDOM from "react-dom";
-import Modal from "react-modal";
+import Modal from "react-responsive-modal";
 import "./../css/Q.css";
 import { Card, Button, Header, Table, Statistic } from "semantic-ui-react";
 
 const profile = props => {
   const { setField } = props;
-  console.log(props.queueData);
-  return (
+    return (
     <div>
       <center>
         <Card style={{ height: "30%" }}>
@@ -22,18 +21,17 @@ const profile = props => {
               >
                 ดูบัตรนัด
               </Button>
-              <Modal isOpen={props.showIsModal} style={style}>
-                <i
-                  class="large window close icon"
-                  onClick={() => setField("showIsModal", false)}
-                  style={{
-                    float: "right",
-                    marginBottom: "5%",
-                    color: "red"
-                  }}
-                />
+              <Modal
+                center
+                styles={{ modal: { width: 800 } }}
+                open={props.showIsModal} style={style}
+                onClose={() => setField("showIsModal", false)}
+              >
 
-                <Table celled style={{ width: "40" }}>
+
+                <Header as='h3'>Appointment Table</Header>
+
+                <Table celled style={{ width: "40", marginTop: '5%' }}>
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell>No</Table.HeaderCell>

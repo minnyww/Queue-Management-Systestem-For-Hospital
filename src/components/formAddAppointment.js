@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Grid, Button, Form, Label, Dropdown } from "semantic-ui-react";
+import { Grid, Button, Form, Label, Dropdown, Message } from "semantic-ui-react";
 const formAddAppointment = props => {
   return (
     <div>
@@ -11,8 +11,12 @@ const formAddAppointment = props => {
             placeholder="Enter HN"
             value={props.HN}
             onChange={(e, { value }) => props.setField("HN", value)}
-            
+            onBlur={() => props.validateHN()}
+
           />
+          <Message positive hidden={!props.errorHN.status}>
+            {props.errorHN.message}
+          </Message>
           <Form.Input
             type="date"
             fluid
@@ -32,8 +36,8 @@ const formAddAppointment = props => {
             onChange={(e, { value }) => props.setField("endTime", value)}
           />
         </Form>
-        <br/>
-        <Label style={{ marginRight : 10 }}>Choose Doctor :</Label>
+        <br />
+        <Label style={{ marginRight: 10 }}>Choose Doctor :</Label>
         <Dropdown
           placeholder="Doctor"
           options={props.doctors}
@@ -45,7 +49,7 @@ const formAddAppointment = props => {
         />
         <br />
         <Button
-        style={{ marginTop : 5 }}
+          style={{ marginTop: 5 }}
           onClick={() => {
             props.addAppoinment();
           }}

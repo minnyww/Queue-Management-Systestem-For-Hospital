@@ -14,16 +14,14 @@ class Home extends Component {
     HN: this.props.location.state.HN,
     patientData: [],
     queueData: {},
-    currentQueue: 0
+    currentQueue: 0,
 
-    // firstNamePatient: " ",
-    // lastNamePatient: " ",
 
-    // firstNameDoctor: " "
+    avgTime: 0
   };
 
   componentWillMount = async () => {
-    console.log("Will mount");
+
     Modal.setAppElement("body");
     var dataPatient = await axios.get(`/getPatient`);
     var dataQueue = await axios.post(`/getQueueData`, {
@@ -34,7 +32,6 @@ class Home extends Component {
     if (dataQueue.data.length !== 0) {
       tmp = dataQueue.data[0];
 
-      console.log(tmp);
       if (tmp) {
         var currentQueue = await axios.get(`/getCurrentQueue/${tmp.roomId}`);
         tmp.currentQueue = 0;
@@ -42,23 +39,29 @@ class Home extends Component {
           tmp.currentQueue = currentQueue.data[0].queueId;
         }
       }
-      console.log("dataQueue", tmp);
+
     }
     this.setState({
       patientData: dataPatient.data,
       queueData: tmp
     });
+
   };
 
-  getQueueData = () => {
-    const datas = this.state.queueData;
-    let tmp = "";
-    console.log(datas);
-    console.log(this.state.HN);
+  // calCulateAvgTime = () => {
+  //   var getAvgTime = this.state.queueData.avgTime
+  //   var avgTimes = getAvgTime.toFixed(0)
+  //   this.setState({
+  //     avgTime : avgTimes  
+  //   })
+  // }
 
-    console.log(datas);
-    return tmp;
-  };
+  // getQueueData = () => {
+  //   const datas = this.state.queueData;
+  //   let tmp = "";
+  //   console.log(this.state.HN);
+  //   return tmp;
+  // };
 
   getPatientData = () => {
     const datas = this.state.patientData;
@@ -70,17 +73,15 @@ class Home extends Component {
         <span>HN : {data.HN}</span>
       </Header>
     ));
-    console.log(datas);
+
     return tmp;
   };
 
   setField = (field, value) => {
-    console.log(field + " / " + value);
     this.setState({ [field]: value });
   };
 
   render() {
-    console.log("HN : " + this.state.HN);
     return (
       <div>
         <Headerbaruser />
@@ -99,9 +100,9 @@ class Home extends Component {
           //state
           queueData={this.state.queueData}
           //method
-          getQueueData={this.getQueueData}
+          
 
-          // getQueueDataTest={this.getQueueDataTest}
+        
         />
       </div>
     );

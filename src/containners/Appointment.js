@@ -5,15 +5,14 @@ import Headerbar from "./../components/headerbar";
 
 import DropdownQueue from "./../components/Dropdown";
 import Modal from 'react-responsive-modal';
-import { Grid, Button, Form, List, Label, Dropdown, Input, Header } from "semantic-ui-react";
+import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
 
 
 import moment from "moment";
+import "./../css/Q.css";
 
-// import { DatePickerInput } from "rc-datepicker";
-// import "rc-datepicker/lib/style.css";
 
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -39,6 +38,7 @@ class Appointment extends Component {
     HN: "",
     appointment: [],
     selectEvent: 0,
+    errorHN: "",
 
     //loading
     loading: false,
@@ -132,10 +132,10 @@ class Appointment extends Component {
       year: curr_year,
       timeStart: timeStart,
       timeEnd: timeEnd,
-      appointmentId : updatedEvent.id
+      appointmentId: updatedEvent.id
 
     });
-}
+  }
 
 
   resizeEvent = (resizeType, { event, start, end }) => {
@@ -242,23 +242,78 @@ class Appointment extends Component {
   };
 
   showPatientDescription = () => {
+    const { appointment, selectEvent } = this.state
     let tmp = ""
-    tmp = this.state.appointment.filter(data => data.appointmentId === this.state.selectEvent)
-      .map(data => {
-        console.log("data", data)
-        return <div>
-          <Header>HN : {data.HN}</Header>
-          <Header>Name : {data.firstName} {data.lastName}</Header>
-          <Header>Doctor : {data.firstname} {data.lastname}</Header>
-          <Header>From : {data.timeStart.substr(0, 5)} To : {data.timeEnd.substr(0, 5)} </Header>
+    console.log(selectEvent)
+    tmp = appointment.filter(data => data.appointmentId === selectEvent)
+      .map((data, index) => {
+        return <div key={index}>
 
+          <Header as='h2' style={{ borderBottom: '1px solid black', marginTop: 5, width: '28%' }}>
+            Information
+          </Header>
+
+          <List divided relaxed style={{ padding: '10px' }}>
+            <List.Item>
+              <List.Icon name='user' size='large' verticalAlign='middle' />
+              <List.Content>
+                <List.Header as="h3">HN : {data.HN}</List.Header>
+              </List.Content>
+            </List.Item>
+            <List.Item>
+              <List.Icon name='user' size='large' verticalAlign='middle' />
+              <List.Content>
+                <List.Header as="h3">Name : {data.firstName} {data.lastName}</List.Header>
+              </List.Content>
+            </List.Item>
+            <List.Item>
+              <List.Icon name='doctor' size='large' verticalAlign='middle' />
+              <List.Content>
+                <List.Header as="h3">Doctor : {data.firstname} {data.lastname}</List.Header>
+              </List.Content>
+            </List.Item>
+            <List.Item>
+              <List.Icon name='time' size='large' verticalAlign='middle' />
+              <List.Content>
+                <List.Header as="h3">
+                  From : {data.timeStart.substr(0, 5)} To : {data.timeEnd.substr(0, 5)}
+                </List.Header>
+              </List.Content>
+            </List.Item>
+          </List>
+          <Icon name="trash" size='small' color="red" style={{ marginLeft: '90%',fontSize:'16px' }}
+          // onClick={() => this.deleteAppointment()}
+          >
+            delete
+          </Icon>
         </div>
       })
     return tmp
   }
 
+  // deleteAppointment = async () => {
+  //   console.log("เข้า ลบ")
+  //   console.log(this.state.selectEvent)
+  //   await axios.delete("/deleteAppointment", {
+  //     appointmentId: this.state.selectEvent
+  //   });
+  // }
+
+
+  validateHN = async () => {
+    if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+      this.setState({
+        errorHN: { status: true, message: "Right" }
+      });
+    } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
+      this.setState({
+        errorHN: { status: true, message: "HN Does not match" }
+      });
+    }
+  };
+
   render() {
-    
+    console.log(localStorage.getItem("username"))
     return (
       <div style={{ width: '100%' }}>
         <Headerbar />
@@ -279,10 +334,13 @@ class Appointment extends Component {
             startTime={this.state.startTime}
             endTime={this.state.endTime}
             HN={this.state.HN}
+            errorHN={this.state.errorHN}
             //method
             setField={this.setField}
             addAppoinment={this.addAppoinment}
             checkTimeFormat={this.checkTimeFormat}
+            validateHN={this.validateHN}
+
           />
         </Modal>
 
@@ -293,9 +351,7 @@ class Appointment extends Component {
           open={this.state.openDetail}
           onClose={() => this.setField("openDetail", false)}>
           <ModalDetailAppointment
-            appointment={this.state.appointment}
             showPatientDescription={this.showPatientDescription}
-
           />
 
 
@@ -308,8 +364,8 @@ class Appointment extends Component {
             <DragAndDropCalendar
               events={this.state.events}
               style={{
-                height: "80vh",
-                width: "120vh",
+                height: '90vh',
+                width: '95%',
                 marginBottom: "5%",
                 marginTop: "2%"
               }}

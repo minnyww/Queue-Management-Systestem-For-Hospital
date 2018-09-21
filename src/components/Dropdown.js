@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 
 const DropdownQueue = props => {
-  
-  
+
+
   return (
     <div>
       <Menu compact style={{ marginLeft: "3%" }}>
@@ -28,16 +28,7 @@ const DropdownQueue = props => {
             value={props.departmentId}
             disabled
           />
-          {/* <Dropdown
-                        placeholder='Room'
-                        options={props.rooms}
-                        simple item
-                        value={props.roomId}
-                        onChange={async (e, { value }) => {
-                            console.log(value)
-                            await props.setField('roomId', value)
-                            // props.getDoctorId()
-                        }} /> */}
+
           <Dropdown
             placeholder="Doctor"
             options={props.doctors}
@@ -48,7 +39,7 @@ const DropdownQueue = props => {
               props.chooseDoctor(value);
             }}
           />
-          </Dropdown.Menu>
+        </Dropdown.Menu>
       </Menu>
     </div>
   );
@@ -57,7 +48,7 @@ const DropdownQueue = props => {
 const type = [
   {
     key: 1,
-    text: "Queue",
+    text: <Link to={"/Adminhome"}>Queue </Link>,
     value: "Queue"
   },
   {

@@ -4,12 +4,11 @@ import { Header, Grid } from "semantic-ui-react";
 
 const tablepatient = props => {
   console.log("props", props);
+
   return (
+
     <div>
       <center>
-        {/* {props.getQueueData()} */}
-        {/* {props.getQueueDataTest()} */}
-
         <Grid columns={2} divided style={{ width: "100%" }} celled="internally">
           <Grid.Row>
             <Grid.Column>
@@ -45,8 +44,11 @@ const tablepatient = props => {
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column>ระยะเวลารอ</Grid.Column>
-            <Grid.Column>{props.queueData.avgtime}</Grid.Column>
+            <Grid.Column>ระยะเวลารอ </Grid.Column>
+            <Grid.Column>
+              {props.queueData.statusId !== 4 ?
+                parseInt(props.queueData.avgtime).toFixed(0) + ` Min` : ''} 
+            </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>สถานะ</Grid.Column>
