@@ -8,6 +8,7 @@ const formAddAppointment = props => {
         <Form style={{ width: "50%" }}>
           <Form.Input
             fluid
+            name='HN'
             placeholder="Enter HN"
             value={props.HN}
             onChange={(e, { value }) => props.setField("HN", value)}
@@ -37,18 +38,18 @@ const formAddAppointment = props => {
           />
         </Form>
         <br />
-        <Label style={{ marginRight: 10 }}>Choose Doctor :</Label>
+        <Label color='teal' style={{ marginRight: 10 }}>Choose Doctor :</Label>
         <Dropdown
           placeholder="Doctor"
           options={props.doctors}
           simple
           selection
           item
-          value={props.doctorId}
-          onChange={(e, { value }) => props.setField("doctorId", value)}
+          onChange={(e, { value }) => props.setField("appointmentDepId", value)}
         />
         <br />
         <Button
+          color='blue'
           style={{ marginTop: 5 }}
           onClick={() => {
             props.addAppoinment();

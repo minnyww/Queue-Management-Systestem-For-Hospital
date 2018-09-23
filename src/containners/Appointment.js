@@ -40,6 +40,11 @@ class Appointment extends Component {
     selectEvent: 0,
     errorHN: "",
 
+    departmentId: 0,
+    roomId: 0,
+    appointmentDepId: 0,
+
+    doctors: [{ key: "", text: "", value: "" }],
     //loading
     loading: false,
 
@@ -55,8 +60,9 @@ class Appointment extends Component {
   }
 
   componentWillMount = async () => {
+    const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
     this.setState({ loading: true })
-    var { data } = await axios.get(`/getAppointment`)
+    var { data } = await axios.get(`/getAppointment/`)
     const appData = data.map(app => {
       return {
         start: new Date(`${app.month} ${app.date}, ${app.year} ${app.timeStart}`),
@@ -65,13 +71,85 @@ class Appointment extends Component {
         id: app.appointmentId
       }
     })
+
     this.setState({
       loading: false,
       events: appData,
       appointment: data,
+      nurseId: empId,
+      departmentId,
+      userType: type
     })
-    console.log(this.state.appointment)
+
+
+    const date = this.pharseDate();
+    const doctors = await axios.post(`/getListDoctor`, {
+      day: date.day,
+      month: date.month,
+      year: date.year,
+      departmentId: this.state.departmentId
+    });
+
+    const doctorsOption = this.dropdownDoctors(doctors);
+
+    this.setState({
+      doctors: doctorsOption,
+      roomId: doctors.data[0].roomId,
+    })
+
   }
+
+  pharseDate = () => {
+    var month = new Array(
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec"
+    );
+    var day = new Array(7);
+    day[0] = "sun";
+    day[1] = "mon";
+    day[2] = "tue";
+    day[3] = "wed";
+    day[4] = "thu";
+    day[5] = "fri";
+    day[6] = "sat";
+
+    let curr_date = new Date().getDay();
+    let curr_month = new Date().getMonth();
+    let curr_year = new Date().getFullYear();
+
+    return {
+      day: day[curr_date],
+      month: month[curr_month],
+      year: curr_year,
+    }
+  }
+
+
+  dropdownDoctors = doctors => {
+    const roomAndDoctorOption = doctors.data.map(roomDoctor => ({
+      key: roomDoctor.doctorId,
+      text:
+        roomDoctor.firstname +
+        " " +
+        roomDoctor.lastname +
+        " (ห้อง " +
+        roomDoctor.roomId +
+        " ) ",
+      value: roomDoctor.doctorId + "/" + roomDoctor.roomId
+    }));
+    return roomAndDoctorOption;
+  };
+
 
   moveEvent = async ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
     const { events } = this.state;
@@ -93,7 +171,6 @@ class Appointment extends Component {
       events: nextEvents
     });
     alert(`${event.title} was dropped onto ${updatedEvent.start}`)
-    console.log(updatedEvent.start.getDay())
 
     var month = new Array(
       "Jan",
@@ -166,66 +243,41 @@ class Appointment extends Component {
   };
 
   addAppoinment = async () => {
-    var month = new Array(
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    );
-    var day = new Array(7);
-    day[0] = "Sun";
-    day[1] = "Mon";
-    day[2] = "Tue";
-    day[3] = "Wed";
-    day[4] = "Thu";
-    day[5] = "Fri";
-    day[6] = "Sat";
-
+    
+    const date = this.pharseDate();
     const { events, startTime, endTime, doctorId, HN } = this.state
     const currentDate = new Date(this.state.Date)
-
-    var curr_date = currentDate.getDay();
-    var curr_month = currentDate.getMonth();
-    var curr_year = currentDate.getFullYear();
     const getDayDate = currentDate.getDate();
-
+    let tmp = this.state.appointmentDepId.split("/")
     await axios.post("/addAppointment", {
       date: new Date(this.state.Date).getDate(),
-      day: day[curr_date],
-      month: month[curr_month],
-      year: curr_year,
+      day: date.day,
+      month: date.month,
+      year: date.year,
       startTime: this.checkTimeFormat(startTime),
       endTime: this.checkTimeFormat(endTime),
-      doctorId,
+      doctorId: tmp[0],
+      roomId: tmp[1],
       HN
     });
-
+    
     this.setState({
       events: [
         ...events,
         {
           start: new Date(
-            `${month[curr_month]} ${getDayDate}, ${curr_year} ${this.checkTimeFormat(startTime)}`),
+            `${date.month} ${getDayDate}, ${date.year} ${this.checkTimeFormat(startTime)}`),
           end: new Date(
-            `${month[curr_month]} ${getDayDate}, ${curr_year} ${this.checkTimeFormat(endTime)}`
+            `${date.month} ${getDayDate}, ${date.year} ${this.checkTimeFormat(endTime)}`
           ),
-          title: { HN }
+          title: HN
         }
-      ]
+      ],
+      open: false
     });
     console.log("เข้า DB");
     console.log(this.state.events)
   };
-
-
 
   handleSelect = async ({ start }) => {
     this.setState({
@@ -244,7 +296,7 @@ class Appointment extends Component {
   showPatientDescription = () => {
     const { appointment, selectEvent } = this.state
     let tmp = ""
-    console.log(selectEvent)
+    console.log(appointment)
     tmp = appointment.filter(data => data.appointmentId === selectEvent)
       .map((data, index) => {
         return <div key={index}>
@@ -269,7 +321,13 @@ class Appointment extends Component {
             <List.Item>
               <List.Icon name='doctor' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">Doctor : {data.firstname} {data.lastname}</List.Header>
+                <List.Header as="h3">Doctor : {data.firstname} {data.lastname}  </List.Header>
+              </List.Content>
+            </List.Item>
+            <List.Item>
+              <List.Icon name='building' size='large' verticalAlign='middle' />
+              <List.Content>
+                <List.Header as="h3">Department : {data.department}</List.Header>
               </List.Content>
             </List.Item>
             <List.Item>
@@ -281,7 +339,7 @@ class Appointment extends Component {
               </List.Content>
             </List.Item>
           </List>
-          <Icon name="trash" size='small' color="red" style={{ marginLeft: '90%',fontSize:'16px' }}
+          <Icon name="trash" size='small' color="red" style={{ marginLeft: '90%', fontSize: '16px' }}
           // onClick={() => this.deleteAppointment()}
           >
             delete
@@ -313,7 +371,7 @@ class Appointment extends Component {
   };
 
   render() {
-    console.log(localStorage.getItem("username"))
+
     return (
       <div style={{ width: '100%' }}>
         <Headerbar />
@@ -321,7 +379,7 @@ class Appointment extends Component {
 
         <Modal
           center
-          styles={{ modal: { width: 800 } }}
+          styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
           open={this.state.open}
           onClose={() => this.setField("open", false)}>
           <FormAddAppointment

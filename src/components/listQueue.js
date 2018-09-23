@@ -11,7 +11,8 @@ import {
   Message,
   Radio,
   Segment,
-  Table
+  Table,
+  Label
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from "react-responsive-modal";
@@ -148,16 +149,17 @@ const Queue = props => {
           </center>
           <center>
             <br />
-
-            <Button primary onClick={() => { props.callPatient(); }}>
+            <Button primary onClick={() => { props.callPatient()}} >
               Call
             </Button>
+            
+
             {/* {goBack(props)} */}
 
             <Menu vertical>
               <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>
-                  <Dropdown.Item>
+                  <Dropdown.Item disabled={props.currentQueue.firstName === undefined ? true : false}>
                     <center>
                       <p onClick={() => setField("showModal", true)}>
                         Forward To
