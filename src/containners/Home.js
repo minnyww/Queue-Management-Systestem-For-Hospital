@@ -8,6 +8,9 @@ import Headerbaruser from "./../components/headerbaruser";
 import Modal from "react-modal";
 import axios from "./../lib/axios";
 import { Header, Step, Icon, Table } from "semantic-ui-react";
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
+
 class Home extends Component {
   state = {
     showIsModal: false,
@@ -66,6 +69,7 @@ class Home extends Component {
       allStepQueue: dataAllStepQueue.data,
       allAppointment: dataAllAppointment.data
     })
+    this.sendNotification();
   }
 
 
@@ -126,11 +130,37 @@ class Home extends Component {
     return tmp
   }
 
+  sendNotification = () => {
+    let tmp = "";
+    tmp = this.state.queueData.queueId - this.state.queueData.currentQueue
+    console.log(tmp)
+    if (tmp === 0) {
+      console.log("ถึงคิว")
+      NotificationManager.info('ถึงคิว')
+    } else if(tmp === 1) {
+      console.log("เหลืออีก 1 คิว")
+      NotificationManager.warning('เหลืออีก 1 คิว')
+    } else if (tmp === 3) {
+      console.log("เหลืออีก 3 คิว")
+      NotificationManager.warning('เหลืออีก 3 คิว')
+    } else if (tmp === 5) {
+      console.log("เหลืออีก 5 คิว")
+      NotificationManager.warning('เหลืออีก 5 คิว')
+    }
+    //เอา queue ออกมาว่ามีกี่ queue
+    //เอา /getCurrentQueue/:roomId ลบ Queue user เหลือเท่าไหร่
+    //เช็ค docterId , roomId , statusId , group , HN
+  }
+
   render() {
+    console.log(this.state.queueData.currentQueue)
+    console.log(this.state.queueData.queueId - this.state.queueData.currentQueue)
     console.log(this.state.allAppointment)
     return (
       <div>
+        <script src="path/to/react-notifications/dist/react-notifications.js"></script>
         <Headerbaruser />
+        <NotificationContainer />
         <Profile
           //state
           showIsModal={this.state.showIsModal}
@@ -142,6 +172,7 @@ class Home extends Component {
           setField={this.setField}
           getPatientData={this.getPatientData}
           showAppointment={this.showAppointment}
+          
         />
         <br />
         <Tablepatient
