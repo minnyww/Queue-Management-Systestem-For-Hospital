@@ -82,6 +82,7 @@ class Login extends Component {
       } else {
         console.log(data.data[0]);
         console.log("aaaaaa:", this.props);
+        localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
         this.props.history.push({
           pathname: "/Home",
           state: {

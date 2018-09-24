@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./../css/Q.css";
-import { Header, Grid } from "semantic-ui-react";
+import { Header, Grid, Step, Icon } from "semantic-ui-react";
 
 const tablepatient = props => {
   console.log("props", props);
@@ -9,7 +9,7 @@ const tablepatient = props => {
 
     <div>
       <center>
-        <Grid columns={2} divided style={{ width: "100%" }} celled="internally">
+        {/* <Grid columns={2} divided style={{ width: "100%" }} celled="internally">
           <Grid.Row>
             <Grid.Column>
               <Header size="medium">รายการ</Header>
@@ -47,14 +47,19 @@ const tablepatient = props => {
             <Grid.Column>ระยะเวลารอ </Grid.Column>
             <Grid.Column>
               {props.queueData.statusId !== 4 ?
-                parseInt(props.queueData.avgtime).toFixed(0) + ` Min` : ''} 
+                parseInt(props.queueData.avgtime).toFixed(0) + ` Min` : ''}
             </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
+          </Grid.Row> */}
+        {/* <Grid.Row>
             <Grid.Column>สถานะ</Grid.Column>
             <Grid.Column>{props.queueData.description}</Grid.Column>
-          </Grid.Row>
-        </Grid>
+          </Grid.Row> */}
+        {/* </Grid> */}
+        <Header size="medium">สถานะ</Header>
+        <Step.Group style={{ marginBottom: '5%', marginTop: '1.5%' }}>
+          {props.showStepQueue()}
+        </Step.Group>
+
       </center>
     </div>
   );

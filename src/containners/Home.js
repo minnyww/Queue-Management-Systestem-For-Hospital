@@ -7,27 +7,39 @@ import "./../css/App.css";
 import Headerbaruser from "./../components/headerbaruser";
 import Modal from "react-modal";
 import axios from "./../lib/axios";
-import { Header } from "semantic-ui-react";
+import { Header, Step, Icon, Table } from "semantic-ui-react";
 class Home extends Component {
   state = {
     showIsModal: false,
-    HN: this.props.location.state.HN,
+    HN: '',
+
     patientData: [],
     queueData: {},
     currentQueue: 0,
+    allStepQueue: [],
+    allAppointment: [],
 
+    getDataPatient: [],
 
     avgTime: 0
   };
 
   componentWillMount = async () => {
+    const getUserData = JSON.parse(localStorage.getItem('getUserData'))
+    this.setState({
+      HN: getUserData.HN
+    })
 
-    Modal.setAppElement("body");
     var dataPatient = await axios.get(`/getPatient`);
+    this.setState({
+      patientData: dataPatient.data,
+
+    })
+
     var dataQueue = await axios.post(`/getQueueData`, {
       HN: this.state.HN
     });
-
+    
     let tmp = {};
     if (dataQueue.data.length !== 0) {
       tmp = dataQueue.data[0];
@@ -39,34 +51,27 @@ class Home extends Component {
           tmp.currentQueue = currentQueue.data[0].queueId;
         }
       }
-
     }
+
+    var dataAllStepQueue = await axios.post(`/getAllStepQueue`, {
+      HN: this.state.HN,
+      group: tmp.group
+    })
+
+    var dataAllAppointment = await axios.post(`/getAllAppointment`, {
+      HN: this.state.HN,
+    })
     this.setState({
-      patientData: dataPatient.data,
-      queueData: tmp
-    });
+      queueData: tmp,
+      allStepQueue: dataAllStepQueue.data,
+      allAppointment: dataAllAppointment.data
+    })
+  }
 
-  };
-
-  // calCulateAvgTime = () => {
-  //   var getAvgTime = this.state.queueData.avgTime
-  //   var avgTimes = getAvgTime.toFixed(0)
-  //   this.setState({
-  //     avgTime : avgTimes  
-  //   })
-  // }
-
-  // getQueueData = () => {
-  //   const datas = this.state.queueData;
-  //   let tmp = "";
-  //   console.log(this.state.HN);
-  //   return tmp;
-  // };
 
   getPatientData = () => {
     const datas = this.state.patientData;
     let tmp = "";
-
     tmp = datas.filter(data => data.HN === this.state.HN).map(data => (
       <Header>
         {data.firstName} {data.lastName} <br />
@@ -81,28 +86,73 @@ class Home extends Component {
     this.setState({ [field]: value });
   };
 
+  showStepQueue = () => {
+    const icon =
+      [{ key: '1001', value: 'user doctor', text: 'user doctor' },
+      { key: '1002', value: 'user doctor', text: 'user doctor' },
+      { key: '9999', value: 'lab', text: 'lab' }]
+    // console.log(this.state.allStepQueue)
+    let tmp = ''
+    let data = this.state.allStepQueue
+
+    tmp = data.map(data => (
+      <Step completed={data.statusId == 4 ? true : false}
+        disabled={data.statusId == 5 ? true : false}
+        active={data.statusId == 3 || data.statusId == 1 ? true : false}>
+        <Icon color="blue" name={icon.filter(icon => icon.key == data.roomId).length == 0 ? "" : icon.filter(icon => icon.key == data.roomId)[0].value} />
+        <Step.Content>
+          <Step.Title>{data.type == 1 ? "พบแพทย์ :" + data.firstname + ' ' + data.lastname : "ห้อง Lab/หัตถการ"}</Step.Title>
+          <Step.Description>{'ห้อง : ' + data.roomId + 'แผนก : ' + data.department}</Step.Description>
+        </Step.Content>
+      </Step>
+    ));
+
+    return tmp
+  }
+
+  showAppointment = () => {
+    let tmp = ''
+    let data = this.state.allAppointment
+    tmp = data.map((data, i) => (
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell>{1 + i}</Table.Cell>
+          <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' ' + data.timeStart + ' - ' + data.timeEnd}</Table.Cell>
+          <Table.Cell>{data.firstname} {data.lastname}</Table.Cell>
+          <Table.Cell>{data.department} </Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    ))
+    return tmp
+  }
+
   render() {
+    console.log(this.state.allAppointment)
     return (
       <div>
         <Headerbaruser />
         <Profile
           //state
           showIsModal={this.state.showIsModal}
-          firstNamePatient={this.state.firstNamePatient}
-          lastNamePatient={this.state.lastNamePatient}
+          // firstNamePatient={this.state.firstNamePatient}
+          // lastNamePatient={this.state.lastNamePatient}
           queueData={this.state.queueData}
+          allAppointment={this.state.allAppointment}
           //method
           setField={this.setField}
           getPatientData={this.getPatientData}
+          showAppointment={this.showAppointment}
         />
         <br />
         <Tablepatient
           //state
           queueData={this.state.queueData}
-          //method
-          
+          allStepQueue={this.state.allStepQueue}
 
-        
+          //method
+          showStepQueue={this.showStepQueue}
+
+
         />
       </div>
     );
