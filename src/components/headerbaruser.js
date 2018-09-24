@@ -3,7 +3,7 @@ import { Segment,Header } from 'semantic-ui-react'
 
 const headerbaruser = () => (
   <Segment raised inverted color='blue'>
-    <Header  textAlign='right'>ตรวจสอบสถานะผู้ป่วย</Header>
+    <Header  textAlign='left'>ตรวจสอบสถานะผู้ป่วย</Header>
   </Segment>
 )
 

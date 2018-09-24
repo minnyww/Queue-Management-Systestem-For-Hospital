@@ -70,7 +70,7 @@ class Login extends Component {
 
     //Check API
     if (check === true) {
-      var data = await axios.post(`/checkHN`, {
+      var data = await axios.post("/checkHN", {
         HN: this.state.HN,
         phoneNumber: this.state.phoneNumber
       });

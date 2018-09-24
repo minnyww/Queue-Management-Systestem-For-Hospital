@@ -88,9 +88,9 @@ class Home extends Component {
 
   showStepQueue = () => {
     const icon =
-      [{ key: '1001', value: 'user doctor', text: 'user doctor' },
-      { key: '1002', value: 'user doctor', text: 'user doctor' },
-      { key: '9999', value: 'lab', text: 'lab' }]
+      [{ key: '1', value: 'user doctor', text: 'user doctor' },
+      { key: '2', value: 'lab', text: 'lab' },
+      ]
     // console.log(this.state.allStepQueue)
     let tmp = ''
     let data = this.state.allStepQueue
@@ -99,14 +99,14 @@ class Home extends Component {
       <Step completed={data.statusId == 4 ? true : false}
         disabled={data.statusId == 5 ? true : false}
         active={data.statusId == 3 || data.statusId == 1 ? true : false}>
-        <Icon color="blue" name={icon.filter(icon => icon.key == data.roomId).length == 0 ? "" : icon.filter(icon => icon.key == data.roomId)[0].value} />
+        <Icon color="teal" name={icon.filter(icon => icon.key == data.type).length == 0 ? "" : icon.filter(icon => icon.key == data.type)[0].value} />
         <Step.Content>
           <Step.Title>{data.type == 1 ? "พบแพทย์ :" + data.firstname + ' ' + data.lastname : "ห้อง Lab/หัตถการ"}</Step.Title>
           <Step.Description>{'ห้อง : ' + data.roomId + 'แผนก : ' + data.department}</Step.Description>
         </Step.Content>
       </Step>
     ));
-
+      
     return tmp
   }
 
