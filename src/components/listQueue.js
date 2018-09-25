@@ -87,9 +87,17 @@ const Queue = props => {
               <Header textAlign="center">Queue</Header>
             </Segment>
             {props.showPatient()}
+            {props.renderModal()}
           </Segment.Group>
-          {listQueue(props)}
-
+          {/* {listQueue(props)} */}
+          <Segment.Group id="boxLab">
+            <Segment inverted color="teal">
+              <Header textAlign="center">
+                Lab Wait
+              </Header>
+            </Segment>
+            {props.showPatientLabQueue()}
+          </Segment.Group>
           <center>
             <Button color="blue" onClick={() => setField("modalIsOpen", true)}>
               Add Patient
@@ -149,10 +157,10 @@ const Queue = props => {
           </center>
           <center>
             <br />
-            <Button primary onClick={() => { props.callPatient()}} >
+            <Button primary onClick={() => { props.callPatient() }} >
               Call
             </Button>
-            
+
 
             {/* {goBack(props)} */}
 

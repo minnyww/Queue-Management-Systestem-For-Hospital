@@ -96,7 +96,7 @@ class Appointment extends Component {
       doctors: doctorsOption,
       roomId: doctors.data[0].roomId,
     })
-
+    this.showPatientDescription()
   }
 
   pharseDate = () => {
@@ -243,7 +243,7 @@ class Appointment extends Component {
   };
 
   addAppoinment = async () => {
-    
+
     const date = this.pharseDate();
     const { events, startTime, endTime, doctorId, HN } = this.state
     const currentDate = new Date(this.state.Date)
@@ -260,7 +260,7 @@ class Appointment extends Component {
       roomId: tmp[1],
       HN
     });
-    
+
     this.setState({
       events: [
         ...events,
@@ -296,7 +296,6 @@ class Appointment extends Component {
   showPatientDescription = () => {
     const { appointment, selectEvent } = this.state
     let tmp = ""
-    console.log(appointment)
     tmp = appointment.filter(data => data.appointmentId === selectEvent)
       .map((data, index) => {
         return <div key={index}>

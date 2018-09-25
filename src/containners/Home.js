@@ -7,7 +7,7 @@ import "./../css/App.css";
 import Headerbaruser from "./../components/headerbaruser";
 import Modal from "react-modal";
 import axios from "./../lib/axios";
-import { Header, Step, Icon, Table } from "semantic-ui-react";
+import { Header, Step, Icon, Table, Statistic } from "semantic-ui-react";
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
@@ -42,7 +42,7 @@ class Home extends Component {
     var dataQueue = await axios.post(`/getQueueData`, {
       HN: this.state.HN
     });
-    
+
     let tmp = {};
     if (dataQueue.data.length !== 0) {
       tmp = dataQueue.data[0];
@@ -78,8 +78,12 @@ class Home extends Component {
     let tmp = "";
     tmp = datas.filter(data => data.HN === this.state.HN).map(data => (
       <Header>
-        {data.firstName} {data.lastName} <br />
-        <span>HN : {data.HN}</span>
+        <Statistic size='tiny' >
+          <Statistic.Value style={{ marginBottom: "5%" }}>{data.firstName} {data.lastName} </Statistic.Value>
+          <Statistic.Label>HN : {data.HN}</Statistic.Label>
+        </Statistic>
+        {/* {data.firstName} {data.lastName} <br />{data.firstName} {data.lastName} <br /> */}
+        {/* <span>HN : {data.HN}</span>HN : {data.HN} */}
       </Header>
     ));
 
@@ -100,17 +104,18 @@ class Home extends Component {
     let data = this.state.allStepQueue
 
     tmp = data.map(data => (
-      <Step completed={data.statusId == 4 ? true : false}
+      <Step style={{ borderBottom: '1.5px solid #00b5ad' }}
+        completed={data.statusId == 4 ? true : false}
         disabled={data.statusId == 5 ? true : false}
         active={data.statusId == 3 || data.statusId == 1 ? true : false}>
         <Icon color="teal" name={icon.filter(icon => icon.key == data.type).length == 0 ? "" : icon.filter(icon => icon.key == data.type)[0].value} />
         <Step.Content>
-          <Step.Title>{data.type == 1 ? "พบแพทย์ :" + data.firstname + ' ' + data.lastname : "ห้อง Lab/หัตถการ"}</Step.Title>
-          <Step.Description>{'ห้อง : ' + data.roomId + 'แผนก : ' + data.department}</Step.Description>
+          <Step.Title>{data.type == 1 ? "พบแพทย์ : " + data.firstname + ' ' + data.lastname : "ห้อง Lab/หัตถการ"}</Step.Title>
+          <Step.Description style={{ fontSize: '16px' }}>{'ห้อง : ' + data.roomId + ' แผนก : ' + data.department}</Step.Description>
         </Step.Content>
       </Step>
     ));
-      
+
     return tmp
   }
 
@@ -121,7 +126,7 @@ class Home extends Component {
       <Table.Body>
         <Table.Row>
           <Table.Cell>{1 + i}</Table.Cell>
-          <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' ' + data.timeStart + ' - ' + data.timeEnd}</Table.Cell>
+          <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' ' + data.timeStart.substr(0, 8) + ' - ' + data.timeEnd.substr(0, 8)}</Table.Cell>
           <Table.Cell>{data.firstname} {data.lastname}</Table.Cell>
           <Table.Cell>{data.department} </Table.Cell>
         </Table.Row>
@@ -137,7 +142,7 @@ class Home extends Component {
     if (tmp === 0) {
       console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
-    } else if(tmp === 1) {
+    } else if (tmp === 1) {
       console.log("เหลืออีก 1 คิว")
       NotificationManager.warning('เหลืออีก 1 คิว')
     } else if (tmp === 3) {
@@ -172,7 +177,7 @@ class Home extends Component {
           setField={this.setField}
           getPatientData={this.getPatientData}
           showAppointment={this.showAppointment}
-          
+
         />
         <br />
         <Tablepatient
