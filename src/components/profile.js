@@ -89,7 +89,8 @@ const profile = props => {
               <Statistic size='mini'>
                 <Statistic.Value>
                   {/* {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + '' : '' } */}
-                  {parseInt(props.queueData.avgtime).toFixed(0) === NaN ? '0' : parseInt(props.queueData.avgtime).toFixed(0)}
+                  {parseInt(props.queueData.avgtime).toFixed(0) === NaN ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
+                }
 
                 </Statistic.Value>
                 <Statistic.Value>

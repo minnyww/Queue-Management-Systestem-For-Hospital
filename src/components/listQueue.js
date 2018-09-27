@@ -160,10 +160,7 @@ const Queue = props => {
             <Button primary onClick={() => { props.callPatient() }} >
               Call
             </Button>
-
-
-            {/* {goBack(props)} */}
-
+            
             <Menu vertical>
               <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>

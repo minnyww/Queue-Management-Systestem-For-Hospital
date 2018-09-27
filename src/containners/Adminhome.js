@@ -4,7 +4,7 @@ import ListQueue from "./../components/listQueue";
 import "./../css/Q.css";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
-
+import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
   Table, Radio, Button, TextArea, Label,
@@ -79,7 +79,7 @@ class Adminhome extends Component {
 
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
-
+    console.log(empId, departmentId, type)
     this.setState({
       nurseId: empId,
       departmentId,
@@ -119,7 +119,7 @@ class Adminhome extends Component {
       year: date.year,
       departmentId: this.state.departmentId
     });
-
+    console.log(doctors)
     const doctorsOption = this.dropdownDoctors(doctors);
 
     var datas = await axios.get(`/getQueue/${doctors.data[0].roomId}`);
@@ -146,6 +146,7 @@ class Adminhome extends Component {
         year: date.year
       }
     })
+    this.updateAvgTime()
   };
   //สิ้นสุด Willmount
 
@@ -200,21 +201,6 @@ class Adminhome extends Component {
     }));
     return dropdownAndRooms;
   };
-
-  // checkDoctorWithRoom = async value => {
-  //   const roomAndDoctors = await axios.post(`/getRoomAndDoctor`, {
-  //     day: this.state.currentDate.day,
-  //     month: this.state.currentDate.month,
-  //     year: this.state.currentDate.year,
-  //     forwardDepartmentId: value
-  //   });
-
-  //   let doctorsOption = this.dropdownRooms(roomAndDoctors);
-  //   this.setState({
-  //     roomAndDoctors: doctorsOption,
-  //     forwardDepartmentId: value
-  //   });
-  // };
 
   doctorInDepartment = async value => {
     const roomAndDoctors = await axios.post(`/getRoomAndDoctor`, {
@@ -328,7 +314,7 @@ class Adminhome extends Component {
     let tmp = "";
     const data = this.state.queues;
     if (data.length !== 0) {
-      console.log(data)
+      // console.log(data)
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
@@ -365,8 +351,6 @@ class Adminhome extends Component {
                 </List.Content>
 
               {this.showMessage(queue.Forward, i)}
-
-
             </List.Item>
           </List>
         ));
@@ -375,70 +359,6 @@ class Adminhome extends Component {
         style={{ marginLeft: '30%', width: '40%', marginRight: '30%', marginTop: '15%' }}
       />
     }
-
-    // else if (this.state.userType === 2) {
-    //   const data = this.state.queues;
-    //   if (data.length !== 0) {
-    //     tmp = data.map(queue => (
-    //       <List
-    //         divided
-    //         horizontal
-    //         style={{
-    //           backgroundColor: "white",
-    //           width: "100%",
-    //           borderBottom: "1px solid #E0E0E0",
-    //           padding: "5px"
-    //         }}
-    //       >
-    //         <List.Item>
-    //           <List.Header
-    //             style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}
-    //           >
-    //             {queue.queueId}
-    //           </List.Header>
-    //         </List.Item>
-    //         <List.Item>
-    //           <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-    //             Name : {queue.firstName} {queue.lastName}
-    //           </List.Header>
-    //           <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-    //             HN: {queue.HN}
-    //           </List.Content>
-    //           <List.Content floated="left">
-    //             <Icon name="time" size="medium" style={{ marginTop: "3%" }} />
-    //             {queue.avgtime.toFixed(0)} Min
-    //           </List.Content>
-    //           <List.Content
-    //             floated="right"
-    //             onClick={() => this.setField("modalOpen", true)}
-    //           >
-    //             <Icon
-    //               name="exclamation circle"
-    //               size="medium"
-    //               color="red"
-    //               style={{ marginTop: "3%" }}
-    //             />
-    //             Message
-    //           </List.Content>
-    //           <Modal
-    //             open={this.state.modalOpen}
-    //             onClose={() => this.setField("modalOpen", false)}
-    //             center
-    //             styles={{ modal: { width: 500, top: "30%" } }}
-    //           >
-    //             {queue.Forward}
-    //           </Modal>
-    //         </List.Item>
-    //       </List>
-    //     ));
-    //   } else {
-    //     tmp = <Icon loading className='stopwatch' size='huge' color='teal'
-    //       style={{ marginLeft: '30%', width: '40%', marginRight: '30%', marginTop: '20%' }}
-    //     />
-    //   }
-
-    // }
-
     return tmp;
   };
 
@@ -621,6 +541,7 @@ class Adminhome extends Component {
     console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
   };
   updateAvgTime = async () => {
+    // console.log('update AVG')/
     await axios.get(`/updateAllPerDay`);
   }
   getListLabQueue = async () => {
@@ -656,7 +577,7 @@ class Adminhome extends Component {
             <List.Item>
               <Icon name="first aid" size='big' />
               <List.Content>
-                <List.Header as='h2'>Department : {data.department}</List.Header>
+                <List.Header as='h2' >Department : {data.department}</List.Header>
               </List.Content>
             </List.Item>
           </List>
@@ -694,9 +615,6 @@ class Adminhome extends Component {
         </Segment>
       )
     }
-    // else if (this.state.currentQueue.firstname === undefined){
-    //   return <p>min</p>
-    // }
 
   };
 
@@ -725,7 +643,6 @@ class Adminhome extends Component {
             roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null
             // date: this.state.Date,
             // timeFormat: time,
-
           }
           console.log("forward", forward, tmp)
           await axios.post("/addPatientQ", tmp);
@@ -773,16 +690,13 @@ class Adminhome extends Component {
       forward: ""
     })
     this.getLabQueue(doctorAndRoom[1])
-    //  console.log(doctorAndRoom[1])
-    // console.log('เข้า lab queue')
-
   };
 
   //show patient at lab queues
   showPatientLabQueue = () => {
     // const data = this.state.labQueues
     const data = this.state.labQueues
-    console.log(data)
+    // console.log(data)
     let tmp = "";
     // if (this.state.userType === 1) {
     tmp = data
@@ -821,7 +735,6 @@ class Adminhome extends Component {
       ));
     // }
     return tmp
-
   };
 
   addMoreForward = async () => {
@@ -869,9 +782,7 @@ class Adminhome extends Component {
             options={labOrDepartment}
             onChange={async (e, { value }) => {
               this.setState({ forwardType: value })
-            }}
-
-          />
+            }} />
           <Dropdown
             disabled={
               this.state.forwardType === "Department" || this.state.forwardType === "Lab" ? false : true
@@ -886,9 +797,7 @@ class Adminhome extends Component {
                 forwardDepartmentId: value,
                 forwardRoomAndDoctors: await this.doctorInDepartment(value)
               })
-            }}
-
-          />
+            }} />
           <br />
           <Dropdown
             style={{ maxWidth: '60%', minWidth: '60%' }}
@@ -901,8 +810,7 @@ class Adminhome extends Component {
               this.setState({
                 forwardDoctorId: value,
               })
-            }}
-          />
+            }} />
         </Dropdown.Menu >
 
         <Menu.Menu position='right'>
@@ -913,6 +821,7 @@ class Adminhome extends Component {
               </Button>
           </Menu.Item>
         </Menu.Menu>
+
       </Menu >
       <br />
       <TextArea
@@ -924,8 +833,7 @@ class Adminhome extends Component {
         placeholder="Tell us more"
         onChange={async (e, { value }) => {
           this.setField("forwardMessage", value);
-        }}
-      />
+        }} />
       <br />
       <center>
         <Label color='teal' style={{ marginRight: '2%' }}>ต้องการให้คนไข้กลับมาที่ห้องเดิมหรือเสร็จสิ้น</Label>
@@ -937,8 +845,7 @@ class Adminhome extends Component {
           checked={this.state.forwardComeback === true}
           onChange={async (e, { value }) => {
             this.setState({ forwardComeback: value, })
-          }}
-        >
+          }} >
         </Radio>
         <Radio
           label='Finished'
@@ -947,14 +854,47 @@ class Adminhome extends Component {
           checked={this.state.forwardComeback === false}
           onChange={async (e, { value }) => {
             this.setState({ forwardComeback: value, })
-          }}
-        >
+          }} >
         </Radio>
       </center>
     </div >
     return tmp
   }
+  //------------------------------------------------------
+  deleteListForward = (i) => {
+    console.log(this.state.forwardDepartments)
+    console.log('เข้า DELETE')
+    let tmp = this.state.forwardDepartments
+    if (tmp.length > 0) {
+      tmp.splice(i, 1)
+    }
+    console.log(tmp)
+    console.log(this.state.forwardDepartments)
+    this.setState({
+      forwardDepartments: tmp
+    })
+  }
 
+  openConfirm = (i) => {
+    console.log(this.state.forwardDepartments)
+    console.log('เข้า Confirm')
+    let swl = ''
+    swl = swal({
+      title: "Are you sure?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          this.deleteListForward(i)
+          swal("Poof! Your imaginary file has been deleted!", {
+            icon: "success",
+          });
+        }
+      });
+    return swl
+  }
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
@@ -979,8 +919,6 @@ class Adminhome extends Component {
   showListDepartment = () => {
     let tmp = this.state.forwardDepartments.map((dep, i) => {
       let getRoomAndDoctors = dep.doctorId.split('/')
-      // let getDepartments = await axios.get(`/getDepartment/${dep.departmentId}`);
-      // console.log(getDepartments)
       console.log(i, dep)
       if (!dep.editStatus) {
         return <Table.Row key={i}>
@@ -989,10 +927,10 @@ class Adminhome extends Component {
           <Table.Cell >{getRoomAndDoctors[0]} / {getRoomAndDoctors[1]}</Table.Cell>
           <Table.Cell>{dep.message}</Table.Cell>
           <Table.Cell>
-            <Icon name='pencil'
-              onClick={() => this.editStatus(i, true)}
-            />
-            <Icon name="trash" />
+            <Icon name='pencil' color="orange"
+              onClick={() => this.editStatus(i, true)} />
+            <Icon name="trash" color="red"
+              onClick={() => this.openConfirm(i)} />
           </Table.Cell>
         </Table.Row>
       }
@@ -1007,10 +945,7 @@ class Adminhome extends Component {
               onChange={async (e, { value }) => {
                 dep.type = value
                 this.editForward('type', value, i)
-              }}
-
-
-            />
+              }} />
           </Table.Cell>
           <Table.Cell>
             <Dropdown
@@ -1021,9 +956,7 @@ class Adminhome extends Component {
               onChange={async (e, { value }) => {
                 this.editForward('departmentId', value, i)
                 this.editForward('doctorOption', await this.doctorInDepartment(value), i)
-              }}
-
-            />
+              }} />
           </Table.Cell>
           <Table.Cell >
             <Dropdown
@@ -1033,8 +966,7 @@ class Adminhome extends Component {
               options={dep.doctorOption}
               onChange={async (e, { value }) => {
                 this.editForward('doctorId', value, i)
-              }}
-            />
+              }} />
           </Table.Cell>
           <Table.Cell>
             <TextArea
@@ -1042,13 +974,11 @@ class Adminhome extends Component {
               value={dep.message}
               onChange={async (e, { value }) => {
                 this.editForward('message', value, i)
-              }}
-            />
+              }} />
           </Table.Cell>
           <Table.Cell>
-            <Icon name='save'
-              onClick={() => this.editStatus(i, false, dep)}
-            />
+            <Icon name='save' color="teal"
+              onClick={() => this.editStatus(i, false, dep)} />
             <Icon name="trash" />
           </Table.Cell>
         </Table.Row>

@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Grid } from "semantic-ui-react";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
-import DropdownDepart from "./../components/departmentDropdown";
+import DropdownDepart from "./departmentDropdown";
 import "moment-range";
-import AddtoDepart from "./../components/addtoModal";
-import RoomSegment from "./../components/roomSegment";
+import AddtoDepart from "./addtoModal"
+import RoomSegment from "./roomSegment";
 import "moment/locale/th.js";
 import { DatePickerInput } from "rc-datepicker";
 import "rc-datepicker/lib/style.css";

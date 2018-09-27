@@ -5,14 +5,13 @@ import Headerbar from "./../components/headerbar";
 
 import DropdownQueue from "./../components/Dropdown";
 import Modal from 'react-responsive-modal';
+import swal from 'sweetalert'
 import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
 
-
 import moment from "moment";
 import "./../css/Q.css";
-
 
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -62,7 +61,7 @@ class Appointment extends Component {
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
     this.setState({ loading: true })
-    var { data } = await axios.get(`/getAppointment/`)
+    var { data } = await axios.get(`/getAppointment/${departmentId}`)
     const appData = data.map(app => {
       return {
         start: new Date(`${app.month} ${app.date}, ${app.year} ${app.timeStart}`),
@@ -170,7 +169,10 @@ class Appointment extends Component {
     this.setState({
       events: nextEvents
     });
-    alert(`${event.title} was dropped onto ${updatedEvent.start}`)
+    console.log(updatedEvent.start.toString().substr(0,24))
+    // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
+    swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0,24)}`, "success");
+
 
     var month = new Array(
       "Jan",

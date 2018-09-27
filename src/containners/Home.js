@@ -55,7 +55,7 @@ class Home extends Component {
         }
       }
     }
-
+    
     var dataAllStepQueue = await axios.post(`/getAllStepQueue`, {
       HN: this.state.HN,
       group: tmp.group
