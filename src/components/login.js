@@ -152,6 +152,30 @@ class Login extends Component {
       })
     }
 
+    //Check API
+    if (check === true) {
+      var data = await axios.post("/checkHN", {
+        HN: this.state.HN,
+        phoneNumber: this.state.phoneNumber
+      });
+      console.log(data.data);
+      if (data.data.length === 0) {
+        this.setState({
+          errorHN: { status: true, message: "HN Does not match" }
+        });
+      } else {
+        console.log(data.data[0]);
+        console.log("aaaaaa:", this.props);
+        localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
+        this.props.history.push({
+          pathname: "/Home",
+          state: {
+            HN: data.data[0].HN,
+            phoneNumber: data.data[0].phonenumber
+          }
+        });
+      }
+    }
   };
   setField = (field, value) => {
     this.setState({ [field]: value });

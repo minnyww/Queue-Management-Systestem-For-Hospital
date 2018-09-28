@@ -10,7 +10,7 @@ const profile = props => {
   return (
     <div>
       <center>
-        <Card style={{ height: "30%", width: '90%' }} color='green'>
+        <Card style={{ height: "30%", width: '90%' }} color='blue'>
           <Card.Content>
             {/* <Card.Header></Card.Header> */}
             <Card.Meta>{props.getPatientData()}</Card.Meta>
@@ -23,10 +23,8 @@ const profile = props => {
                 center
                 styles={{ modal: { width: 800 } }}
                 open={props.showIsModal} style={style}
-                onClose={() => setField("showIsModal", false)}
-              >
-
-                <Table celled style={{ width: "40", marginTop: '5%' }} color='teal'>
+                onClose={() => setField("showIsModal", false)}>
+                <Table celled style={{ width: "40", marginTop: '10%' }} color='teal'>
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell colSpan='4'>Appointment Table</Table.HeaderCell>
@@ -41,18 +39,10 @@ const profile = props => {
                     </Table.Row>
                   </Table.Header>
                   {props.showAppointment()}
-                  {/* <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>1</Table.Cell>
-                      <Table.Cell>14 สิงหาคม 2561 10.00-11.00 น.</Table.Cell>
-                      <Table.Cell>พรภวิษย ์ ศิริราภา</Table.Cell>
-                      <Table.Cell>กุมารเวช</Table.Cell>
-                    </Table.Row>
-                  </Table.Body> */}
                 </Table>
               </Modal>
             </Card.Description>
-          </Card.Content>{" "}
+          </Card.Content>
         </Card>
       </center>
       {/* <Header size="medium">คิวของท่าน</Header>
@@ -65,30 +55,48 @@ const profile = props => {
             <Card.Content>
               <Card.Header>คิวปัจจุบัน</Card.Header>
               <Card.Description>
-                <Statistic size="huge">
+                <Statistic size="huge" color='blue'>
                   <Statistic.Value>{props.queueData.currentQueue}</Statistic.Value>
                 </Statistic>
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
               <Card.Header>คิวที่รอ</Card.Header>
-              {props.queueData.currentQueue - props.queueData.queueId < 0 ? '0' : props.queueData.currentQueue - props.queueData.queueId
-                || props.queueData.currentQueue - props.queueData.queueId === NaN ? '' : ''
-              }
+              <Statistic size="mini" >
+                <Statistic.Value>
+                  {props.queueData.queueId - props.queueData.currentQueue < 0 ? '0' : props.queueData.queueId - props.queueData.currentQueue
+                    || props.queueData.queueId - props.queueData.currentQueue === NaN ? '0' : '0'
+                  }
+
+                </Statistic.Value>
+                <Statistic.Value>
+                  Queues
+                </Statistic.Value>
+              </Statistic>
             </Card.Content>
           </Card>
           <Card color='teal'>
             <Card.Content>
               <Card.Header>คิวของท่าน</Card.Header>
               <Card.Description>
-                <Statistic size="huge">
+                <Statistic size="huge" color='teal'>
                   <Statistic.Value>{props.queueData.queueId}</Statistic.Value>
                 </Statistic>
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
               <Card.Header>เวลาที่รอ</Card.Header>
-              {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + ` Min` : '' }
+              <Statistic size='mini'>
+                <Statistic.Value>
+                  {/* {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + '' : '' } */}
+                  {parseInt(props.queueData.avgtime).toFixed(0) === NaN ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
+                }
+
+                </Statistic.Value>
+                <Statistic.Value>
+                  Mins
+                </Statistic.Value>
+              </Statistic>
             </Card.Content>
           </Card>
         </Card.Group>

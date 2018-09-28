@@ -87,9 +87,17 @@ const Queue = props => {
               <Header textAlign="center">Queue</Header>
             </Segment>
             {props.showPatient()}
+            {props.renderModal()}
           </Segment.Group>
-          {listQueue(props)}
-
+          {/* {listQueue(props)} */}
+          <Segment.Group id="boxLab">
+            <Segment inverted color="teal">
+              <Header textAlign="center">
+                Lab Wait
+              </Header>
+            </Segment>
+            {props.showPatientLabQueue()}
+          </Segment.Group>
           <center>
             <Button color="blue" onClick={() => setField("modalIsOpen", true)}>
               Add Patient
@@ -149,13 +157,10 @@ const Queue = props => {
           </center>
           <center>
             <br />
-            <Button primary onClick={() => { props.callPatient()}} >
+            <Button primary onClick={() => { props.callPatient() }} >
               Call
             </Button>
             
-
-            {/* {goBack(props)} */}
-
             <Menu vertical>
               <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>
@@ -165,7 +170,7 @@ const Queue = props => {
                         Forward To
                       </p>
                       <Modal
-                        styles={{ modal: { width: 800, top: '10%' } }}
+                        styles={{ modal: { width: 800, } }}
                         open={props.showModal}
                         onClose={() => setField("showModal", false)}
                       >

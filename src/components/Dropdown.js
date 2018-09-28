@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 
 
 const DropdownQueue = props => {
-
-
   return (
     <div>
       <Menu compact style={{ marginLeft: "3%" }}>
@@ -17,18 +15,14 @@ const DropdownQueue = props => {
             options={type}
             simple
             item
-            value={props.type}
-          />
-
+            value={props.type} />
           <Dropdown
             placeholder="Department"
             options={props.departments}
             simple
             item
             value={props.departmentId}
-            disabled
-          />
-
+            disabled />
           <Dropdown
             placeholder="Doctor"
             options={props.doctors}
@@ -37,8 +31,7 @@ const DropdownQueue = props => {
             value={props.doctorId}
             onChange={async (e, { value }) => {
               props.chooseDoctor(value);
-            }}
-          />
+            }} />
         </Dropdown.Menu>
       </Menu>
     </div>
@@ -51,11 +44,11 @@ const type = [
     text: <Link to={"/Adminhome"}>Queue </Link>,
     value: "Queue"
   },
-  {
-    key: 2,
-    text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
-    value: "คัดกรองผู้ป่วย"
-  },
+  // {
+  //   key: 2,
+  //   text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
+  //   value: "คัดกรองผู้ป่วย"
+  // },
   {
     key: 3,
     text: <Link to={"/Appointment"}>Appointment</Link>,

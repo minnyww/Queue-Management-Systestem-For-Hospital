@@ -3,7 +3,7 @@ import Homeuser from './containners/Homeuser';
 import App from './App';
 import Admin from './containners/Admin';
 import Adminhome from './containners/Adminhome';
-import Adminfilter from './containners/Adminfilter';
+import Adminfilter from './../src/bin/Adminfilter';
 import Home from './containners/Home';
 import Appointment from './containners/Appointment'
 import {

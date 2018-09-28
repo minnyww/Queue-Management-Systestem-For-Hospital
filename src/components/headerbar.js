@@ -3,7 +3,7 @@ import { Segment,Header } from 'semantic-ui-react'
 
 const headerbar = () => (
   <Segment raised inverted color='blue'>
-    <Header as='h2' textAlign='right'>Queue Management System</Header>
+    <Header as='h2' textAlign='left'>Queue Management System</Header>
   </Segment>
 )
 
