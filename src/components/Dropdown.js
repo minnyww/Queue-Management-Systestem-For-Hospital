@@ -44,11 +44,11 @@ const type = [
     text: <Link to={"/Adminhome"}>Queue </Link>,
     value: "Queue"
   },
-  {
-    key: 2,
-    text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
-    value: "คัดกรองผู้ป่วย"
-  },
+  // {
+  //   key: 2,
+  //   text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
+  //   value: "คัดกรองผู้ป่วย"
+  // },
   {
     key: 3,
     text: <Link to={"/Appointment"}>Appointment</Link>,

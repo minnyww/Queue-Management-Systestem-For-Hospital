@@ -260,7 +260,7 @@ class Appointment extends Component {
     const currentDate = new Date(this.state.Date)
     const getDayDate = currentDate.getDate();
     let tmp = this.state.appointmentDepId.split("/")
-    
+
     const data = await axios.post("/addAppointment", {
       date: new Date(this.state.Date).getDate(),
       day: date.day,
@@ -272,10 +272,14 @@ class Appointment extends Component {
       roomId: tmp[1],
       HN
     });
-    
+
     await this.getEvents()
     await this.setState({
-      open: false
+      open: false,
+      startTime: '',
+      endTime: ' ',
+      HN: ''
+
     });
     await this.getAppointment()
     console.log("เข้า DB");
@@ -305,7 +309,7 @@ class Appointment extends Component {
           <Header as='h2' style={{ borderBottom: '1px solid black', marginTop: 5, width: '28%' }}>
             Information
           </Header>
-          { console.log(data)}
+          {console.log(data)}
 
           <List divided relaxed style={{ padding: '10px' }}>
             <List.Item>
@@ -363,7 +367,7 @@ class Appointment extends Component {
       .then(async (willDelete) => {
         if (willDelete) {
           await this.deleteAppointment()
-          
+
         }
       });
     return swl
@@ -390,7 +394,7 @@ class Appointment extends Component {
     this.setState({
       openDetail: false,
     })
-    
+
     axios.delete(`/deleteAppointment/${this.state.selectEvent}`)
       .then(resp => {
         console.log('success')

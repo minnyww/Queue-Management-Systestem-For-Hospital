@@ -119,7 +119,7 @@ class Adminhome extends Component {
       year: date.year,
       departmentId: this.state.departmentId
     });
-    console.log(doctors)
+    
     const doctorsOption = this.dropdownDoctors(doctors);
 
     var datas = await axios.get(`/getQueue/${doctors.data[0].roomId}`);
