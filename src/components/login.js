@@ -35,9 +35,7 @@ class Login extends Component {
     errorPhoneNumber: { status: false, message: "" },
     errorOTP: {status: false, message:""}
   };
-  componentWillUpdate(nextProps,nextState){
 
-  }
   showOTPModal = async () => {
     const recipient = await this.cutPhoneNumber()
     const OTP = await this.generateOTP()
