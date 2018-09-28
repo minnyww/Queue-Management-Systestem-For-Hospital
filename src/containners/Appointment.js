@@ -20,6 +20,7 @@ import BigCalendar from "react-big-calendar";
 import FormAddAppointment from "../components/formAddAppointment";
 
 import ModalDetailAppointment from "../components/modalDetailAppointment";
+import { consolidateStreamedStyles } from "styled-components";
 
 BigCalendar.momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(BigCalendar);
@@ -79,8 +80,6 @@ class Appointment extends Component {
       departmentId,
       userType: type
     })
-
-
     const date = this.pharseDate();
     const doctors = await axios.post(`/getListDoctor`, {
       day: date.day,
@@ -169,9 +168,9 @@ class Appointment extends Component {
     this.setState({
       events: nextEvents
     });
-    console.log(updatedEvent.start.toString().substr(0,24))
+    console.log(updatedEvent.start.toString().substr(0, 24))
     // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
-    swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0,24)}`, "success");
+    swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
 
 
     var month = new Array(
@@ -244,6 +243,16 @@ class Appointment extends Component {
     }
   };
 
+
+
+  getAppointment = async () => {
+    var { data } = await axios.get(`/getAppointment/${this.state.departmentId}`)
+    this.setState({
+      appointment: data,
+    })
+    console.log(this.state.appointment)
+  }
+
   addAppoinment = async () => {
 
     const date = this.pharseDate();
@@ -251,7 +260,8 @@ class Appointment extends Component {
     const currentDate = new Date(this.state.Date)
     const getDayDate = currentDate.getDate();
     let tmp = this.state.appointmentDepId.split("/")
-    await axios.post("/addAppointment", {
+    
+    const data = await axios.post("/addAppointment", {
       date: new Date(this.state.Date).getDate(),
       day: date.day,
       month: date.month,
@@ -262,21 +272,12 @@ class Appointment extends Component {
       roomId: tmp[1],
       HN
     });
-
-    this.setState({
-      events: [
-        ...events,
-        {
-          start: new Date(
-            `${date.month} ${getDayDate}, ${date.year} ${this.checkTimeFormat(startTime)}`),
-          end: new Date(
-            `${date.month} ${getDayDate}, ${date.year} ${this.checkTimeFormat(endTime)}`
-          ),
-          title: HN
-        }
-      ],
+    
+    await this.getEvents()
+    await this.setState({
       open: false
     });
+    await this.getAppointment()
     console.log("เข้า DB");
     console.log(this.state.events)
   };
@@ -301,10 +302,10 @@ class Appointment extends Component {
     tmp = appointment.filter(data => data.appointmentId === selectEvent)
       .map((data, index) => {
         return <div key={index}>
-
           <Header as='h2' style={{ borderBottom: '1px solid black', marginTop: 5, width: '28%' }}>
             Information
           </Header>
+          { console.log(data)}
 
           <List divided relaxed style={{ padding: '10px' }}>
             <List.Item>
@@ -341,7 +342,7 @@ class Appointment extends Component {
             </List.Item>
           </List>
           <Icon name="trash" size='small' color="red" style={{ marginLeft: '90%', fontSize: '16px' }}
-          // onClick={() => this.deleteAppointment()}
+            onClick={() => this.openConfirm()}
           >
             delete
           </Icon>
@@ -350,13 +351,57 @@ class Appointment extends Component {
     return tmp
   }
 
-  // deleteAppointment = async () => {
-  //   console.log("เข้า ลบ")
-  //   console.log(this.state.selectEvent)
-  //   await axios.delete("/deleteAppointment", {
-  //     appointmentId: this.state.selectEvent
-  //   });
-  // }
+  openConfirm = () => {
+    console.log('เข้า Confirm')
+    let swl = ''
+    swl = swal({
+      title: "Are you sure?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      .then(async (willDelete) => {
+        if (willDelete) {
+          await this.deleteAppointment()
+          
+        }
+      });
+    return swl
+  }
+  getEvents = async () => {
+    console.log('เข้า get Eve')
+    var { data } = await axios.get(`/getAppointment/${this.state.departmentId}`)
+    const appData = data.map(app => {
+      return {
+        start: new Date(`${app.month} ${app.date}, ${app.year} ${app.timeStart}`),
+        end: new Date(`${app.month} ${app.date}, ${app.year} ${app.timeEnd}`),
+        title: app.HN,
+        id: app.appointmentId
+      }
+    })
+    this.setState({
+      events: appData,
+    })
+  }
+
+  deleteAppointment = () => {
+    console.log("เข้า ลบ")
+
+    this.setState({
+      openDetail: false,
+    })
+    
+    axios.delete(`/deleteAppointment/${this.state.selectEvent}`)
+      .then(resp => {
+        console.log('success')
+        this.getEvents()
+        swal("Poof! Your imaginary file has been deleted!", {
+          icon: "success",
+        });
+      }).catch(err => {
+        console.log('error')
+      })
+  }
 
 
   validateHN = async () => {

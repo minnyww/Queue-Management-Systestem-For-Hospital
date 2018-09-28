@@ -7,7 +7,7 @@ import axios from "./../lib/axios";
 import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label,
+  Table, Radio, Button, TextArea, Label, Divider
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
@@ -318,7 +318,7 @@ class Adminhome extends Component {
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
-          <List
+          <List key={i}
             divided
             horizontal
             style={{
@@ -771,25 +771,30 @@ class Adminhome extends Component {
   //------------------------------------------------------
   showDropdownDepartment = () => {
     let tmp = <div>
-      <Menu compact style={{ width: "100%", maxWidth: "100%", minWidth: '100%' }}>
-        <Dropdown.Menu>
-
-          <Dropdown
-            style={{ maxWidth: '50%', minWidth: '50%' }}
-            simple
-            item
+      <center>
+        <Menu compact style={{ width: '100%' }}>
+          {/* <Dropdown.Menu>  */}
+          <Dropdown style={{ border: 'none', maxWidth: '30%', minWidth: '30%', margin: '1px' }}
+            // style={{ maxWidth: '50%', minWidth: '50%' }}
+            // simple
+            // item
+            // fluid
+            selection
             placeholder="Department/Lab"
             options={labOrDepartment}
             onChange={async (e, { value }) => {
               this.setState({ forwardType: value })
             }} />
-          <Dropdown
+          <Dropdown style={{ border: 'none', maxWidth: '35%', minWidth: '35%', margin: '1px' }}
             disabled={
               this.state.forwardType === "Department" || this.state.forwardType === "Lab" ? false : true
             }
-            style={{ maxWidth: '40%', minWidth: '40%' }}
-            simple
-            item
+            // style={{ maxWidth: '40%', minWidth: '40%' }}
+            // simple
+            // item
+            // fluid
+            search
+            selection
             placeholder="Department or Lab"
             options={this.state.forwardType === "Department" ? this.state.allDepartment : this.state.allLab}
             onChange={async (e, { value }) => {
@@ -799,11 +804,14 @@ class Adminhome extends Component {
               })
             }} />
           <br />
-          <Dropdown
-            style={{ maxWidth: '60%', minWidth: '60%' }}
+          <Dropdown style={{ border: 'none', margin: '1px', maxWidth: '35%', minWidth: '34%' }}
+            // style={{ maxWidth: '60%', minWidth: '60%' }}
             disabled={this.state.forwardRoomAndDoctors.length === 0}
-            simple
-            item
+            // simple
+            // item
+            // fluid
+            search
+            selection
             placeholder="Room and Doctor"
             options={this.state.forwardRoomAndDoctors}
             onChange={async (e, { value }) => {
@@ -811,19 +819,11 @@ class Adminhome extends Component {
                 forwardDoctorId: value,
               })
             }} />
-        </Dropdown.Menu >
-
-        <Menu.Menu position='right'>
-          <Menu.Item>
-            <Button color="teal"
-              onClick={() => { this.addMoreForward(); }}>
-              Confirm
-              </Button>
-          </Menu.Item>
-        </Menu.Menu>
-
-      </Menu >
-      <br />
+          {/* </Dropdown.Menu > */}
+        </Menu >
+      </center>
+     
+      
       <TextArea
         style={{
           height: '100px', width: "60%", padding: "10px",
@@ -834,8 +834,12 @@ class Adminhome extends Component {
         onChange={async (e, { value }) => {
           this.setField("forwardMessage", value);
         }} />
-      <br />
       <center>
+        <Button color="teal" style={{ marginTop: '2%' }}
+          onClick={() => { this.addMoreForward(); }}>
+          Add to List
+        </Button>
+        <Divider horizontal>Or</Divider>
         <Label color='teal' style={{ marginRight: '2%' }}>ต้องการให้คนไข้กลับมาที่ห้องเดิมหรือเสร็จสิ้น</Label>
         <Radio
           style={{ paddingRight: '40px' }}
@@ -857,6 +861,7 @@ class Adminhome extends Component {
           }} >
         </Radio>
       </center>
+
     </div >
     return tmp
   }
@@ -888,7 +893,7 @@ class Adminhome extends Component {
       .then((willDelete) => {
         if (willDelete) {
           this.deleteListForward(i)
-          swal("Poof! Your imaginary file has been deleted!", {
+          swal("List has been deleted!", {
             icon: "success",
           });
         }

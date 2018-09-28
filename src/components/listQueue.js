@@ -170,7 +170,7 @@ const Queue = props => {
                         Forward To
                       </p>
                       <Modal
-                        styles={{ modal: { width: 800, top: '10%' } }}
+                        styles={{ modal: { width: 800, } }}
                         open={props.showModal}
                         onClose={() => setField("showModal", false)}
                       >
