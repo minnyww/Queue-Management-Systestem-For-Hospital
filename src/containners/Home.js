@@ -180,7 +180,7 @@ class Home extends Component {
       NotificationManager.warning('เหลืออีก 5 คิว')
       this.setState({ textmessage: "เหลืออีก 5 คิว" })
     }
-    // this.sendText()
+    this.sendText()
   }
 
   sendText = async () => {
