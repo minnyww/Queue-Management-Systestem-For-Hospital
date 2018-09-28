@@ -23,10 +23,12 @@ class Home extends Component {
     allAppointment: [],
 
     getDataPatient: [],
-
-    avgTime: 0
+    recipient: '',
+    textmessage: '',
+    dataPhoneNumber:'',
+    avgTime: 0,
   };
-
+  
   componentWillMount = async () => {
     const getUserData = JSON.parse(localStorage.getItem('getUserData'))
     this.setState({
@@ -44,6 +46,7 @@ class Home extends Component {
     });
     
     let tmp = {};
+    let dataAllStepQueue = []
     if (dataQueue.data.length !== 0) {
       tmp = dataQueue.data[0];
 
@@ -53,25 +56,51 @@ class Home extends Component {
         if (currentQueue.data.length !== 0) {
           tmp.currentQueue = currentQueue.data[0].queueId;
         }
+        let data = await axios.post(`/getAllStepQueue`, {
+          HN: this.state.HN,
+          group: tmp.group
+        })
+        dataAllStepQueue = data.data
       }
     }
 
-    var dataAllStepQueue = await axios.post(`/getAllStepQueue`, {
-      HN: this.state.HN,
-      group: tmp.group
-    })
+    // var dataAllStepQueue = await axios.post(`/getAllStepQueue`, {
+    //   HN: this.state.HN,
+    //   group: tmp.group
+    // })
 
     var dataAllAppointment = await axios.post(`/getAllAppointment`, {
       HN: this.state.HN,
     })
+    
+    var dataPhone = await axios.post(`/getPhoneNumber`,{
+      HN: this.state.HN,
+    })
+
+    
     this.setState({
       queueData: tmp,
-      allStepQueue: dataAllStepQueue.data,
-      allAppointment: dataAllAppointment.data
+      allStepQueue: dataAllStepQueue,
+      allAppointment: dataAllAppointment.data,
+      dataPhoneNumber: dataPhone.data[0].phonenumber
+    })
+    
+    console.log(this.state.patientData)
+    this.cutPhoneNumber();
+    this.setState({
+      recipient: this.cutPhoneNumber()
     })
     this.sendNotification();
   }
 
+  cutPhoneNumber = () =>{
+    let phone = "";
+    var number = this.state.dataPhoneNumber
+    let tmp = "+66"
+    phone = number.substr(1,10)
+    let recipient = tmp + phone
+    return recipient;
+  }
 
   getPatientData = () => {
     const datas = this.state.patientData;
@@ -137,25 +166,37 @@ class Home extends Component {
     if (tmp === 0) {
       console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
+      this.setState({textmessage:"ถึงคิว"})
     } else if(tmp === 1) {
       console.log("เหลืออีก 1 คิว")
       NotificationManager.warning('เหลืออีก 1 คิว')
+      this.setState({ textmessage:"เหลืออีก 1 คิว"})
     } else if (tmp === 3) {
       console.log("เหลืออีก 3 คิว")
       NotificationManager.warning('เหลืออีก 3 คิว')
+      this.setState({ textmessage: "เหลืออีก 3 คิว" })
     } else if (tmp === 5) {
       console.log("เหลืออีก 5 คิว")
       NotificationManager.warning('เหลืออีก 5 คิว')
+      this.setState({ textmessage: "เหลืออีก 5 คิว" })
     }
-    //เอา queue ออกมาว่ามีกี่ queue
-    //เอา /getCurrentQueue/:roomId ลบ Queue user เหลือเท่าไหร่
-    //เช็ค docterId , roomId , statusId , group , HN
+    // this.sendText()
+  }
+
+  sendText = async () => {
+    const recipient = this.state.recipient
+    const textmessage = this.state.textmessage
+
+    const resp = await axios.post('/sendText', {
+      recipient: recipient,
+      textmessage: textmessage
+    })
+    console.log(resp)
   }
 
   render() {
-    console.log(this.state.queueData.currentQueue)
-    console.log(this.state.queueData.queueId - this.state.queueData.currentQueue)
-    console.log(this.state.allAppointment)
+
+    console.log("state",this.state)
     return (
       <div>
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
