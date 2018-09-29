@@ -172,8 +172,9 @@ const Queue = props => {
                       <Modal
                         styles={{ modal: { width: 800, } }}
                         open={props.showModal}
-                        onClose={() => setField("showModal", false)}
-                      >
+                        onClose={() => 
+                          setField("showModal", false)
+                        }>
                         <br />
                         <br />
                         <Table color='teal' >

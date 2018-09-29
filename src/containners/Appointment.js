@@ -224,7 +224,6 @@ class Appointment extends Component {
         ? { ...existingEvent, start, end }
         : existingEvent;
     });
-
     this.setState({
       events: nextEvents
     });
@@ -242,9 +241,6 @@ class Appointment extends Component {
       return t;
     }
   };
-
-
-
   getAppointment = async () => {
     var { data } = await axios.get(`/getAppointment/${this.state.departmentId}`)
     this.setState({
@@ -367,7 +363,6 @@ class Appointment extends Component {
       .then(async (willDelete) => {
         if (willDelete) {
           await this.deleteAppointment()
-
         }
       });
     return swl
@@ -390,11 +385,9 @@ class Appointment extends Component {
 
   deleteAppointment = () => {
     console.log("เข้า ลบ")
-
     this.setState({
       openDetail: false,
     })
-
     axios.delete(`/deleteAppointment/${this.state.selectEvent}`)
       .then(resp => {
         console.log('success')
@@ -426,7 +419,6 @@ class Appointment extends Component {
       <div style={{ width: '100%' }}>
         <Headerbar />
         <DropdownQueue />
-
         <Modal
           center
           styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
@@ -447,26 +439,16 @@ class Appointment extends Component {
             setField={this.setField}
             addAppoinment={this.addAppoinment}
             checkTimeFormat={this.checkTimeFormat}
-            validateHN={this.validateHN}
-
-          />
+            validateHN={this.validateHN} />
         </Modal>
-
-
         <Modal
           center
           styles={{ modal: { width: 500, top: "30%" } }}
           open={this.state.openDetail}
           onClose={() => this.setField("openDetail", false)}>
           <ModalDetailAppointment
-            showPatientDescription={this.showPatientDescription}
-          />
-
-
+            showPatientDescription={this.showPatientDescription} />
         </Modal>
-
-
-
         <center>
           {!this.state.loading &&
             <DragAndDropCalendar
@@ -484,7 +466,6 @@ class Appointment extends Component {
               onEventResize={this.resizeEvent}
               defaultView={BigCalendar.Views.MONTH}
               defaultDate={this.state.date}
-              // onSelectEvent={event => alert(event.title + event.start)}
               onSelectEvent={e => this.showDetailAppointment(e)}
               onSelectSlot={this.handleSelect}
             />}
