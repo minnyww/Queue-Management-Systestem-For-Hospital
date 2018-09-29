@@ -231,9 +231,8 @@ class Login extends Component {
   }
 
   render() {
-    console.log(this.state)
     console.log(this.OTPfield)
-    console.log(this.generateOTP())
+    // console.log(this.generateOTP())
     return (
       <div>
         <center>
