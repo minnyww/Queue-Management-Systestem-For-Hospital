@@ -62,6 +62,10 @@ const listQueue = props => {
   return tmp;
 };
 
+const forward = (props) => {
+  props.setField("showModal", true)
+  props.forwardList(props.currentQueue)
+}
 // const goBack = props => {
 //   let tmp = "";
 //   if (props.userType === 2) {
@@ -160,19 +164,21 @@ const Queue = props => {
             <Button primary onClick={() => { props.callPatient() }} >
               Call
             </Button>
-            
+
             <Menu vertical>
               <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>
                   <Dropdown.Item disabled={props.currentQueue.firstName === undefined ? true : false}>
                     <center>
-                      <p onClick={() => setField("showModal", true)}>
+                      <p onClick={() =>
+                        forward(props)
+                      }>
                         Forward To
                       </p>
                       <Modal
                         styles={{ modal: { width: 800, } }}
                         open={props.showModal}
-                        onClose={() => 
+                        onClose={() =>
                           setField("showModal", false)
                         }>
                         <br />

@@ -73,18 +73,24 @@ class Adminhome extends Component {
     index: 0,
     showMsg: 0,
 
-    editList: false
+    editList: false,
+
+    loginName: '',
+    addForwardNew: false
 
   };
 
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
-    console.log(empId, departmentId, type)
+    const userData = JSON.parse(localStorage.getItem('userData'))
+    // console.log(empId, departmentId, type, userData)
     this.setState({
       nurseId: empId,
       departmentId,
-      userType: type
+      userType: type,
+      loginName: userData
     });
+
     var dataPatient = await axios.get(`/getPatient`);
     // Modal.setAppElement("body");
 
@@ -127,6 +133,7 @@ class Adminhome extends Component {
     var dataLabQueue = await axios.get(`/getListLabQueue`);
     const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${doctorsOption[0].value}`);
 
+
     this.setState({
       currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0],
       doctorList: doctors.data,
@@ -144,13 +151,28 @@ class Adminhome extends Component {
         day: date.day,
         month: date.month,
         year: date.year
-      }
+      },
     })
     this.updateAvgTime()
+    this.forwardList(currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0])
+
     console.log(this.state.labQueues)
   };
   //สิ้นสุด Willmount
+  forwardList = async (currentQueue) => {
+    console.log(currentQueue)
+    const forwardList = await axios.post('/getAllStepQueue', {
+      HN: currentQueue.length === 0 ? '' : currentQueue.HN,
+      group: currentQueue.length === 0 ? '' : currentQueue.group
+    })
+    console.log(forwardList)
+    this.setState({
+      forwardDepartments: forwardList.data.length <= 1 ? [] : forwardList.data,
+      addForwardNew: this.state.forwardDepartments.length > 0 ? true : false
 
+    })
+    return forwardList.data
+  }
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
@@ -276,7 +298,8 @@ class Adminhome extends Component {
           nurseId: this.state.nurseId,
           departmentId: this.state.departmentId,
           //CHECK ว่า กดจากตรงไหน Forward Function หรือ Add Function 
-          queueDefault: 'queueDefault'
+          queueDefault: 'queueDefault',
+          step: 1
           // forward: this.state.forward,
           // date: this.state.Date,
         });
@@ -407,13 +430,10 @@ class Adminhome extends Component {
   };
   //getLab queue
   getLabQueue = async roomId => {
-    console.log(roomId)
     const datas = await axios.get(`/getLabQueue/${roomId}`);
     this.setState({
       labQueues: datas.data
     });
-    console.log(datas.data)
-    console.log(this.state.labQueues)
   };
   //-----------
   callPatient = async () => {
@@ -621,86 +641,182 @@ class Adminhome extends Component {
   forward = async () => {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
+    debugger
     const date = this.pharseDate();
     let doctorAndRoom
-    if (this.state.forwardComeback === true) {
-      if (this.state.forwardDepartments.length > 0) {
-        this.state.forwardDepartments.map(async (forward, i) => {
-          doctorAndRoom = forward.doctorId.split("/");
+    console.log(this.state.forwardDepartments)
+    // if (this.state.forwardComeback === true) {
+    if (this.state.forwardDepartments.length > 0) {
+      let stepCurrent = null;
+      let updateWaitStatus = false
+      this.state.forwardDepartments.map(async (forward, i) => {
+        debugger
+        console.log('forward.step ', forward.step)
+        if (forward.statusId === 3) {
+          stepCurrent = forward.step
+        }
+        console.log('stepCurrent ', stepCurrent)
+        if (this.state.addForwardNew) {
+          if (forward.addStatus) {
+            //แทรกเข้า db >> add ตัวที่ addstatus เป้น true ต้องรู้ว่าอยู่ i ที่เท่าไหร่ หลังจากนั้นให้อัพเดทเพิ่มเข้าไป (step + เพิ่ม) 
+            let tmp = {
+              roomId: forward.roomId,
+              day: date.day,
+              month: date.month,
+              year: date.year,
+              statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
+              // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+              HN: this.state.currentQueue.HN,
+              doctorId: forward.doctorId,
+              forward: forward.message,
+              nurseId: this.state.nurseId,
+              departmentId: forward.departmentId,
+              queueDefault: 'forwardType',
+              groupId: this.state.currentQueue.group,
+              roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+              step: i + 1
+              // date: this.state.Date,
+              // timeFormat: time,
+            }
+            if(tmp.statusId === 1) {
+              updateWaitStatus = true
+            }
+            console.log("forward", forward, tmp)
+            //uppdate step สร้าง axios เพิ่ม เอา i ไป 
+            // for (let j = i; j < this.state.forwardDepartments.length; j++) {
+            // j = 2; j < 4 ; j++
+            console.log("currentQueue I ", this.state.currentQueue, i)
+            await axios.post("/updateStep", {
+              // step: j + 2,
+              // // step = 2+2 =4
+              index: i,
+              group: tmp.groupId
+
+            });
+            await axios.post("/addPatientQ", tmp);
+
+            // }
+          }
+        } else {
+          // ไม่มีการอัพเดต (add แรกปกติ)
           let tmp = {
-            roomId: doctorAndRoom[1],
+            roomId: forward.roomId,
             day: date.day,
             month: date.month,
             year: date.year,
             statusId: i === 0 ? 1 : 5,
             HN: this.state.currentQueue.HN,
-            doctorId: doctorAndRoom[0],
+            doctorId: forward.doctorId,
             forward: forward.message,
             nurseId: this.state.nurseId,
             departmentId: forward.departmentId,
             queueDefault: 'forwardType',
             groupId: this.state.currentQueue.group,
-            roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null
+            roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+            step: i + 2
             // date: this.state.Date,
             // timeFormat: time,
           }
           console.log("forward", forward, tmp)
-          await axios.post("/addPatientQ", tmp);
+          await axios.post("/addPatientQ", tmp)
           this.getLabQueue(this.state.roomId)
-
-        })
-      }
-    } else {
-      if (this.state.forwardDepartments.length > 0) {
-        this.state.forwardDepartments.map(async (forward, i) => {
-          doctorAndRoom = forward.doctorId.split("/");
-          let tmp = {
-            roomId: doctorAndRoom[1],
-            // date: this.state.Date,
-            day: date.day,
-            month: date.month,
-            year: date.year,
-            // timeFormat: time,
-            statusId: i === 0 ? 1 : 5,
-            HN: this.state.currentQueue.HN,
-            doctorId: doctorAndRoom[0],
-            forward: forward.message,
-            nurseId: this.state.nurseId,
-            departmentId: forward.departmentId,
-            queueDefault: 'forwardType',
-            groupId: this.state.currentQueue.group,
-            roomBack: null
-
-          }
-          console.log("forward", forward, tmp)
-          await axios.post("/addPatientQ", tmp);
-        })
-      }
+        }
+        //updateStatus
+        if(stepCurrent && forward.step === stepCurrent + 1 && forward.status != 1 && !updateWaitStatus){
+           console.log('update status ',stepCurrent , forward)
+          await axios.post("/updateStatus", {
+            // HN: this.state.currentQueue.HN,
+            statusId: 1,
+            // queueId: this.state.currentQueue.queueId,
+            runningNumber: forward.runningNumber
+          });
+        }
+      })
+      // update status currentQ = 4
+      await axios.post("/updateQueue", {
+        date: this.state.Date,
+        HN: this.state.currentQueue.HN,
+        statusId: 4,
+        queueId: this.state.currentQueue.queueId,
+        runningNumber: this.state.currentQueue.runningNumber
+      });
+      this.setState({
+        currentQueue: {},
+        showModal: false,
+        HN: "",
+        forward: "",
+        forwardDepartments: []
+      })
     }
-    // update status currentQ = 4
-    await axios.post("/updateQueue", {
-      date: this.state.Date,
-      HN: this.state.currentQueue.HN,
-      statusId: 4,
-      queueId: this.state.currentQueue.queueId,
-      runningNumber: this.state.currentQueue.runningNumber
-    });
-    this.setState({
-      currentQueue: {},
-      showModal: false,
-      HN: "",
-      forward: "",
-      forwardDepartments: []
-    })
+    // } 
+    // else {
+    //   if (this.state.forwardDepartments.length > 0) {
+    //     this.state.forwardDepartments.map(async (forward, i) => {
+    //       if (forward.addStatus) {
+    //         //แทรกเข้า db >> add ตัวที่ addstatus เป้น true ต้องรู้ว่าอยู่ i ที่เท่าไหร่ หลังจากนั้นให้อัพเดทเพิ่มเข้าไป (step + เพิ่ม) 
+    //         let tmp = {
+    //           roomId: forward.roomId,
+    //           day: date.day,
+    //           month: date.month,
+    //           year: date.year,
+    //           statusId: i === 0 ? 1 : 5,
+    //           HN: this.state.currentQueue.HN,
+    //           doctorId: forward.doctorId,
+    //           forward: forward.message,
+    //           nurseId: this.state.nurseId,
+    //           departmentId: forward.departmentId,
+    //           queueDefault: 'forwardType',
+    //           groupId: this.state.currentQueue.group,
+    //           roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+    //           step: i + 2
+    //           // date: this.state.Date,
+    //           // timeFormat: time,
+    //         }
+    //         console.log("forward", forward, tmp)
+    //         await axios.post("/addPatientQ", tmp);
+    //         //uppdate step สร้าง axios เพิ่ม เอา i ไป 
+    //         for (let j = i; j < this.state.forwardDepartments.length; j++) {
+    //           await axios.post("/updateStep", {
+    //             step: j + 2,
+    //             group: this.state.currentQueue.group
 
-  };
+    //           });
+    //         }
+
+    //       } else {
+    //         let tmp = {
+    //           roomId: forward.roomId,
+    //           // date: this.state.Date,
+    //           day: date.day,
+    //           month: date.month,
+    //           year: date.year,
+    //           // timeFormat: time,
+    //           statusId: i === 0 ? 1 : 5,
+    //           HN: this.state.currentQueue.HN,
+    //           doctorId: forward.doctorId,
+    //           forward: forward.message,
+    //           nurseId: this.state.nurseId,
+    //           departmentId: forward.departmentId,
+    //           queueDefault: 'forwardType',
+    //           groupId: this.state.currentQueue.group,
+    //           roomBack: null,
+    //           step: i + 2
+
+    //         }
+    //         console.log("forward", forward, tmp)
+    //         await axios.post("/addPatientQ", tmp);
+    //       }
+    //     })
+    //   }
+    // }
+
+    // }
+  }
 
   //show patient at lab queues
   showPatientLabQueue = () => {
     // const data = this.state.labQueues
     const data = this.state.labQueues
-    console.log(data)
-
     let tmp = "";
     let dataQueue = this.state.queues.map(queue => (queue.HN))
     let dataCurrentQueue = this.state.currentQueue.HN
@@ -749,14 +865,19 @@ class Adminhome extends Component {
   };
 
   addMoreForward = async () => {
+    console.log(this.state.forwardDoctorId)
+    console.log('forward forward', this.state.forwardDepartments)
+    let getRoomAndDoctors = this.state.forwardDoctorId.split('/')
     let tmp = {
       type: this.state.forwardType,
       departmentId: this.state.forwardDepartmentId,
-      doctorId: this.state.forwardDoctorId,
+      doctorId: getRoomAndDoctors[0],
+      roomId: getRoomAndDoctors[1],
       message: this.state.forwardMessage,
       editStatus: false,
       departmentOption: this.state.forwardType === "Department" ? this.state.allDepartment : this.state.allLab,
       doctorOption: this.state.forwardRoomAndDoctors,
+      addStatus: true
     }
     await this.setState({
       forwardDepartments: [...this.state.forwardDepartments, tmp],
@@ -819,7 +940,6 @@ class Adminhome extends Component {
         </Menu >
       </center>
 
-
       <TextArea
         style={{
           height: '100px', width: "60%", padding: "10px",
@@ -845,7 +965,12 @@ class Adminhome extends Component {
           checked={this.state.forwardComeback === true}
           onChange={async (e, { value }) => {
             this.setState({ forwardComeback: value, })
-          }} >
+          }}>
+          {/* <Dropdown
+            selection
+            option={}
+            >
+          </Dropdown> */}
         </Radio>
         <Radio
           label='Finished'
@@ -917,84 +1042,106 @@ class Adminhome extends Component {
     })
   }
   //-----------------------------------------
-  showListDepartment = () => {
-    let tmp = this.state.forwardDepartments.map((dep, i) => {
-      let getRoomAndDoctors = dep.doctorId.split('/')
-      console.log(i, dep)
-      if (!dep.editStatus) {
-        return <Table.Row key={i}>
-          <Table.Cell>{dep.type}</Table.Cell>
-          <Table.Cell>{dep.departmentId}</Table.Cell>
-          <Table.Cell >{getRoomAndDoctors[0]} / {getRoomAndDoctors[1]}</Table.Cell>
-          <Table.Cell>{dep.message}</Table.Cell>
-          <Table.Cell>
-            <Icon name='pencil' color="orange"
-              onClick={() => this.editStatus(i, true)} />
-            <Icon name="trash" color="red"
-              onClick={() => this.openConfirm(i)} />
-          </Table.Cell>
-        </Table.Row>
-      }
-      else {
-        return <Table.Row key={i}>
-          <Table.Cell>
-            <Dropdown
-              style={{ maxWidth: '50%', minWidth: '50%' }}
-              value={dep.type}
-              placeholder="Department/Lab"
-              options={labOrDepartment}
-              onChange={async (e, { value }) => {
-                dep.type = value
-                this.editForward('type', value, i)
-              }} />
-          </Table.Cell>
-          <Table.Cell>
-            <Dropdown
-              style={{ maxWidth: '40%', minWidth: '40%' }}
-              value={dep.departmentId}
-              placeholder="Department or Lab"
-              options={dep.type === "Department" ? this.state.allDepartment : this.state.allLab}
-              onChange={async (e, { value }) => {
-                this.editForward('departmentId', value, i)
-                this.editForward('doctorOption', await this.doctorInDepartment(value), i)
-              }} />
-          </Table.Cell>
-          <Table.Cell >
-            <Dropdown
-              style={{ maxWidth: '60%', minWidth: '60%' }}
-              value={dep.doctorId}
-              placeholder="Room and Doctor"
-              options={dep.doctorOption}
-              onChange={async (e, { value }) => {
-                this.editForward('doctorId', value, i)
-              }} />
-          </Table.Cell>
-          <Table.Cell>
-            <TextArea
-              placeholder="Tell us more"
-              value={dep.message}
-              onChange={async (e, { value }) => {
-                this.editForward('message', value, i)
-              }} />
-          </Table.Cell>
-          <Table.Cell>
-            <Icon name='save' color="teal"
-              onClick={() => this.editStatus(i, false, dep)} />
-            <Icon name="trash" />
-          </Table.Cell>
-        </Table.Row>
-      }
+  addList = (i) => {
+
+    this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
+    this.setState({
+      forwardDepartments: this.state.forwardDepartments,
+      addForwardNew: true
     })
-
-    return tmp
+    console.log(this.state.forwardDepartments)
   }
+  //---------------
+  showListDepartment = () => {
+    console.log(this.state.forwardDepartments)
+    if (this.state.forwardDepartments.length > 0) {
+      let tmp = this.state.forwardDepartments.map((dep, i) => {
+        // let getRoomAndDoctors = dep.doctorId.split('/')
+        console.log(i, dep)
+        let label = dep.addStatus ? <Label as='a' color='yellow' ribbon>
+          New </Label> : ''
+        if (!dep.editStatus) {
+          return <Table.Row key={i}>
+            <Table.Cell>{label}{dep.type}</Table.Cell>
+            <Table.Cell>{dep.departmentId}</Table.Cell>
+            <Table.Cell >{dep.doctorId} / {dep.roomId}</Table.Cell>
+            <Table.Cell>{dep.message}</Table.Cell>
+            <Table.Cell>
+              <Icon name='pencil' color="orange"
+                onClick={() => this.editStatus(i, true)} />
+              <Icon name="trash" color="red"
+                onClick={() => this.openConfirm(i)} />
+              <Icon name="plus" color="green"
+                onClick={() => this.addList(i)} />
+            </Table.Cell>
+          </Table.Row>
 
+        }
+        else {
+          return <Table.Row key={i}>
+            <Table.Cell>
+              <Dropdown
+                style={{ maxWidth: '50%', minWidth: '50%' }}
+                value={dep.type}
+                placeholder="Department/Lab"
+                options={labOrDepartment}
+                onChange={async (e, { value }) => {
+                  dep.type = value
+                  this.editForward('type', value, i)
+                }} />
+            </Table.Cell>
+            <Table.Cell>
+              <Dropdown
+                style={{ maxWidth: '40%', minWidth: '40%' }}
+                value={dep.departmentId}
+                placeholder="Department or Lab"
+                options={dep.type === "Department" ? this.state.allDepartment : this.state.allLab}
+                onChange={async (e, { value }) => {
+                  this.editForward('departmentId', value, i)
+                  this.editForward('doctorOption', await this.doctorInDepartment(value), i)
+                }} />
+            </Table.Cell>
+            <Table.Cell >
+              <Dropdown
+                style={{ maxWidth: '60%', minWidth: '60%' }}
+                value={dep.doctorId + '/' + dep.roomId}
+                placeholder="Room and Doctor"
+                options={dep.doctorOption}
+                onChange={async (e, { value }) => {
+                  let tmp = value.split('/')
+                  this.editForward('doctorId', tmp[0], i)
+                  this.editForward('roomId', tmp[1], i)
+                }} />
+            </Table.Cell>
+            <Table.Cell>
+              <TextArea
+                placeholder="Tell us more"
+                value={dep.message}
+                onChange={async (e, { value }) => {
+                  this.editForward('message', value, i)
+                }} />
+            </Table.Cell>
+            <Table.Cell>
+              <Icon name='save' color="green"
+                onClick={() => this.editStatus(i, false, dep)} />
+              <Icon className="cancel" color='red' />
+            </Table.Cell>
+          </Table.Row>
+        }
+
+      })
+
+      return tmp
+    }
+  }
 
 
   render() {
     return (
-      <div>
-        <Headerbar />
+      <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
+        <Headerbar
+          loginName={this.state.loginName}
+        />
         <DropdownQueue
           //state
           doctorId={this.state.doctorId}
@@ -1053,6 +1200,7 @@ class Adminhome extends Component {
           addMoreForward={this.addMoreForward}
           showListDepartment={this.showListDepartment}
           showDropdownDepartment={this.showDropdownDepartment}
+          forwardList={this.forwardList}
         // setState={this.setState}
         // setValueInArray={this.setValueInArray}
         // goBack={this.goBack}

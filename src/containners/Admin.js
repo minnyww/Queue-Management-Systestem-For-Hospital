@@ -42,7 +42,7 @@ class Admin extends Component {
                 console.log(data.data[0])
                 localStorage.setItem('userData', JSON.stringify(data.data[0]))
                 this.props.history.push({
-                    pathname: '/Adminhome'
+                    pathname: '/Main'
                 })
             }
         }

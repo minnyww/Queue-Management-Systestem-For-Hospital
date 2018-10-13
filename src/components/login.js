@@ -25,26 +25,26 @@ class Login extends Component {
     phoneNumber: "",
     recipient: '',
     textmessage: '',
-    OTP:'',
-    OTPfield:'',
+    OTP: '',
+    OTPfield: '',
     //modal
     open: false,
-    openOTP:false,
+    openOTP: false,
     //validate
     errorHN: { status: false, message: "" },
     errorPhoneNumber: { status: false, message: "" },
-    errorOTP: {status: false, message:""}
+    errorOTP: { status: false, message: "" }
   };
 
   showOTPModal = async () => {
     const recipient = await this.cutPhoneNumber()
     const OTP = await this.generateOTP()
-    await this.setState({ 
+    await this.setState({
       openOTP: true,
       recipient: recipient,
       OTP: OTP,
     })
-    
+
     const text = await this.sendOTP()
     await this.setState({
       textmessage: text,
@@ -52,21 +52,20 @@ class Login extends Component {
     console.log(this.state.textmessage)
     await this.sendText()
   }
-  
+
+
   submit = async () => {
-    // Push.create('Hello World!')
     var HN = this.state.HN;
     var phoneNumber = this.state.phoneNumber;
     var check = false;
-    
-    if(this.validateOTP()==='success'){
-      
+    if (this.validateOTP() === 'success') {
+
       if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({ errorHN: { status: false, message: "" } });
         check = true;
       } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({
-         errorHN: { status: true, message: "HN Does not match" }
+          errorHN: { status: true, message: "HN Does not match" }
         });
       }
       //Check phone number
@@ -82,8 +81,8 @@ class Login extends Component {
       ) {
         this.setState({
           errorPhoneNumber: {
-          status: true,
-          message: "Phone number limit 10 number"
+            status: true,
+            message: "Phone number limit 10 number"
           }
         });
       } else if (
@@ -114,11 +113,11 @@ class Login extends Component {
           console.log("aaaaaa:", this.props);
           localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
           this.props.history.push({
-           pathname: "/Home",
-           state: {
+            pathname: "/Home",
+            state: {
               HN: data.data[0].HN,
               phoneNumber: data.data[0].phonenumber
-           }
+            }
           });
         }
       }
@@ -126,7 +125,7 @@ class Login extends Component {
     } else if (
       this.state.OTPfield.length > 4 &&
       this.state.OTPfield.match(/[0-9]{4}/)
-      ){
+    ) {
       this.setState({
         errorOTP: { status: true, message: "OTP too long" }
       })
@@ -190,21 +189,21 @@ class Login extends Component {
     var min = 1;
     var max = 9999;
     var rand = (Math.random() * (max - min) + min) + ""
-    rand = rand.substr(0,3)
-    if(rand.length === 1){
-      rand = "000"+rand
-    } else if (rand.length === 2){
-      rand = "00"+rand
+    rand = rand.substr(0, 3)
+    if (rand.length === 1) {
+      rand = "000" + rand
+    } else if (rand.length === 2) {
+      rand = "00" + rand
     } else if (rand.length === 3) {
       rand = "0" + rand
     }
     return rand;
   }
   validateOTP = () => {
-    if(this.state.OTPfield===this.state.OTP){
+    if (this.state.OTPfield === this.state.OTP) {
       console.log("success")
       return "success";
-    }else{
+    } else {
       console.log("fail")
       return "fail";
     }
@@ -272,10 +271,10 @@ class Login extends Component {
                 <Button color="blue" type="submit">
                   Sign in
                 </Button>
-                
+
               </Form>
-              <Button style={{ marginTop: "2.5%",  }} color="teal" >
-                <Link to={"/Admin"} style ={{ color : 'white' }}>Admin</Link>
+              <Button style={{ marginTop: "2.5%", }} color="teal" >
+                <Link to={"/Admin"} style={{ color: 'white' }}>Admin</Link>
               </Button>
             </Segment>
 
@@ -295,7 +294,7 @@ class Login extends Component {
                 {this.state.errorOTP.message}
               </Message>
               <center>
-                <Button style={{ marginTop: "2.5%" }} color="blue" type="submit" onClick={()=>{this.submit()}} >
+                <Button style={{ marginTop: "2.5%" }} color="blue" type="submit" onClick={() => { this.submit() }} >
                   Verify OTP
                 </Button>
               </center>

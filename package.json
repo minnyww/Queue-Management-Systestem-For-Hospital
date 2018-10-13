@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "authy": "^1.4.0",
     "axios": "^0.18.0",
     "moment": "^2.22.0",
     "moment-range": "^4.0.1",
+    "nexmo": "^2.4.0",
     "push.js": "^1.0.7",
     "rc-datepicker": "^5.0.13",
     "react": "16.3.2",

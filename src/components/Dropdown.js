@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import { Dropdown, Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
-
-
-
 const DropdownQueue = props => {
   return (
     <div>
@@ -44,15 +41,25 @@ const type = [
     text: <Link to={"/Adminhome"}>Queue </Link>,
     value: "Queue"
   },
-  // {
-  //   key: 2,
-  //   text: <Link to={"/Adminfilter"}>คัดกรองผู้ป่วย</Link>,
-  //   value: "คัดกรองผู้ป่วย"
-  // },
   {
-    key: 3,
+    key: 2,
     text: <Link to={"/Appointment"}>Appointment</Link>,
     value: "Appointment"
-  }
+  },
+  {
+    key: 3,
+    text: <Link to={"/Timetable"}>Timetable</Link>,
+    value: "Timetable"
+  },
+  {
+    key: 4,
+    text: <Link to={"/AddOrDeleteDepartment"}>Department Management</Link>,
+    value: "Department Management"
+  },
+  {
+    key: 5,
+    text: <Link to={"/Main"}>Main</Link>,
+    value: "MainMenu"
+  },
 ];
 export default DropdownQueue;

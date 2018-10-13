@@ -85,13 +85,16 @@ class Home extends Component {
       dataPhoneNumber: dataPhone.data[0].phonenumber
     })
 
-    console.log(this.state.patientData)
+    console.log(this.state.allStepQueue)
     this.cutPhoneNumber();
     this.setState({
       recipient: this.cutPhoneNumber()
     })
     this.sendNotification();
   }
+
+
+
 
   cutPhoneNumber = () => {
     let phone = "";

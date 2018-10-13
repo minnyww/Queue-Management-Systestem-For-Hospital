@@ -6,7 +6,7 @@ import Headerbar from "./../components/headerbar";
 import DropdownQueue from "./../components/Dropdown";
 import Modal from 'react-responsive-modal';
 import swal from 'sweetalert'
-import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon } from "semantic-ui-react";
+import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon, Divider } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
 
@@ -17,8 +17,8 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
 import BigCalendar from "react-big-calendar";
-import FormAddAppointment from "../components/formAddAppointment";
 
+import FormAddAppointment from "../components/formAddAppointment";
 import ModalDetailAppointment from "../components/modalDetailAppointment";
 import { consolidateStreamedStyles } from "styled-components";
 
@@ -302,50 +302,68 @@ class Appointment extends Component {
     tmp = appointment.filter(data => data.appointmentId === selectEvent)
       .map((data, index) => {
         return <div key={index}>
-          <Header as='h2' style={{ borderBottom: '1px solid black', marginTop: 5, width: '28%' }}>
-            Information
+          <Header as='h4' style={{ marginTop: 5, fontSize: '24px' }}>
+            {data.firstName} {data.lastName}
           </Header>
+          <Label color="teal" style={{ fontSize: '13px' }}>
+            <Icon className='time' />From : {data.timeStart.substr(0, 5)} To {data.timeEnd.substr(0, 5)}
+          </Label>
           {console.log(data)}
-
-          <List divided relaxed style={{ padding: '10px' }}>
+          <List relaxed style={{ padding: '10px' }}>
             <List.Item>
               <List.Icon name='user' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">HN : {data.HN}</List.Header>
+                <List.Header as="h4">HN : {data.HN}</List.Header>
               </List.Content>
             </List.Item>
-            <List.Item>
+            {/* <List.Item>
               <List.Icon name='user' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">Name : {data.firstName} {data.lastName}</List.Header>
+                <List.Header as="h4">Name : {data.firstName} {data.lastName}</List.Header>
               </List.Content>
-            </List.Item>
+            </List.Item> */}
             <List.Item>
               <List.Icon name='doctor' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">Doctor : {data.firstname} {data.lastname}  </List.Header>
+                <List.Header as="h4">Doctor : {data.firstname} {data.lastname}  </List.Header>
               </List.Content>
             </List.Item>
             <List.Item>
               <List.Icon name='building' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">Department : {data.department}</List.Header>
+                <List.Header as="h4">Department : {data.department}</List.Header>
               </List.Content>
             </List.Item>
-            <List.Item>
+            {/* <List.Item>
               <List.Icon name='time' size='large' verticalAlign='middle' />
               <List.Content>
-                <List.Header as="h3">
+                <List.Header as="h4">
                   From : {data.timeStart.substr(0, 5)} To : {data.timeEnd.substr(0, 5)}
                 </List.Header>
               </List.Content>
-            </List.Item>
+            </List.Item> */}
           </List>
-          <Icon name="trash" size='small' color="red" style={{ marginLeft: '90%', fontSize: '16px' }}
-            onClick={() => this.openConfirm()}
-          >
-            delete
-          </Icon>
+          <Divider />
+          <center>
+            <List horizontal divided relaxed='very'>
+              <List.Item >
+                <List.Content >
+                  <List.Header  >
+                    <Icon name="pencil" size='small' style={{ fontSize: '16px' }}></Icon>
+                    Edit
+                </List.Header>
+                </List.Content>
+              </List.Item>
+              <List.Item >
+                <List.Content>
+                  <List.Header onClick={() => this.openConfirm()}>
+                    <Icon name="trash" size='small' style={{ fontSize: '16px' }}></Icon>
+                    delete
+                </List.Header>
+                </List.Content>
+              </List.Item>
+            </List>
+          </center>
         </div>
       })
     return tmp
@@ -421,7 +439,7 @@ class Appointment extends Component {
         <DropdownQueue />
         <Modal
           center
-          styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
+          styles={{ modal: { width: 700, top: '10%', borderRadius: '10px' } }}
           open={this.state.open}
           onClose={() => this.setField("open", false)}>
           <FormAddAppointment
@@ -443,7 +461,7 @@ class Appointment extends Component {
         </Modal>
         <Modal
           center
-          styles={{ modal: { width: 500, top: "30%" } }}
+          styles={{ modal: { width: 400, top: "20%", borderTop: '6px solid #00b5ad' } }}
           open={this.state.openDetail}
           onClose={() => this.setField("openDetail", false)}>
           <ModalDetailAppointment
