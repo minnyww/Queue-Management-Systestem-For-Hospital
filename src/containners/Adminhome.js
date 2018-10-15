@@ -15,6 +15,7 @@ import Modal from 'react-responsive-modal';
 
 import { extendMoment } from 'moment-range';
 import * as Moment from "moment";
+import { fail } from "assert";
 
 const moment = extendMoment(Moment);
 
@@ -160,12 +161,12 @@ class Adminhome extends Component {
   };
   //สิ้นสุด Willmount
   forwardList = async (currentQueue) => {
-    console.log(currentQueue)
+    console.log('currentQueue ', currentQueue)
     const forwardList = await axios.post('/getAllStepQueue', {
       HN: currentQueue.length === 0 ? '' : currentQueue.HN,
       group: currentQueue.length === 0 ? '' : currentQueue.group
     })
-    console.log(forwardList)
+    console.log('forwardList ', forwardList)
     this.setState({
       forwardDepartments: forwardList.data.length <= 1 ? [] : forwardList.data,
       addForwardNew: this.state.forwardDepartments.length > 0 ? true : false
@@ -641,97 +642,215 @@ class Adminhome extends Component {
   forward = async () => {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
-    debugger
     const date = this.pharseDate();
-    let doctorAndRoom
     console.log(this.state.forwardDepartments)
-    // if (this.state.forwardComeback === true) {
+    let stepCurrent = null;
+    let updateWaitStatus = false
+    let indexStep = 0;
+    let insertList = []
+    let insertIndex = null;
     if (this.state.forwardDepartments.length > 0) {
-      let stepCurrent = null;
-      let updateWaitStatus = false
-      this.state.forwardDepartments.map(async (forward, i) => {
-        debugger
-        console.log('forward.step ', forward.step)
-        if (forward.statusId === 3) {
-          stepCurrent = forward.step
+      const forwardList = await axios.post('/getAllStepQueue', {
+        HN: this.state.currentQueue.HN,
+        group: this.state.currentQueue.group
+      })
+      console.log('forwardList.data ', forwardList.data)
+      if (forwardList.data.length > 1) {
+        for (let index = 0; index < forwardList.data.length; index++) {
+          console.log('เข้า For')
+          let result = null;
+          debugger
+          if (+forwardList.data[index].roomId !== +this.state.forwardDepartments[index].roomId) {
+            console.log('+forwardList.data[index].roomId ',+forwardList.data[index].roomId)
+            this.state.forwardDepartments
+              .map(async (dep, i) => {
+                console.log(i, dep)
+                if (dep.statusId === 3) {
+                  stepCurrent = dep.step
+                }
+                if (+forwardList.data[index].roomId === +dep.roomId) {
+                  result = { index: i, step: dep.step, runningNumber: dep.runningNumber }
+                }
+                if (this.state.addForwardNew) {
+                  if (dep.addStatus) {
+                    // เจอตัวที่แทรกเข้ามาแล้ว
+                    // insertIndex = i;
+                    let tmp = {
+                      roomId: dep.roomId,
+                      day: date.day,
+                      month: date.month,
+                      year: date.year,
+                      statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
+                      // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+                      HN: this.state.currentQueue.HN,
+                      doctorId: dep.doctorId,
+                      forward: dep.message,
+                      nurseId: this.state.nurseId,
+                      departmentId: dep.departmentId,
+                      queueDefault: 'forwardType',
+                      groupId: this.state.currentQueue.group,
+                      roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+                      step: i + 1
+                      // date: this.state.Date,
+                      // timeFormat: time,
+                    }
+                    debugger;
+                    console.log("tmp ที่ inert,", tmp)
+                    insertList.push(tmp)
+
+                    if (tmp.statusId === 1) {
+                      updateWaitStatus = true
+                    }
+                  }
+                }
+                debugger;
+                // console.log("forwardList.data[i].roomId === dep.roomId", +forwardList.data[index].roomId, +dep.roomId)
+                // if (+forwardList.data[index].roomId === +dep.roomId) {
+                //   result= { index: i, step: dep.step, runningNumber: dep.runningNumber }
+                // }
+                if (stepCurrent && dep.step === stepCurrent + 1 && dep.status != 1 && !updateWaitStatus) {
+                  console.log('update status ', stepCurrent, dep)
+                  await axios.post("/updateStatus", {
+                    statusId: 1,
+                    runningNumber: dep.runningNumber
+                  });
+                }
+              })
+            console.log(result)
+            if (result) {
+              await axios.post("/updateStepQ", {
+                runningNumber: result.runningNumber,
+                step: result.step + (result.index - index)
+              });
+            }
+          }
         }
-        console.log('stepCurrent ', stepCurrent)
-        if (this.state.addForwardNew) {
-          if (forward.addStatus) {
-            //แทรกเข้า db >> add ตัวที่ addstatus เป้น true ต้องรู้ว่าอยู่ i ที่เท่าไหร่ หลังจากนั้นให้อัพเดทเพิ่มเข้าไป (step + เพิ่ม) 
+      } else {
+        //แรกเข้า ไม่เคยมี Q มาก่อน
+        console.log('this.state.forwardDepartments ',this.state.forwardDepartments)
+        this.state.forwardDepartments
+          // .filter(dep => forwardList[i].roomId === dep.roomId)
+          .map((dep, i) => {
             let tmp = {
-              roomId: forward.roomId,
+              roomId: dep.roomId,
               day: date.day,
               month: date.month,
               year: date.year,
-              statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
-              // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+              statusId: i === 0 ? 1 : 5,
               HN: this.state.currentQueue.HN,
-              doctorId: forward.doctorId,
-              forward: forward.message,
+              doctorId: dep.doctorId,
+              forward: dep.message,
               nurseId: this.state.nurseId,
-              departmentId: forward.departmentId,
+              departmentId: dep.departmentId,
               queueDefault: 'forwardType',
               groupId: this.state.currentQueue.group,
-              roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
-              step: i + 1
+              roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+              step: i + 2
               // date: this.state.Date,
               // timeFormat: time,
             }
-            if(tmp.statusId === 1) {
-              updateWaitStatus = true
-            }
-            console.log("forward", forward, tmp)
-            //uppdate step สร้าง axios เพิ่ม เอา i ไป 
-            // for (let j = i; j < this.state.forwardDepartments.length; j++) {
-            // j = 2; j < 4 ; j++
-            console.log("currentQueue I ", this.state.currentQueue, i)
-            await axios.post("/updateStep", {
-              // step: j + 2,
-              // // step = 2+2 =4
-              index: i,
-              group: tmp.groupId
+            console.log("for  ward", dep, tmp)
+            insertList.push(tmp)
+          })
+      }
 
-            });
-            await axios.post("/addPatientQ", tmp);
+      console.log("insertList", insertList)
 
-            // }
-          }
-        } else {
-          // ไม่มีการอัพเดต (add แรกปกติ)
-          let tmp = {
-            roomId: forward.roomId,
-            day: date.day,
-            month: date.month,
-            year: date.year,
-            statusId: i === 0 ? 1 : 5,
-            HN: this.state.currentQueue.HN,
-            doctorId: forward.doctorId,
-            forward: forward.message,
-            nurseId: this.state.nurseId,
-            departmentId: forward.departmentId,
-            queueDefault: 'forwardType',
-            groupId: this.state.currentQueue.group,
-            roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
-            step: i + 2
-            // date: this.state.Date,
-            // timeFormat: time,
-          }
-          console.log("forward", forward, tmp)
-          await axios.post("/addPatientQ", tmp)
-          this.getLabQueue(this.state.roomId)
-        }
-        //updateStatus
-        if(stepCurrent && forward.step === stepCurrent + 1 && forward.status != 1 && !updateWaitStatus){
-           console.log('update status ',stepCurrent , forward)
-          await axios.post("/updateStatus", {
-            // HN: this.state.currentQueue.HN,
-            statusId: 1,
-            // queueId: this.state.currentQueue.queueId,
-            runningNumber: forward.runningNumber
-          });
-        }
-      })
+      if (insertList.length > 0) {
+        insertList.map(async list => {
+          console.log("List", list)
+          await axios.post("/addPatientQ", list)
+        })
+      }
+
+      this.getLabQueue(this.state.roomId)
+
+
+
+      // this.state.forwardDepartments.map(async (forward, i) => {
+      //   indexStep = i
+      //   console.log('forward.step ', forward.step)
+      //   if (forward.statusId === 3) {
+      //     stepCurrent = forward.step
+      //   }
+      //   console.log('stepCurrent ', stepCurrent)
+      //   if (this.state.addForwardNew) {
+      //     debugger
+      //     if (forward.addStatus) {
+      //       //แทรกเข้า db >> add ตัวที่ addstatus เป้น true ต้องรู้ว่าอยู่ i ที่เท่าไหร่ หลังจากนั้นให้อัพเดทเพิ่มเข้าไป (step + เพิ่ม) 
+      //       let tmp = {
+      //         roomId: forward.roomId,
+      //         day: date.day,
+      //         month: date.month,
+      //         year: date.year,
+      //         statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
+      //         // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+      //         HN: this.state.currentQueue.HN,
+      //         doctorId: forward.doctorId,
+      //         forward: forward.message,
+      //         nurseId: this.state.nurseId,
+      //         departmentId: forward.departmentId,
+      //         queueDefault: 'forwardType',
+      //         groupId: this.state.currentQueue.group,
+      //         roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+      //         step: i + 1
+      //         // date: this.state.Date,
+      //         // timeFormat: time,
+      //       }
+      //       if (tmp.statusId === 1) {
+      //         updateWaitStatus = true
+      //       }
+      //       console.log("forward", forward, tmp)
+      //       //uppdate step สร้าง axios เพิ่ม เอา i ไป 
+      //       // for (let j = i; j < this.state.forwardDepartments.length; j++) {
+      //       // j = 2; j < 4 ; j++
+      //       console.log("currentQueue I ", this.state.currentQueue, i)
+      //       console.log('indexStep ',indexStep)
+      //       await axios.post("/updateStep", {
+      //         // step: j + 2,
+      //         // // step = 2+2 =4
+      //         index: indexStep,
+      //         group: tmp.groupId,
+      //         step:i+2
+      //       });
+      //       // await axios.post("/addPatientQ", tmp);
+      //     }
+      //   } else {
+      //     // ไม่มีการอัพเดต (add แรกปกติ)
+      //     let tmp = {
+      //       roomId: forward.roomId,
+      //       day: date.day,
+      //       month: date.month,
+      //       year: date.year,
+      //       statusId: i === 0 ? 1 : 5,
+      //       HN: this.state.currentQueue.HN,
+      //       doctorId: forward.doctorId,
+      //       forward: forward.message,
+      //       nurseId: this.state.nurseId,
+      //       departmentId: forward.departmentId,
+      //       queueDefault: 'forwardType',
+      //       groupId: this.state.currentQueue.group,
+      //       roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+      //       step: i + 2
+      //       // date: this.state.Date,
+      //       // timeFormat: time,
+      //     }
+      //     console.log("forward", forward, tmp)
+      //     await axios.post("/addPatientQ", tmp)
+      //     this.getLabQueue(this.state.roomId)
+      //   }
+      //   //updateStatus
+      //   if (stepCurrent && forward.step === stepCurrent + 1 && forward.status != 1 && !updateWaitStatus) {
+      //     console.log('update status ', stepCurrent, forward)
+      //     await axios.post("/updateStatus", {
+      //       // HN: this.state.currentQueue.HN,
+      //       statusId: 1,
+      //       // queueId: this.state.currentQueue.queueId,
+      //       runningNumber: forward.runningNumber
+      //     });
+      //   }
+      //   indexStep += 1;
+      // })
       // update status currentQ = 4
       await axios.post("/updateQueue", {
         date: this.state.Date,
@@ -812,7 +931,6 @@ class Adminhome extends Component {
 
     // }
   }
-
   //show patient at lab queues
   showPatientLabQueue = () => {
     // const data = this.state.labQueues
@@ -886,7 +1004,8 @@ class Adminhome extends Component {
       forwardDoctorId: " ",
       forwardMessage: "",
       // forwardComeback: null,
-      forwardRoomAndDoctors: []
+      forwardRoomAndDoctors: [],
+      // addForwardNew:true
     })
     console.log(this.state.forwardDepartments)
   }
@@ -901,9 +1020,10 @@ class Adminhome extends Component {
   showDropdownDepartment = () => {
     let tmp = <div>
       <center>
-        <Menu compact style={{ width: '100%' }}>
+        <Menu compact style={{ width: '100%' }} >
           {/* <Dropdown.Menu>  */}
           <Dropdown style={{ border: 'none', maxWidth: '30%', minWidth: '30%', margin: '1px' }}
+            disabled={this.state.currentQueue.step !== 1 ? true : false}
             selection
             placeholder="Department/Lab"
             options={labOrDepartment}
@@ -939,41 +1059,40 @@ class Adminhome extends Component {
           {/* </Dropdown.Menu > */}
         </Menu >
       </center>
-
       <TextArea
+        disabled={this.state.forwardDoctorId === "" ? true : false}
         style={{
           height: '100px', width: "60%", padding: "10px",
           marginRight: "20%", marginLeft: '20%', marginTop: "5%",
           borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
         }}
-        placeholder="Tell us more"
+        placeholder="Tell us more , Leave Message to Doctor"
         onChange={async (e, { value }) => {
           this.setField("forwardMessage", value);
         }} />
       <center>
-        <Button color="teal" style={{ marginTop: '2%' }}
+        <Button
+          disabled={this.state.forwardDoctorId === "" ? true : false}
+          color="teal" style={{ marginTop: '2%' }}
           onClick={() => { this.addMoreForward(); }}>
           Add to List
         </Button>
         <Divider horizontal>Or</Divider>
-        <Label color='teal' style={{ marginRight: '2%' }}>ต้องการให้คนไข้กลับมาที่ห้องเดิมหรือเสร็จสิ้น</Label>
+        <Label color='teal' style={{ marginRight: '2%' }}>ต้องการให้คนไข้กลับมาที่ห้องเดิมหรือไม่</Label>
         <Radio
+          disabled={this.state.currentQueue.step === 1 ? false : true}
           style={{ paddingRight: '40px' }}
-          label='Come back'
+          label='Yes'
           name='checkComeOrNot'
           value={true}
           checked={this.state.forwardComeback === true}
           onChange={async (e, { value }) => {
             this.setState({ forwardComeback: value, })
           }}>
-          {/* <Dropdown
-            selection
-            option={}
-            >
-          </Dropdown> */}
         </Radio>
         <Radio
-          label='Finished'
+          disabled={this.state.currentQueue.step === 1 ? false : true}
+          label='No'
           name='checkComeOrNot'
           value={false}
           checked={this.state.forwardComeback === false}
@@ -1029,7 +1148,7 @@ class Adminhome extends Component {
       tmp[i] = dep
     }
     tmp[i].editStatus = status
-    console.log(tmp)
+    // console.log(tmp)
     this.setState({
       forwardDepartments: tmp
     })
@@ -1049,7 +1168,7 @@ class Adminhome extends Component {
       forwardDepartments: this.state.forwardDepartments,
       addForwardNew: true
     })
-    console.log(this.state.forwardDepartments)
+    console.log('forward Department (addList)  ', this.state.forwardDepartments)
   }
   //---------------
   showListDepartment = () => {
@@ -1057,26 +1176,27 @@ class Adminhome extends Component {
     if (this.state.forwardDepartments.length > 0) {
       let tmp = this.state.forwardDepartments.map((dep, i) => {
         // let getRoomAndDoctors = dep.doctorId.split('/')
-        console.log(i, dep)
-        let label = dep.addStatus ? <Label as='a' color='yellow' ribbon>
-          New </Label> : ''
+        let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
         if (!dep.editStatus) {
-          return <Table.Row key={i}>
+          return <Table.Row key={i}
+            disabled={dep.statusId === 4 ? true : false}>
             <Table.Cell>{label}{dep.type}</Table.Cell>
             <Table.Cell>{dep.departmentId}</Table.Cell>
             <Table.Cell >{dep.doctorId} / {dep.roomId}</Table.Cell>
             <Table.Cell>{dep.message}</Table.Cell>
             <Table.Cell>
-              <Icon name='pencil' color="orange"
-                onClick={() => this.editStatus(i, true)} />
-              <Icon name="trash" color="red"
-                onClick={() => this.openConfirm(i)} />
-              <Icon name="plus" color="green"
+              {dep.statusId === 4 || dep.statusId === 3 ? '' :
+                <Icon name='pencil' color='orange'
+                  onClick={() => this.editStatus(i, true)} />}
+              {dep.statusId === 4 || dep.statusId === 3 ? '' :
+                <Icon name="trash" color='red' disabled={dep.statusId === 3 ? true : false}
+                  onClick={() => this.openConfirm(i)} />}
+              <Icon name="plus" color='green' disabled={dep.statusId === 4 ? true : false}
                 onClick={() => this.addList(i)} />
             </Table.Cell>
           </Table.Row>
-
         }
+
         else {
           return <Table.Row key={i}>
             <Table.Cell>
@@ -1134,8 +1254,6 @@ class Adminhome extends Component {
       return tmp
     }
   }
-
-
   render() {
     return (
       <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
@@ -1173,7 +1291,7 @@ class Adminhome extends Component {
           roomAndDoctors={this.state.roomAndDoctors}
           doctorRooms={this.state.doctorRooms}
           userType={this.state.userType}
-          // forwardDepartments={this.state.forwardDepartments}
+          forwardDepartments={this.state.forwardDepartments}
           // departmentId={this.state.departmentId}
           // departments={this.state.departments}
           // doctors={this.state.doctors}
@@ -1205,11 +1323,7 @@ class Adminhome extends Component {
         // setValueInArray={this.setValueInArray}
         // goBack={this.goBack}
         // showModalMessage={this.showModalMessage}
-
-
         />
-        <br />
-        <br />
       </div >
     );
   }

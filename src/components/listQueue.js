@@ -183,6 +183,13 @@ const Queue = props => {
                         }>
                         <br />
                         <br />
+                        {props.currentQueue.step === 1 && props.forwardDepartments.length !== props.forwardDepartments.length + 1 ? ' ' :
+                          <Message
+                            info
+                            attached
+                            header='You want to add more Department ? '
+                            content='Please press + icon in the column Edit or Delete instead of select dropdown'
+                          />}
                         <Table color='teal' >
                           <Table.Header>
                             <Table.Row>
