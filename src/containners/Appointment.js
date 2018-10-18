@@ -316,12 +316,6 @@ class Appointment extends Component {
                 <List.Header as="h4">HN : {data.HN}</List.Header>
               </List.Content>
             </List.Item>
-            {/* <List.Item>
-              <List.Icon name='user' size='large' verticalAlign='middle' />
-              <List.Content>
-                <List.Header as="h4">Name : {data.firstName} {data.lastName}</List.Header>
-              </List.Content>
-            </List.Item> */}
             <List.Item>
               <List.Icon name='doctor' size='large' verticalAlign='middle' />
               <List.Content>
@@ -334,14 +328,6 @@ class Appointment extends Component {
                 <List.Header as="h4">Department : {data.department}</List.Header>
               </List.Content>
             </List.Item>
-            {/* <List.Item>
-              <List.Icon name='time' size='large' verticalAlign='middle' />
-              <List.Content>
-                <List.Header as="h4">
-                  From : {data.timeStart.substr(0, 5)} To : {data.timeEnd.substr(0, 5)}
-                </List.Header>
-              </List.Content>
-            </List.Item> */}
           </List>
           <Divider />
           <center>

@@ -166,7 +166,7 @@ class Adminhome extends Component {
       HN: currentQueue.length === 0 ? '' : currentQueue.HN,
       group: currentQueue.length === 0 ? '' : currentQueue.group
     })
-    console.log('forwardList ', forwardList)
+    console.log('forwardList ', forwardList.data)
     this.setState({
       forwardDepartments: forwardList.data.length <= 1 ? [] : forwardList.data,
       addForwardNew: this.state.forwardDepartments.length > 0 ? true : false
@@ -656,12 +656,64 @@ class Adminhome extends Component {
       })
       console.log('forwardList.data ', forwardList.data)
       if (forwardList.data.length > 1) {
+
+
+
+        if (forwardList.data.length < this.state.forwardDepartments.length) {
+          let tmp = ''
+          console.log('เข้า if ', forwardList.data.length, this.state.forwardDepartments)
+          this.state.forwardDepartments
+            .map(async (dep, i) => {
+              if (dep.statusId === 3) {
+                stepCurrent = dep.step
+              }
+              if (this.state.addForwardNew) {
+                if (dep.addStatus) {
+                  tmp = {
+                    roomId: dep.roomId,
+                    day: date.day,
+                    month: date.month,
+                    year: date.year,
+                    statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
+                    // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+                    HN: this.state.currentQueue.HN,
+                    doctorId: dep.doctorId,
+                    forward: dep.message,
+                    nurseId: this.state.nurseId,
+                    departmentId: dep.departmentId,
+                    queueDefault: 'forwardType',
+                    groupId: this.state.currentQueue.group,
+                    roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+                    step: i + 1
+                  }
+                  console.log("tmp ที่ inert,", tmp)
+                  insertList.push(tmp)
+
+                  if (tmp.statusId === 1) {
+                    updateWaitStatus = true
+                  }
+                }
+              }
+              if (stepCurrent && dep.step === stepCurrent + 1 && dep.status != 1 && !updateWaitStatus) {
+                console.log('update status ', stepCurrent, dep)
+                await axios.post("/updateStatus", {
+                  statusId: 1,
+                  runningNumber: dep.runningNumber
+                });
+              }
+            })
+          console.log('insertList', insertList)
+        }
+
+
+
+
         for (let index = 0; index < forwardList.data.length; index++) {
-          console.log('เข้า For')
+          console.log('เข้า For', index, forwardList.data.length)
           let result = null;
-          debugger
+
           if (+forwardList.data[index].roomId !== +this.state.forwardDepartments[index].roomId) {
-            console.log('+forwardList.data[index].roomId ',+forwardList.data[index].roomId)
+            console.log('เข้า if', +forwardList.data[index].roomId, this.state.forwardDepartments[index].roomId)
             this.state.forwardDepartments
               .map(async (dep, i) => {
                 console.log(i, dep)
@@ -696,8 +748,9 @@ class Adminhome extends Component {
                     }
                     debugger;
                     console.log("tmp ที่ inert,", tmp)
-                    insertList.push(tmp)
-
+                    if (!insertList) {
+                      insertList.push(tmp)
+                    }
                     if (tmp.statusId === 1) {
                       updateWaitStatus = true
                     }
@@ -727,7 +780,7 @@ class Adminhome extends Component {
         }
       } else {
         //แรกเข้า ไม่เคยมี Q มาก่อน
-        console.log('this.state.forwardDepartments ',this.state.forwardDepartments)
+        console.log('this.state.forwardDepartments ', this.state.forwardDepartments)
         this.state.forwardDepartments
           // .filter(dep => forwardList[i].roomId === dep.roomId)
           .map((dep, i) => {
@@ -1106,14 +1159,25 @@ class Adminhome extends Component {
     return tmp
   }
   //------------------------------------------------------
-  deleteListForward = (i) => {
-    console.log(this.state.forwardDepartments)
+  deleteListForward = async (i) => {
     console.log('เข้า DELETE')
     let tmp = this.state.forwardDepartments
     if (tmp.length > 0) {
+      console.log(this.state.forwardDepartments[i])
+      axios.delete(`/deleteListQueue/${this.state.forwardDepartments[i].runningNumber}`)
       tmp.splice(i, 1)
+      this.setState({
+        forwardDepartments: tmp
+      })
     }
-    console.log(tmp)
+    console.log(tmp[i])
+    console.log(this.state.forwardDepartments[i])
+    if(this.state.forwardDepartments[i]){
+    await axios.post("/updateStepQ", {
+      runningNumber: this.state.forwardDepartments[i].runningNumber,
+      step: this.state.forwardDepartments[i].step - 1
+    });}
+    console.log(this.state.forwardDepartments[i])
     console.log(this.state.forwardDepartments)
     this.setState({
       forwardDepartments: tmp
@@ -1143,15 +1207,73 @@ class Adminhome extends Component {
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
+    console.log('dep', dep)
     if (dep) {
       // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown 
       tmp[i] = dep
     }
     tmp[i].editStatus = status
-    // console.log(tmp)
-    this.setState({
-      forwardDepartments: tmp
-    })
+    debugger
+    console.log('dep !== null')
+    console.log('tmp[i] true', tmp[i], this.state.forwardDepartments[i].roomId)
+
+    //check แอดล่างสุด แก้ไขล่างสุด ยังซ้ำได้อยุ่
+    if (!this.state.forwardDepartments[i + 1] || !this.state.forwardDepartments[i - 1]) {
+      console.log('eDokkk')
+      this.setState({
+        forwardDepartments: tmp
+      })
+    }
+
+    if (!this.state.forwardDepartments[i + 1]) {
+      console.log('esass')
+      if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)) {
+        let swl = ''
+        swl = swal({
+          title: "Cannot add same room",
+          text: "Please select another room",
+          icon: "warning",
+          button: "Ok",
+          dangerMode: true,
+        })
+        this.setState({
+          forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
+        })
+      }
+    }
+
+    //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง 
+    else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)
+      || tmp[i].roomId.toString().includes(this.state.forwardDepartments[i + 1].roomId)) {
+      console.log('tmp ในสุด')
+      let swl = ''
+      swl = swal({
+        title: "Cannot add same room",
+        text: "Please select another room",
+        icon: "warning",
+        button: "Ok",
+        dangerMode: true,
+      })
+      console.log(tmp[i])
+      console.log(this.state.forwardDepartments.filter(item => item !== tmp[i]))
+      // let entryList = {
+      //   type: '',
+      //   departmentId: '',
+      //   doctorId: '',
+      //   roomId: '',
+      //   message: '',
+      // }
+      // this.state.forwardDepartments[i] = entryList
+      this.setState({
+        forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
+      })
+      console.log('succsee')
+    }
+    else {
+      this.setState({
+        forwardDepartments: tmp
+      })
+    }
   }
   editForward = (field, value, i) => {
     let tmp = this.state.forwardDepartments;
@@ -1185,7 +1307,7 @@ class Adminhome extends Component {
             <Table.Cell >{dep.doctorId} / {dep.roomId}</Table.Cell>
             <Table.Cell>{dep.message}</Table.Cell>
             <Table.Cell>
-              {dep.statusId === 4 || dep.statusId === 3 ? '' :
+              {dep.statusId === 4 || dep.statusId === 3 || dep.statusId === 5 ? '' :
                 <Icon name='pencil' color='orange'
                   onClick={() => this.editStatus(i, true)} />}
               {dep.statusId === 4 || dep.statusId === 3 ? '' :
