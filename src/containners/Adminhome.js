@@ -121,6 +121,7 @@ class Adminhome extends Component {
 
     const date = this.pharseDate();
     const doctors = await axios.post(`/getListDoctor`, {
+      Date: this.state.Date.getDate(),
       day: date.day,
       month: date.month,
       year: date.year,
@@ -224,8 +225,11 @@ class Adminhome extends Component {
     return dropdownAndRooms;
   };
 
+
+  //แก้ เพิ่ม Date เข้าไป
   doctorInDepartment = async value => {
     const roomAndDoctors = await axios.post(`/getRoomAndDoctor`, {
+      Date: this.state.Date.getDate(),
       day: this.state.currentDate.day,
       month: this.state.currentDate.month,
       year: this.state.currentDate.year,
@@ -1172,11 +1176,12 @@ class Adminhome extends Component {
     }
     console.log(tmp[i])
     console.log(this.state.forwardDepartments[i])
-    if(this.state.forwardDepartments[i]){
-    await axios.post("/updateStepQ", {
-      runningNumber: this.state.forwardDepartments[i].runningNumber,
-      step: this.state.forwardDepartments[i].step - 1
-    });}
+    if (this.state.forwardDepartments[i]) {
+      await axios.post("/updateStepQ", {
+        runningNumber: this.state.forwardDepartments[i].runningNumber,
+        step: this.state.forwardDepartments[i].step - 1
+      });
+    }
     console.log(this.state.forwardDepartments[i])
     console.log(this.state.forwardDepartments)
     this.setState({
@@ -1284,7 +1289,6 @@ class Adminhome extends Component {
   }
   //-----------------------------------------
   addList = (i) => {
-
     this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
     this.setState({
       forwardDepartments: this.state.forwardDepartments,
@@ -1461,6 +1465,5 @@ const labOrDepartment = [
     text: "Department",
     value: "Department"
   },
-
 ];
 export default Adminhome;

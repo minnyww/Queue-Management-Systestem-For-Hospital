@@ -53,3 +53,12 @@ span.rbc-btn-group {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* .active.item:after {
+  background: #00a39b!important;
+  background-color: #00a39b!important
+} */
+
+.ui.inverted.pointing.menu .active.item:after{
+  background: #00a39b !important;
+}

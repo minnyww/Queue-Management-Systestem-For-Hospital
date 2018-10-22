@@ -12,7 +12,8 @@ const mainButton = props => {
                                 <Button
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '330px'
+                                        width: '300px',
+                                        marginRight: '5px'
                                     }}
                                     size="massive"
                                     color='blue'
@@ -24,7 +25,8 @@ const mainButton = props => {
                                 <Button
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '330px'
+                                        width: '300px',
+                                        marginLeft: '5px'
                                     }}
 
                                     size="massive"
@@ -39,7 +41,8 @@ const mainButton = props => {
                                 <Button
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '330px'
+                                        width: '300px',
+                                        marginRight: '5px'
                                     }}
                                     size="massive"
                                     color='green'
@@ -51,7 +54,8 @@ const mainButton = props => {
                                 <Button
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '330px'
+                                        width: '300px',
+                                        marginLeft: '5px'
                                     }}
                                     size="massive"
                                     color='orange'

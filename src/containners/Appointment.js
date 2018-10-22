@@ -6,7 +6,7 @@ import Headerbar from "./../components/headerbar";
 import DropdownQueue from "./../components/Dropdown";
 import Modal from 'react-responsive-modal';
 import swal from 'sweetalert'
-import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon, Divider } from "semantic-ui-react";
+import { Grid, Button, Form, List, Label, Dropdown, Menu, Header, Icon, Divider } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
 
@@ -37,8 +37,10 @@ class Appointment extends Component {
     Date: new Date(),
     HN: "",
     appointment: [],
+    timetable: [],
     selectEvent: 0,
     errorHN: "",
+    addSuccess: false,
 
     departmentId: 0,
     roomId: 0,
@@ -61,6 +63,8 @@ class Appointment extends Component {
 
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
+    const date = this.pharseDate();
+
     this.setState({ loading: true })
     var { data } = await axios.get(`/getAppointment/${departmentId}`)
     const appData = data.map(app => {
@@ -72,16 +76,23 @@ class Appointment extends Component {
       }
     })
 
+    var timeTableData = await axios.post(`/getTimetable`, {
+      month: date.month,
+      departmentId: departmentId
+    });
+
     this.setState({
       loading: false,
       events: appData,
       appointment: data,
+      timetable: timeTableData.data,
       nurseId: empId,
       departmentId,
       userType: type
     })
-    const date = this.pharseDate();
+
     const doctors = await axios.post(`/getListDoctor`, {
+      Date: new Date(this.state.Date).getDate(),
       day: date.day,
       month: date.month,
       year: date.year,
@@ -89,13 +100,15 @@ class Appointment extends Component {
     });
 
     const doctorsOption = this.dropdownDoctors(doctors);
-
     this.setState({
       doctors: doctorsOption,
       roomId: doctors.data[0].roomId,
     })
     this.showPatientDescription()
   }
+
+
+
 
   pharseDate = () => {
     var month = new Array(
@@ -168,7 +181,6 @@ class Appointment extends Component {
     this.setState({
       events: nextEvents
     });
-    console.log(updatedEvent.start.toString().substr(0, 24))
     // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
     swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
 
@@ -201,7 +213,6 @@ class Appointment extends Component {
     var curr_year = updatedEvent.start.getFullYear();
     var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
     var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
-    console.log(updatedEvent)
 
     await axios.post("/updateAppointment", {
       date: updatedEvent.start.getDate(),
@@ -246,47 +257,80 @@ class Appointment extends Component {
     this.setState({
       appointment: data,
     })
-    console.log(this.state.appointment)
   }
 
   addAppoinment = async () => {
 
     const date = this.pharseDate();
-    const { events, startTime, endTime, doctorId, HN } = this.state
-    const currentDate = new Date(this.state.Date)
-    const getDayDate = currentDate.getDate();
+    const { events, startTime, endTime, HN, timetable, appointment } = this.state
+    // const currentDate = new Date(this.state.Date)
+    // const getDayDate = currentDate.getDate();
     let tmp = this.state.appointmentDepId.split("/")
 
-    const data = await axios.post("/addAppointment", {
-      date: new Date(this.state.Date).getDate(),
-      day: date.day,
-      month: date.month,
-      year: date.year,
-      startTime: this.checkTimeFormat(startTime),
-      endTime: this.checkTimeFormat(endTime),
+    let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
+      && data.Date === new Date(this.state.Date).getDate())
+
+    let check = appointment.filter(data => data.doctorId == tmp[0]
+      && data.timeStart.substr(0, 5) == this.checkTimeFormat(startTime)
+      && data.date === new Date(this.state.Date).getDate())
+
+    // console.log(appointment[1].timeStart == this.checkTimeFormat(startTime))
+    console.log(check)
+    let getSumQueue = await axios.get(`/getCountQueue/${tmp[0]}`)
+    let getSumAppointment = await axios.post(`/getCountAppointment`, {
       doctorId: tmp[0],
-      roomId: tmp[1],
-      HN
-    });
+      date: new Date(this.state.Date).getDate()
+    })
+    console.log(getSumQueue, getSumAppointment)
+    let sumQueue = getSumQueue.data[0].countQueueId
+    let sumAppointment = getSumAppointment.data[0].countAppointmentId
+    let sumCount = sumQueue + sumAppointment
 
+    debugger
+    if (check.length > 0 || sumCount > countAppointment[0].patientLimit) {
+      swal("Cannot !",
+        `Cannot add Appointment because doctor can't recieve more patient`,
+        "warning");
+    }
+    else {
+      const data = await axios.post("/addAppointment", {
+        date: new Date(this.state.Date).getDate(),
+        day: date.day,
+        month: date.month,
+        year: date.year,
+        startTime: this.checkTimeFormat(startTime),
+        endTime: this.checkTimeFormat(endTime),
+        doctorId: tmp[0],
+        roomId: tmp[1],
+        HN
+      });
+      await this.setState({
+        open: false,
+        startTime: '',
+        endTime: ' ',
+        HN: '',
+        // addSuccess: true
+      });
+      console.log("เข้า DB");
+    }
     await this.getEvents()
-    await this.setState({
-      open: false,
-      startTime: '',
-      endTime: ' ',
-      HN: ''
-
-    });
     await this.getAppointment()
-    console.log("เข้า DB");
-    console.log(this.state.events)
   };
 
   handleSelect = async ({ start }) => {
     this.setState({
       Date: moment(start).format('YYYY-MM-DD'),
-      open: true
+      // open: true
     })
+    if (new Date(this.state.Date).getDate() >= new Date().getDate()) {
+      this.setField("open", true)
+    }
+    else {
+      this.setField("open", false)
+      swal("Cannot !",
+        `Cannot add Appointment before Today`,
+        "warning");
+    }
   };
 
   showDetailAppointment = async (e) => {
@@ -308,7 +352,6 @@ class Appointment extends Component {
           <Label color="teal" style={{ fontSize: '13px' }}>
             <Icon className='time' />From : {data.timeStart.substr(0, 5)} To {data.timeEnd.substr(0, 5)}
           </Label>
-          {console.log(data)}
           <List relaxed style={{ padding: '10px' }}>
             <List.Item>
               <List.Icon name='user' size='large' verticalAlign='middle' />
@@ -417,15 +460,35 @@ class Appointment extends Component {
     }
   };
 
-  render() {
+  listDoctors = () => {
+    const { timetable } = this.state
+    let tmp = ' '
+    // if (this.state.addSuccess) {
+    tmp = timetable.filter(data => data.Date === new Date(this.state.Date).getDate())
+      .map((data, index) => (
+        <div key={index}>
+          <Menu.Item>
+            {data.firstname} {data.lastname}
+            <Label color='teal'>{data.patientLimit}</Label>
+          </Menu.Item>
+        </div>
+      ))
+    // }
+    return tmp
 
+  }
+
+
+
+  render() {
+    console.log(this.state.startTime)
     return (
       <div style={{ width: '100%' }}>
         <Headerbar />
         <DropdownQueue />
         <Modal
           center
-          styles={{ modal: { width: 700, top: '10%', borderRadius: '10px' } }}
+          styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
           open={this.state.open}
           onClose={() => this.setField("open", false)}>
           <FormAddAppointment
@@ -443,7 +506,10 @@ class Appointment extends Component {
             setField={this.setField}
             addAppoinment={this.addAppoinment}
             checkTimeFormat={this.checkTimeFormat}
-            validateHN={this.validateHN} />
+            validateHN={this.validateHN}
+            listDoctors={this.listDoctors}
+          />
+
         </Modal>
         <Modal
           center

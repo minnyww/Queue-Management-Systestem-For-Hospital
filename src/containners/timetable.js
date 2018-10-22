@@ -13,7 +13,7 @@ import Modal from 'react-responsive-modal';
 
 import axios from "./../lib/axios";
 import swal from 'sweetalert'
-import { Grid, Button, Form, List, Label, Dropdown, Input, Header, Icon, Divider } from "semantic-ui-react";
+import { Menu, Button, Form, List, Label, Dropdown, Input, Header, Icon, Divider } from "semantic-ui-react";
 
 import ModalDetailTimetable from "../components/modalDetailTimetable";
 
@@ -30,6 +30,15 @@ class timetable extends Component {
         selectEvent: 0,
         timetable: '',
         openDetail: false,
+        open: false,
+        timeStart: '',
+        timeEnd: '',
+        doctors: [{ key: "", text: "", value: "" }],
+        rooms: [{ key: "", text: "", value: "" }],
+        doctorId: 0,
+        roomValue: 0,
+        roomId: 0,
+        editStatus: false
 
     }
     componentWillMount = async () => {
@@ -43,7 +52,6 @@ class timetable extends Component {
             month: date.month,
             departmentId: departmentId
         });
-        console.log(data)
         const appData = data.map(app => {
             return {
                 start: new Date(`${app.month} ${app.Date}, ${app.Year} ${app.timeStart}`),
@@ -54,16 +62,50 @@ class timetable extends Component {
                 status: app.statusId
             }
         })
-        console.log(appData)
+
+        const doctors = await axios.post(`/getDoctors`, {
+            // day: date.day,
+            // month: date.month,
+            // year: date.year,
+            departmentId: this.state.departmentId
+        });
+        const rooms = await axios.post(`/getListRoom`, {
+            departmentId: this.state.departmentId
+        });
+
+        const doctorsOption = this.dropdownDoctors(doctors);
+        const roomsOption = this.dropdownRooms(rooms);
         this.setState({
             events: appData,
             loading: false,
-            timetable: data
+            timetable: data,
+            doctors: doctorsOption,
+            rooms: roomsOption,
+            roomId: doctors.data[0].roomId,
         })
-        console.log(this.state.events)
         this.getTimetable()
-
     }
+
+    dropdownDoctors = doctors => {
+        const roomAndDoctorOption = doctors.data.map(roomDoctor => ({
+            key: roomDoctor.doctorId,
+            text:
+                roomDoctor.firstname +
+                " " +
+                roomDoctor.lastname,
+            value: roomDoctor.empId
+        }));
+        return roomAndDoctorOption;
+    };
+
+    dropdownRooms = rooms => {
+        const roomAndDoctorOption = rooms.data.map(roomDoctor => ({
+            key: roomDoctor.roomId,
+            text: roomDoctor.roomId,
+            value: roomDoctor.roomId
+        }));
+        return roomAndDoctorOption;
+    };
 
     getEvents = async () => {
         console.log('เข้า get Eve')
@@ -96,7 +138,6 @@ class timetable extends Component {
         this.setState({
             timetable: data,
         })
-        console.log(this.state.timetable)
     }
 
     pharseDate = () => {
@@ -123,9 +164,9 @@ class timetable extends Component {
         day[5] = "fri";
         day[6] = "sat";
 
-        var curr_date = this.state.Date.getDay();
-        var curr_month = this.state.Date.getMonth();
-        var curr_year = this.state.Date.getFullYear();
+        var curr_date = new Date(this.state.Date).getDay();
+        var curr_month = new Date(this.state.Date).getMonth();
+        var curr_year = new Date(this.state.Date).getFullYear();
         return {
             day: day[curr_date],
             month: month[curr_month],
@@ -158,16 +199,7 @@ class timetable extends Component {
         }
 
         const updatedEvent = { ...event, start, end, allDay };
-
         const nextEvents = [...events];
-        nextEvents.splice(idx, 1, updatedEvent);
-
-        this.setState({
-            events: nextEvents
-        });
-        console.log(updatedEvent.start.toString().substr(0, 24))
-        // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
-        swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
         var month = new Array(
             "Jan",
             "Feb",
@@ -198,35 +230,183 @@ class timetable extends Component {
         var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
 
         console.log(updatedEvent)
-        console.log(curr_date, curr_month, curr_year, timeStart, timeEnd)
-
-        await axios.post("/updateDoctorTimetable", {
-            date: updatedEvent.start.getDate(),
-            day: day[curr_date].toLowerCase(),
-            month: month[curr_month].toLowerCase(),
-            year: curr_year,
-            timeStart: timeStart,
-            timeEnd: timeEnd,
-            timetableId: updatedEvent.id
-        });
+        console.log(this.state.events)
+        let result = this.state.events
+            .filter(event => event.start.getDate() == updatedEvent.start.getDate()
+                && event.start.getMonth() == updatedEvent.start.getMonth()
+                && event.start.getHours() == updatedEvent.start.getHours()
+                && event.doctor === updatedEvent.doctor)
+        console.log("result", result)
+        debugger
+        if (result.length == 0 && (updatedEvent.status !== 1 || updatedEvent.status !== 3)) {
+            // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
+            console.log("UDATE Q")
+            nextEvents.splice(idx, 1, updatedEvent);
+            swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
+            this.setState({
+                events: nextEvents
+            });
+            await axios.post("/updateDoctorTimetable", {
+                date: updatedEvent.start.getDate(),
+                day: day[curr_date].toLowerCase(),
+                month: month[curr_month].toLowerCase(),
+                year: curr_year,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                timetableId: updatedEvent.id
+            });
+            // }
+            // console.log('เข้า if ใน')
+            // swal("Cannot !",
+            //     `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
+            //     "warning");
+        } else {
+            swal("Cannot !",
+                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
+                "warning");
+        }
     }
+
 
     handleSelect = async ({ start }) => {
         this.setState({
             Date: moment(start).format('YYYY-MM-DD'),
-            open: true
+            // open: true
         })
+        debugger
+        if (new Date(this.state.Date).getDate() >= new Date().getDate()) {
+            this.setField("open", true)
+        }
+        else {
+            this.setField("open", false)
+            swal("Cannot !",
+                `Cannot add timetable before Today`,
+                "warning");
+        }
+        console.log(this.state.Date)
     }
 
-    showDetailTimetable = async (e) => {
+    FormAddTimetable = () => {
+        let tmp = ''
+        tmp = <center>
+            <Header as='h4'>Add Doctor to Timetable</Header>
+            <Form>
+                <Form.Input
+                    style={{ width: '65%' }}
+                    type="date"
+                    value={this.state.Date}
+                    onChange={(e, { value }) => this.setField("Date", value)}
+                />
+                <Form.Group widths='equal' style={{ width: '67%' }}>
+                    <Form.Input
+                        label="Start"
+                        type="time"
+                        placholder='time start'
+                        value={this.state.timeStart}
+                        onChange={(e, { value }) => this.setField("timeStart", value)}
+                    />
+                    <Form.Input
+                        label="End"
+                        type="time"
+                        placholder='time end'
+                        value={this.state.timeEnd}
+                        onChange={(e, { value }) => this.setField("timeEnd", value)}
+                    />
+                </Form.Group>
+            </Form>
+            <Dropdown
+                placeholder="Doctor"
+                options={this.state.doctors}
+                simple
+                selection
+                item
+                onChange={(e, { value }) => this.setField("doctorId", value)}
+            />
+            <br />
+            <Button
+                color='blue'
+                style={{ marginTop: 5 }}
+                onClick={() => {
+                    this.addTimetable();
+                }}>
+                Add
+            </Button>
+        </center >
+        return tmp
+    }
+
+    addTimetable = async () => {
+        const { events, timeStart, timeEnd, doctorId } = this.state
+        let tmp = doctorId.split("/")
+        const currentDate = new Date(this.state.Date)
+        const getDayDate = currentDate.getDate();
+        const date = this.pharseDate();
+        console.log(timeStart, this.state.Date)
+        const getDoctor = this.state.events.map(data => {
+            return {
+                doctor: data.doctor,
+                start: data.start
+            }
+        })
+        let result = events.filter(data => data.doctor == tmp[0]
+            && data.start.getDate() === new Date(this.state.Date).getDate()
+            && data.timeStart === timeStart)
+        if (result.length == 0) {
+            const data = await axios.post("/addTimetable", {
+                Date: new Date(this.state.Date).getDate(),
+                day: date.day,
+                month: date.month,
+                Year: date.year,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                doctorId: tmp[0],
+                roomId: tmp[1],
+            });
+            await this.setState({
+                open: false,
+                startTime: '',
+                endTime: ' ',
+                HN: '',
+                Date: new Date(this.state.Date)
+            });
+        }
+        else {
+            swal("Cannot add in today", {
+                icon: "warning",
+            });
+        }
+        await this.getEvents()
+        await this.getTimetable()
+        console.log("เข้า DB");
+    }
+
+    checkTimeFormat = time => {
+        if (time.length == 4) {
+            var timeHH = time.substring(0, 2);
+            var timeMM = time.substring(2, 4);
+            var timeNew = timeHH + ":" + timeMM;
+            var t = moment(timeNew, "HH:mm").format("HH:mm");
+            return t;
+        }
+    };
+
+    setField = (field, value) => {
+        this.setState({ [field]: value });
+    };
+
+    showDetailTimetable = (e) => {
+        console.log(e.id)
         this.setState({
             openDetail: true,
-            selectEvent: e.id
+            selectEvent: e.id,
         })
     }
 
     openConfirm = (index) => {
         console.log('เข้า Confirm')
+        let id = this.state.selectEvent
+        console.log(id)
+        console.log(this.state.events[index])
         let swl = ''
         swl = swal({
             title: "Are you sure?",
@@ -248,88 +428,231 @@ class timetable extends Component {
         this.setState({
             openDetail: false,
         })
-        console.log(this.state.events[index])
-        if (this.state.events[index].status === 3 || this.state.events[index].status === 1) {
-            swal("Cannot Delete this doctor because has patient in room with this Doctor", {
-                icon: "warning",
-            });
+        console.log(this.state.selectEvent)
+
+        // const getDoctor = this.state.events.map(data => {
+        //     return {
+        //         doctor: data.doctor,
+        //         start: data.start,
+        //         status: data.status
+        //     }
+        // })
+        // let result = this.state.events.filter(data => data.status == 1
+        //     || data.status == 3
+        //     && data.start.getDate() === new Date(this.state.Date).getDate())
+        // console.log(result)
+
+        let result = this.state.events.filter(data => data.id == this.state.selectEvent)
+        console.log(result)
+        console.log(this.state.events.id == this.state.selectEvent)
+        console.log(result[0].status)
+        debugger
+        if (result[0].start.getDate() >= new Date().getDate()) {
+            console.log('เข้า')
+            if (result[0].status === 3 || result[0].status === 1) {
+                console.log('เข้าใน')
+                swal("Cannot Delete this doctor because has patient in room with this Doctor", {
+                    icon: "warning",
+                });
+            } else {
+                axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
+                    .then(resp => {
+                        console.log('success')
+                        this.getEvents()
+                        swal("Poof! Your imaginary file has been deleted!", {
+                            icon: "success",
+                        });
+                    }).catch(err => {
+                        console.log('error')
+                    })
+            }
         }
         else {
             axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
-            .then(resp => {
-                console.log('success')
-                this.getEvents()
-                swal("Poof! Your imaginary file has been deleted!", {
-                    icon: "success",
-                });
-            }).catch(err => {
-                console.log('error')
-            })
+                .then(resp => {
+                    console.log('success')
+                    this.getEvents()
+                    swal("Poof! Your imaginary file has been deleted!", {
+                        icon: "success",
+                    });
+                }).catch(err => {
+                    console.log('error')
+                })
         }
+
+
     }
 
     showDetailTimetableDescription = () => {
         const { timetable, selectEvent } = this.state
         let tmp = ""
+        console.log(timetable)
         tmp = timetable.filter(data => data.timetableId === selectEvent)
             .map((data, index) => {
-                return <div key={index}>
-                    {/* <Header as='h4' style={{ marginTop: 5, fontSize: '24px' }}>
+                if (!this.state.editStatus) {
+                    return <div key={index}>
+                        {/* <Header as='h4' style={{ marginTop: 5, fontSize: '24px' }}>
                         {data.firstName} {data.lastName}
                     </Header> */}
-                    <Label color="teal" style={{ fontSize: '14px', fontWeight: 'lighter' }}>
-                        <Icon className='time' />Date : {data.Date} {data.day} {data.month} {data.Year}
-                    </Label>
-                    {console.log(data)}
-                    <List relaxed style={{ padding: '10px' }}>
-                        <List.Item>
-                            <List.Icon name='user' size='large' verticalAlign='middle' />
-                            <List.Content>
-                                <List.Header as="h4">Time : {data.timeStart.toString().substr(0, 5)} To {data.timeEnd.toString().substr(0, 5)} </List.Header>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Icon name='doctor' size='large' verticalAlign='middle' />
-                            <List.Content>
-                                <List.Header as="h4">Doctor : {data.firstname} {data.lastname}  </List.Header>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Icon name='building' size='large' verticalAlign='middle' />
-                            <List.Content>
-                                <List.Header as="h4">Room : {data.roomId}</List.Header>
-                            </List.Content>
-                        </List.Item>
-                    </List>
-                    <Divider />
-                    <center>
-                        <List horizontal divided relaxed='very'>
-                            <List.Item >
-                                <List.Content >
-                                    <List.Header  >
-                                        <Icon name="pencil" size='small' style={{ fontSize: '16px' }}></Icon>
-                                        Edit
-                                    </List.Header>
+                        <Label color="teal" style={{ fontSize: '14px', fontWeight: 'lighter' }}>
+                            <Icon className='time' />Date : {data.Date} {data.day} {data.month} {data.Year}
+                        </Label>
+                        <List relaxed style={{ padding: '10px' }}>
+                            <List.Item>
+                                <List.Icon name='user' size='large' verticalAlign='middle' />
+                                <List.Content>
+                                    <List.Header as="h4">Time : {data.timeStart.toString().substr(0, 5)} To {data.timeEnd.toString().substr(0, 5)} </List.Header>
                                 </List.Content>
                             </List.Item>
-                            <List.Item >
+                            <List.Item>
+                                <List.Icon name='doctor' size='large' verticalAlign='middle' />
                                 <List.Content>
-                                    <List.Header
-                                        onClick={() => this.openConfirm(index)}
-                                    >
-                                        <Icon name="trash" size='small' style={{ fontSize: '16px' }}></Icon>
-                                        delete
-                                    </List.Header>
+                                    <List.Header as="h4">Doctor : {data.firstname} {data.lastname}  </List.Header>
+                                </List.Content>
+                            </List.Item>
+                            <List.Item>
+                                <List.Icon name='building' size='large' verticalAlign='middle' />
+                                <List.Content>
+                                    <List.Header as="h4">Room : {data.roomId}</List.Header>
                                 </List.Content>
                             </List.Item>
                         </List>
-                    </center>
-                </div>
+                        <Divider />
+                        <center>
+                            <List horizontal divided relaxed='very'>
+                                <List.Item >
+                                    <List.Content >
+                                        <List.Header
+                                            onClick={() => this.setField("editStatus", true)}>
+                                            <Icon name="pencil" size='small' style={{ fontSize: '16px' }}></Icon>
+                                            Edit
+                                    </List.Header>
+                                    </List.Content>
+                                </List.Item>
+                                <List.Item >
+                                    <List.Content>
+                                        <List.Header
+                                            onClick={() => this.openConfirm(index)}
+                                        >
+                                            <Icon name="trash" size='small' style={{ fontSize: '16px' }}></Icon>
+                                            delete
+                                    </List.Header>
+                                    </List.Content>
+                                </List.Item>
+                            </List>
+                        </center>
+                    </div>
+                } else {
+                    return <div key={index} >
+                        <Header as='h4'>Edit Timetable</Header>
+                        <Form>
+                            <Form.Input
+                                style={{ width: '65%' }}
+                                type="date"
+                                value={this.state.Date}
+                                onChange={(e, { value }) => this.setField("Date", value)}
+                            />
+                            <Form.Group widths='equal' style={{ width: '67%' }}>
+                                <Form.Input
+                                    label="Start"
+                                    type="time"
+                                    placholder='time start'
+                                    value={this.state.timeStart}
+                                    onChange={(e, { value }) => this.setField("timeStart", value)}
+                                />
+                                <Form.Input
+                                    label="End"
+                                    type="time"
+                                    placholder='time end'
+                                    value={this.state.timeEnd}
+                                    onChange={(e, { value }) => this.setField("timeEnd", value)}
+                                />
+                            </Form.Group>
+                            <Form.Group widths='equal' style={{ width: '67%', marginLeft: '0px' }} >
+                                <Dropdown
+                                    style={{ marginRight: '5px' }}
+                                    placeholder="Doctor"
+                                    options={this.state.doctors}
+                                    simple
+                                    selection
+                                    onChange={(e, { value }) => this.setField("doctorId", value)}
+                                />
+                                <Dropdown
+                                    placeholder="Room"
+                                    options={this.state.rooms}
+                                    simple
+                                    selection
+                                    onChange={(e, { value }) => this.setField("roomValue", value)}
+                                />
+                                <br />
+                            </Form.Group>
+                        </Form>
+                        <Button
+                            color='blue'
+                            style={{ marginTop: 5, float: "right" }}
+                            onClick={() => {
+                                this.updateTimetable();
+                                this.setField('editStatus', false)
+                                this.setField('openDetail', false)
+                            }}>
+                            Update
+                    </Button>
+                    </div>
+                }
             })
 
         return tmp
     }
 
+    updateTimetable = async () => {
+        console.log('timtableId ', this.state.selectEvent)
+        console.log('doctorId ', this.state.doctorId)
+        console.log('timeStart : ', this.state.timeStart, 'timeEnd : ', this.state.timeEnd)
+        console.log('Date : ', this.state.Date)
+        var month = new Array(
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+        );
+        var day = new Array(7);
+        day[0] = "Sun";
+        day[1] = "Mon";
+        day[2] = "Tue";
+        day[3] = "Wed";
+        day[4] = "Thu";
+        day[5] = "Fri";
+        day[6] = "Sat";
+
+        var curr_date = new Date(this.state.Date).getDay();
+        var curr_month = new Date(this.state.Date).getMonth();
+        var curr_year = new Date(this.state.Date).getFullYear();
+
+        this.getEvents()
+        this.getTimetable()
+        console.log('เข้า up')
+        let getDoctor = this.state.doctorId.split('/')
+
+        await axios.post("/updateDoctorTimetable", {
+            date: new Date(this.state.Date).getDate(),
+            day: day[curr_date].toLowerCase(),
+            month: month[curr_month].toLowerCase(),
+            year: curr_year,
+            timeStart: this.state.timeStart,
+            timeEnd: this.state.timeEnd,
+            timetableId: this.state.selectEvent,
+            roomId: this.state.roomValue,
+            doctorId: getDoctor[0]
+        });
+    }
 
     setField = (field, value) => {
         this.setState({ [field]: value });
@@ -340,11 +663,20 @@ class timetable extends Component {
             <div >
                 <Headerbar />
                 <DropdownQueue />
+
                 <Modal
                     center
-                    styles={{ modal: { width: 400, top: "20%", borderTop: '6px solid #00b5ad' } }}
+                    styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
+                    open={this.state.open}
+                    onClose={() => this.setField("open", false)}>
+                    {this.FormAddTimetable()}
+                </Modal>
+
+                <Modal
+                    center
+                    styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
                     open={this.state.openDetail}
-                    onClose={() => this.setField("openDetail", false)}>
+                    onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
                     <ModalDetailTimetable
                         showDetailTimetableDescription={this.showDetailTimetableDescription} />
                 </Modal>
@@ -373,7 +705,4 @@ class timetable extends Component {
         );
     }
 }
-
-
-
 export default timetable;
