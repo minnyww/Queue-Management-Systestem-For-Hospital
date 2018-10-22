@@ -63,7 +63,7 @@ class Appointment extends Component {
 
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
-    const date = this.pharseDate();
+    const date = this.pharseDate(new Date());
 
     this.setState({ loading: true })
     var { data } = await axios.get(`/getAppointment/${departmentId}`)
@@ -110,8 +110,8 @@ class Appointment extends Component {
 
 
 
-  pharseDate = () => {
-    var month = new Array(
+  pharseDate = (newDate) => {
+    var months = new Array(
       "jan",
       "feb",
       "mar",
@@ -134,19 +134,20 @@ class Appointment extends Component {
     day[5] = "fri";
     day[6] = "sat";
 
-    let curr_date = new Date().getDay();
-    let curr_month = new Date().getMonth();
-    let curr_year = new Date().getFullYear();
+    let curr_date = newDate.getDay();
+    let curr_month = newDate.getMonth();
+    let curr_year = newDate.getFullYear();
 
     return {
       day: day[curr_date],
-      month: month[curr_month],
+      month: months[curr_month],
       year: curr_year,
     }
   }
 
 
   dropdownDoctors = doctors => {
+    console.log(doctors)
     const roomAndDoctorOption = doctors.data.map(roomDoctor => ({
       key: roomDoctor.doctorId,
       text:
@@ -261,7 +262,7 @@ class Appointment extends Component {
 
   addAppoinment = async () => {
 
-    const date = this.pharseDate();
+    const date = this.pharseDate(new Date());
     const { events, startTime, endTime, HN, timetable, appointment } = this.state
     // const currentDate = new Date(this.state.Date)
     // const getDayDate = currentDate.getDate();
@@ -271,7 +272,7 @@ class Appointment extends Component {
       && data.Date === new Date(this.state.Date).getDate())
 
     let check = appointment.filter(data => data.doctorId == tmp[0]
-      && data.timeStart.substr(0, 5) == this.checkTimeFormat(startTime)
+      && data.timeStart.substr(0, 5) == startTime
       && data.date === new Date(this.state.Date).getDate())
 
     // console.log(appointment[1].timeStart == this.checkTimeFormat(startTime))
@@ -281,7 +282,7 @@ class Appointment extends Component {
       doctorId: tmp[0],
       date: new Date(this.state.Date).getDate()
     })
-    console.log(getSumQueue, getSumAppointment)
+    console.log(startTime)
     let sumQueue = getSumQueue.data[0].countQueueId
     let sumAppointment = getSumAppointment.data[0].countAppointmentId
     let sumCount = sumQueue + sumAppointment
@@ -298,8 +299,8 @@ class Appointment extends Component {
         day: date.day,
         month: date.month,
         year: date.year,
-        startTime: this.checkTimeFormat(startTime),
-        endTime: this.checkTimeFormat(endTime),
+        startTime: startTime,
+        endTime: endTime,
         doctorId: tmp[0],
         roomId: tmp[1],
         HN
@@ -322,7 +323,24 @@ class Appointment extends Component {
       Date: moment(start).format('YYYY-MM-DD'),
       // open: true
     })
-    if (new Date(this.state.Date).getDate() >= new Date().getDate()) {
+    const date = this.pharseDate(new Date(this.state.Date))
+    console.log(new Date(this.state.Date).getDate(), date.day, date.month, date.year)
+
+
+    const doctors = await axios.post(`/getListDoctor`, {
+      Date: new Date(this.state.Date).getDate(),
+      day: date.day,
+      month: date.month,
+      year: date.year,
+      departmentId: this.state.departmentId
+    });
+    console.log(doctors)
+    const doctorsOption = this.dropdownDoctors(doctors);
+    this.setState({
+      doctors: doctorsOption,
+    })
+
+    if (new Date(this.state.Date).getDate() >= new Date().getDate() && new Date(this.state.Date).getMonth() == new Date().getMonth()) {
       this.setField("open", true)
     }
     else {
@@ -469,7 +487,7 @@ class Appointment extends Component {
         <div key={index}>
           <Menu.Item>
             {data.firstname} {data.lastname}
-            <Label color='teal'>{data.patientLimit}</Label>
+            <Label color='teal'>{data.patientLimit == 0 || data.patientLimit == null ? 0 : data.patientLimit}</Label>
           </Menu.Item>
         </div>
       ))
@@ -482,6 +500,7 @@ class Appointment extends Component {
 
   render() {
     console.log(this.state.startTime)
+    console.log(this.state.endTime)
     return (
       <div style={{ width: '100%' }}>
         <Headerbar />

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./../css/Q.css";
 
-import { Grid, Button, Form, Label, Dropdown, Message, Menu } from "semantic-ui-react";
+import { Grid, Button, Form, Label, Dropdown, Message, Menu, Input } from "semantic-ui-react";
 const formAddAppointment = props => {
   return (
     <div>
@@ -48,7 +48,7 @@ const formAddAppointment = props => {
                 value={props.Date}
                 onChange={(e, { value }) => props.setField("Date", value)}
               />
-              <Form.Input
+              {/* <Form.Input
                 placeholder="Enter Start Time HH:MM"
                 fluid
                 value={props.startTime}
@@ -59,7 +59,23 @@ const formAddAppointment = props => {
                 fluid
                 value={props.endTime}
                 onChange={(e, { value }) => props.setField("endTime", value)}
-              />
+              /> */}
+              <Form.Group widths='equal' style={{ width: '67%' }}>
+                <Form.Input
+                  label="Start"
+                  type="time"
+                  placholder='time start'
+                  value={props.startTime}
+                  onChange={(e, { value }) => props.setField("startTime", value)}
+                />
+                <Form.Input
+                  label="End"
+                  type="time"
+                  placholder='time end'
+                  value={props.endTime}
+                  onChange={(e, { value }) => props.setField("endTime", value)}
+                />
+              </Form.Group>
             </Form>
             <br />
             <Label color='teal' style={{ marginRight: 10 }}>Choose Doctor :</Label>
@@ -71,6 +87,7 @@ const formAddAppointment = props => {
               item
               onChange={(e, { value }) => props.setField("appointmentDepId", value)}
             />
+            <br />
             <br />
             <Button
               size='small'
