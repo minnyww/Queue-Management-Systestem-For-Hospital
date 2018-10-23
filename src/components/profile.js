@@ -12,7 +12,6 @@ const profile = props => {
       <center>
         <Card style={{ height: "30%", width: '90%' }} color='blue'>
           <Card.Content>
-            {/* <Card.Header></Card.Header> */}
             <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
               <Button color="blue"
@@ -45,10 +44,6 @@ const profile = props => {
           </Card.Content>
         </Card>
       </center>
-      {/* <Header size="medium">คิวของท่าน</Header>
-        <Statistic size="huge">
-          <Statistic.Value>{props.queueData.queueId}</Statistic.Value>
-        </Statistic> */}
       <center>
         <Card.Group style={{ marginTop: '3%', height: "30%", marginLeft: '1.5%', marginRight: '1.5%' }} itemsPerRow={2}>
           <Card color='blue'>
@@ -88,7 +83,6 @@ const profile = props => {
                   {/* {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + '' : '' } */}
                   {parseInt(props.queueData.avgtime).toFixed(0) === NaN ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
                   }
-
                 </Statistic.Value>
                 <Statistic.Value>
                   Mins

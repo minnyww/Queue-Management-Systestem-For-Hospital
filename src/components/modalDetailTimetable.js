@@ -5,9 +5,7 @@ const modalDetailTimetable = props => {
 
     return (
         <div>
-
             {props.showDetailTimetableDescription()}
-
         </div>
     );
 };

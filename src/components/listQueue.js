@@ -12,7 +12,6 @@ import {
   Segment,
   Table,
 } from "semantic-ui-react";
-// import Modal from "react-modal";
 import Modal from "react-responsive-modal";
 
 const showCurrentQueue = props => {
@@ -64,17 +63,6 @@ const forward = (props) => {
   props.setField("showModal", true)
   props.forwardList(props.currentQueue)
 }
-// const goBack = props => {
-//   let tmp = "";
-//   if (props.userType === 2) {
-//     tmp = (
-//       <Button primary onClick={() => { props.goBack(); }} >
-//         Go back
-//       </Button>
-//     );
-//   }
-//   return tmp;
-// };
 
 const Queue = props => {
   const setField = props.setField;

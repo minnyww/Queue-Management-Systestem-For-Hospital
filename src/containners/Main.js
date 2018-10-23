@@ -20,7 +20,6 @@ class Main extends Component {
         return tmp = <Statistic size='mini'>
             <Statistic.Value>Welcome : {this.state.loginName}</Statistic.Value>
         </Statistic>
-
     }
 
     render() {

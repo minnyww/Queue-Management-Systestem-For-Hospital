@@ -21,17 +21,9 @@ class Homeuser extends Component {
                 <br />
                 <br />
                 <Login />
-
-
             </div>
-
-
-
-
         );
-
     }
-
 }
 
 
