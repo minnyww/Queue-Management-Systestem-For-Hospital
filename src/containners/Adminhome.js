@@ -660,9 +660,6 @@ class Adminhome extends Component {
       })
       console.log('forwardList.data ', forwardList.data)
       if (forwardList.data.length > 1) {
-
-
-
         if (forwardList.data.length < this.state.forwardDepartments.length) {
           let tmp = ''
           console.log('เข้า if ', forwardList.data.length, this.state.forwardDepartments)

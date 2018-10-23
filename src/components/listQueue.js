@@ -9,10 +9,8 @@ import {
   Form,
   List,
   Message,
-  Radio,
   Segment,
   Table,
-  Label
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from "react-responsive-modal";

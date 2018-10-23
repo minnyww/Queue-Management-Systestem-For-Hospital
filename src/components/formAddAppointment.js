@@ -14,18 +14,6 @@ const formAddAppointment = props => {
             </Menu>
             <Menu vertical fluid>
               {props.listDoctors()}
-              {/* <Menu.Item>
-                Hi
-                <Label color='teal'>1</Label>
-              </Menu.Item>
-              <Menu.Item>
-                Hi
-                <Label color='teal'>1</Label>
-              </Menu.Item>
-              <Menu.Item>
-                Hi
-                <Label color='teal'>1</Label>
-              </Menu.Item> */}
             </Menu>
           </Grid.Column>
           <Grid.Column>
@@ -48,18 +36,6 @@ const formAddAppointment = props => {
                 value={props.Date}
                 onChange={(e, { value }) => props.setField("Date", value)}
               />
-              {/* <Form.Input
-                placeholder="Enter Start Time HH:MM"
-                fluid
-                value={props.startTime}
-                onChange={(e, { value }) => props.setField("startTime", value)}
-              />
-              <Form.Input
-                placeholder="Enter End Time HH:MM"
-                fluid
-                value={props.endTime}
-                onChange={(e, { value }) => props.setField("endTime", value)}
-              /> */}
               <Form.Group widths='equal' style={{ width: '67%' }}>
                 <Form.Input
                   label="Start"

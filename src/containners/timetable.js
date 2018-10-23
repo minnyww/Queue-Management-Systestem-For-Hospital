@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import Headerbar from '.././components/headerbar'
 import DropdownQueue from '../components/Dropdown';
 
-import { Statistic } from "semantic-ui-react";
 import moment from "moment";
+
+import "./../css/Q.css";
 
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -13,7 +14,7 @@ import Modal from 'react-responsive-modal';
 
 import axios from "./../lib/axios";
 import swal from 'sweetalert'
-import { Menu, Button, Form, List, Label, Dropdown, Input, Header, Icon, Divider } from "semantic-ui-react";
+import { Button, Form, List, Label, Dropdown, Header, Icon, Divider } from "semantic-ui-react";
 
 import ModalDetailTimetable from "../components/modalDetailTimetable";
 
@@ -341,13 +342,15 @@ class timetable extends Component {
         const currentDate = new Date(this.state.Date)
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
-        console.log(timeStart, this.state.Date)
-        const getDoctor = this.state.events.map(data => {
-            return {
-                doctor: data.doctor,
-                start: data.start
-            }
-        })
+        // console.log(timeStart, this.state.Date)
+        
+        // const getDoctor = this.state.events.map(data => {
+        //     return {
+        //         doctor: data.doctor,
+        //         start: data.start
+        //     }
+        // })
+
         let result = events.filter(data => data.doctor == tmp[0]
             && data.start.getDate() === new Date(this.state.Date).getDate()
             && data.timeStart === timeStart)
