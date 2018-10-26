@@ -197,16 +197,12 @@ class Appointment extends Component {
     const nextEvents = [...events];
     nextEvents.splice(idx, 1, updatedEvent);
 
-    // this.setState({
-    //   events: nextEvents
-    // });
     console.log(events, updatedEvent)
     let result = events.filter(data => (data.title == updatedEvent.title
       && data.start.getDate() == updatedEvent.start.getDate()
       && data.start.getMonth() == updatedEvent.start.getMonth()
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
-    console.log(result)
 
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
@@ -231,26 +227,16 @@ class Appointment extends Component {
     let sumCount = sumQueue + sumAppointment
     console.log(sumCount)
 
-    // const date = this.pharseDate(new Date(this.state.Date))
-    // const doctors = await axios.post(`/getRemainingDoctor`, {
-    //   Date: new Date(this.state.Date).getDate(),
-    //   day: date.day,
-    //   year: date.year,
-    //   departmentId: this.state.departmentId,
-    //   doctorId: updatedEvent.doctorId
-    // });
-    // this.setState({
-    //   doctorWithRemaining: doctors.data
-    // })
-    // console.log(this.state.doctorWithRemaining)
+
+    await this.checkCount(updatedEvent.doctorId)
+    console.log(this.state.doctorWithRemaining)
 
 
 
-    debugger
     //fail
     if (countAppointment[0]) {
       console.log('no data')
-      if (result.length > 0 || sumCount >= countAppointment[0].patientLimit) {
+      if (result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
         //fail
         console.log('cannot')
         swal("Cannot!", `HN: ${event.title} cannot move to  
