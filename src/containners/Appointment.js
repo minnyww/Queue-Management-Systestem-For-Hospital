@@ -227,11 +227,8 @@ class Appointment extends Component {
     let sumCount = sumQueue + sumAppointment
     console.log(sumCount)
 
-
     await this.checkCount(updatedEvent.doctorId)
     console.log(this.state.doctorWithRemaining)
-
-
 
     //fail
     if (countAppointment[0]) {
@@ -601,7 +598,10 @@ class Appointment extends Component {
                     simple
                     selection
                     item
-                    onChange={(e, { value }) => this.setField("appointmentDepId", value)}
+                    onChange={(e, { value }) => {
+                      this.setField("appointmentDepId", value)
+                      this.checkCount(value)
+                    }}
                   />
                   <br />
                   <br />
@@ -686,10 +686,13 @@ class Appointment extends Component {
     let sumCount = sumQueue + sumAppointment
     console.log('count ท้้งหมด', sumCount)
 
+    await this.checkCount(getDoctor[0])
+    console.log(this.state.doctorWithRemaining)
+
     debugger
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
-      || this.state.appointmentDepId == "" || sumCount > countAppointment[0].patientLimit) {
+      || this.state.appointmentDepId == "" || sumCount > this.state.doctorWithRemaining.remaining) {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
       this.setState({
         editStatus: true,
