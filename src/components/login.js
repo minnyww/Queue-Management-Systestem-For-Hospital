@@ -110,6 +110,7 @@ class Login extends Component {
           });
         } else {
           console.log(data.data[0]);
+          // let dataEmp = splice(fruits.length-1)
           console.log("aaaaaa:", this.props);
           localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
           this.props.history.push({
@@ -233,11 +234,11 @@ class Login extends Component {
     console.log(this.OTPfield)
     // console.log(this.generateOTP())
     return (
-      <div>
+      <div >
         <center>
           <Grid.Column style={{ maxWidth: "450px" }}>
-            <Segment color="blue">
-              <Form onSubmit={this.showOTPModal.bind(this)}>
+            <Segment color="blue" >
+              <Form onSubmit={this.showOTPModal.bind(this)} style={{ marginBottom: '15px' }}>
                 <Form.Input
                   fluid
                   label="HN"
@@ -252,6 +253,7 @@ class Login extends Component {
                 <Message negative hidden={!this.state.errorHN.status}>
                   {this.state.errorHN.message}
                 </Message>
+
                 <Form.Input
                   fluid
                   label="Phone number"
@@ -264,7 +266,6 @@ class Login extends Component {
                     this.setState({ phoneNumber: value })
                   }
                 />
-
                 <Message negative hidden={!this.state.errorPhoneNumber.status}>
                   {this.state.errorPhoneNumber.message}
                 </Message>
@@ -273,9 +274,11 @@ class Login extends Component {
                 </Button>
 
               </Form>
-              <Button style={{ marginTop: "2.5%", }} color="teal" >
-                <Link to={"/Admin"} style={{ color: 'white' }}>Admin</Link>
-              </Button>
+              {/* <Button style={{ marginTop: "2.5%", float: 'right' }} color="teal" size='tiny'> */}
+              <Label color='teal' size='tiny' attached='bottom right' style={{ marginTop: "2.5%" }}>
+                <Link to={"/Admin"}>Admin</Link>
+              </Label>
+              {/* </Button> */}
             </Segment>
 
             <Modal

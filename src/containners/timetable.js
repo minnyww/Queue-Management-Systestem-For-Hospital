@@ -343,7 +343,7 @@ class timetable extends Component {
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
         // console.log(timeStart, this.state.Date)
-        
+
         // const getDoctor = this.state.events.map(data => {
         //     return {
         //         doctor: data.doctor,
@@ -398,7 +398,7 @@ class timetable extends Component {
     };
 
     showDetailTimetable = (e) => {
-        console.log(e.id)
+        // console.log(e.id)
         this.setState({
             openDetail: true,
             selectEvent: e.id,
@@ -431,7 +431,7 @@ class timetable extends Component {
         this.setState({
             openDetail: false,
         })
-        console.log(this.state.selectEvent)
+        // console.log(this.state.selectEvent)
 
         // const getDoctor = this.state.events.map(data => {
         //     return {
@@ -446,9 +446,9 @@ class timetable extends Component {
         // console.log(result)
 
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
-        console.log(result)
-        console.log(this.state.events.id == this.state.selectEvent)
-        console.log(result[0].status)
+        // console.log(result)
+        // console.log(this.state.events.id == this.state.selectEvent)
+        // console.log(result[0].status)
         debugger
         if (result[0].start.getDate() >= new Date().getDate()) {
             console.log('เข้า')
@@ -489,7 +489,6 @@ class timetable extends Component {
     showDetailTimetableDescription = () => {
         const { timetable, selectEvent } = this.state
         let tmp = ""
-        console.log(timetable)
         tmp = timetable.filter(data => data.timetableId === selectEvent)
             .map((data, index) => {
                 if (!this.state.editStatus) {
@@ -642,7 +641,7 @@ class timetable extends Component {
         this.getEvents()
         this.getTimetable()
         console.log('เข้า up')
-        let getDoctor = this.state.doctorId.split('/')
+        // let getDoctor = this.state.doctorId.split('/')
 
         await axios.post("/updateDoctorTimetable", {
             date: new Date(this.state.Date).getDate(),
@@ -653,7 +652,7 @@ class timetable extends Component {
             timeEnd: this.state.timeEnd,
             timetableId: this.state.selectEvent,
             roomId: this.state.roomValue,
-            doctorId: getDoctor[0]
+            doctorId: this.state.doctorId
         });
     }
 

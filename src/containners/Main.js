@@ -22,14 +22,22 @@ class Main extends Component {
         </Statistic>
     }
 
+    logOut = () => {
+        localStorage.removeItem('userData');
+    }
+
     render() {
         console.log(this.state.loginName)
         return (
             <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
                 <Headerbar />
                 <center>
-                    {this.welcomeName()} <Link to={"/Admin"}><Label color='red'
-                        style={{ marginLeft: '5px' }} >Logout</Label></Link>
+                    {this.welcomeName()} <Link to={"/Admin"}>
+                        <Label color='red' style={{ marginLeft: '5px' }}
+                            onClick={() => this.logOut()}
+                        >Logout
+                        </Label>
+                    </Link>
                     <MainButton />
                 </center>
             </div>

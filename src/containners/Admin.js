@@ -49,8 +49,7 @@ class Admin extends Component {
     }
     render() {
         return (
-
-            <div>
+            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)', height: '700px' }}>
                 <Headerbar />
                 <br />
                 <br />
@@ -87,7 +86,6 @@ class Admin extends Component {
                                     Username or Password does not match
                                 </Message>
                                 <Button color='blue' type='submit' >Sign in</Button>
-
                             </Form>
                         </Segment>
                     </Grid.Column>

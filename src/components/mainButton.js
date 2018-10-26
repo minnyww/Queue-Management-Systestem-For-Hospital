@@ -52,6 +52,7 @@ const mainButton = props => {
                         <Grid.Column>
                             <Link to={"/AddOrDeleteDepartment"}>
                                 <Button
+                                    disabled
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
                                         width: '300px',

@@ -9,10 +9,17 @@ const formAddAppointment = props => {
         <Grid.Row>
           <Grid.Column >
             <Menu pointing color='teal' >
-              <Menu.Item name='Doctors' active={true} />
-              <Menu.Item name='Appointment Remaining' style={{ width: '100%' }} />
+              <Menu.Menu position='right' name='Appointment Remaining' style={{ width: '100%', }}>
+                <Menu.Item name='Doctors' />
+              </Menu.Menu>
+              <Menu.Menu>
+                <Menu.Item name='Max ' />
+              </Menu.Menu>
+              <Menu.Menu>
+                <Menu.Item name='Remaining ' />
+              </Menu.Menu>
             </Menu>
-            <Menu vertical fluid>
+            <Menu vertical fluid attached='top'>
               {props.listDoctors()}
             </Menu>
           </Grid.Column>
@@ -61,7 +68,10 @@ const formAddAppointment = props => {
               simple
               selection
               item
-              onChange={(e, { value }) => props.setField("appointmentDepId", value)}
+              onChange={(e, { value }) => {
+                props.setField("appointmentDepId", value)
+                props.checkCount(value)
+              }}
             />
             <br />
             <br />
