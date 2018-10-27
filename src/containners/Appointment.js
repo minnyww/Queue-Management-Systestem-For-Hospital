@@ -407,7 +407,7 @@ class Appointment extends Component {
     let sumCount = sumQueue + sumAppointment
     console.log(sumCount)
 
-    debugger
+    
     if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
       swal("Cannot !",
         `Cannot add Appointment because doctor can't recieve more patient`,
@@ -446,19 +446,19 @@ class Appointment extends Component {
     const date = this.pharseDate(new Date(this.state.Date))
 
     if (new Date(this.state.Date).getDate() >= new Date().getDate() && new Date(this.state.Date).getMonth() == new Date().getMonth()) {
-      // const doctors = await axios.post(`/getListDoctor`, {
-      //   Date: new Date(this.state.Date).getDate(),
-      //   day: date.day,
-      //   month: date.month,
-      //   year: date.year,
-      //   departmentId: this.state.departmentId
-      // });
-      // console.log(doctors)
-      // const doctorsOption = this.dropdownDoctors(doctors);
-      // this.setState({
-      //   doctors: doctorsOption,
-      //   doctorWithRemaining: doctors.data
-      // })
+      const doctors = await axios.post(`/getListDoctor`, {
+        Date: new Date(this.state.Date).getDate(),
+        day: date.day,
+        month: date.month,
+        year: date.year,
+        departmentId: this.state.departmentId
+      });
+      console.log(doctors)
+      const doctorsOption = this.dropdownDoctors(doctors);
+      this.setState({
+        doctors: doctorsOption,
+        // doctorWithRemaining: doctors.data
+      })
 
       //, doctorWithRemaining: doctors.data
       this.setState({ open: true })
@@ -689,7 +689,7 @@ class Appointment extends Component {
     await this.checkCount(getDoctor[0])
     console.log(this.state.doctorWithRemaining)
 
-    debugger
+    
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
       || this.state.appointmentDepId == "" || sumCount > this.state.doctorWithRemaining.remaining) {
@@ -794,7 +794,7 @@ class Appointment extends Component {
     // // if (this.state.addSuccess) {
     let getDoctor = this.state.appointmentDepId.toString().split('/')
     // console.log(getDoctor)
-    // debugger
+    // 
     // let remaining = timetable.filter(data => data.doctorId == getDoctor[0] && data.Date === new Date(this.state.Date).getDate()).map(data => (data.patientLimit))
     // console.log(remaining)
 
@@ -833,12 +833,9 @@ class Appointment extends Component {
   }
 
   checkCount = async (doctorId) => {
-    debugger
+    
     if (!doctorId) {
-      console.log('ไม่มี')
     } else {
-      debugger
-      console.log('เข้า checkCount ')
       let getDoctor = doctorId.toString().split('/')
       const date = this.pharseDate(new Date(this.state.Date))
       const doctors = await axios.post(`/getRemainingDoctor`, {
@@ -849,17 +846,12 @@ class Appointment extends Component {
         departmentId: this.state.departmentId,
         doctorId: getDoctor[0]
       });
-      console.log(doctors)
       this.setState({
         doctorWithRemaining: doctors.data
       })
     }
-
-    // this.setState({ doctorWithRemaining: doctors.data })
     console.log(this.state.doctorWithRemaining)
   }
-
-
   // onEventResize = (type, { event, start, end, allDay }) => {
   //   this.setState(state => {
   //     state.events[0].start = start;
@@ -867,9 +859,6 @@ class Appointment extends Component {
   //     return { events: state.events };
   //   });
   // };
-
-
-
   render() {
     return (
       <div style={{ width: '100%' }}>

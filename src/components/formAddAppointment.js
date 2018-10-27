@@ -39,6 +39,7 @@ const formAddAppointment = props => {
               </Message>
               <Form.Input
                 type="date"
+                disabled
                 fluid
                 value={props.Date}
                 onChange={(e, { value }) => props.setField("Date", value)}

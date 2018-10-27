@@ -39,7 +39,8 @@ class timetable extends Component {
         doctorId: 0,
         roomValue: 0,
         roomId: 0,
-        editStatus: false
+        editStatus: false,
+        doctorSelect: [{ key: "", text: "", value: "" }],
 
     }
     componentWillMount = async () => {
@@ -70,11 +71,22 @@ class timetable extends Component {
             // year: date.year,
             departmentId: this.state.departmentId
         });
+
+
+
         const rooms = await axios.post(`/getListRoom`, {
             departmentId: this.state.departmentId
         });
 
-        const doctorsOption = this.dropdownDoctors(doctors);
+        let doctorsOption = this.dropdownDoctors(doctors);
+        doctorsOption.push({
+            key: '',
+            text: 'All',
+            value: 0
+        })
+        console.log(doctorsOption)
+        let doctorsOptionNoAll = this.dropdownDoctors(doctors);
+
         const roomsOption = this.dropdownRooms(rooms);
         this.setState({
             events: appData,
@@ -82,8 +94,10 @@ class timetable extends Component {
             timetable: data,
             doctors: doctorsOption,
             rooms: roomsOption,
+            doctorSelect: doctorsOptionNoAll,
             roomId: doctors.data[0].roomId,
         })
+        console.log(this.state.doctorSelect)
         this.getTimetable()
     }
 
@@ -109,7 +123,6 @@ class timetable extends Component {
     };
 
     getEvents = async () => {
-        console.log('เข้า get Eve')
         const date = this.pharseDate();
         const { data } = await axios.post(`/getTimetable`, {
             month: date.month,
@@ -288,6 +301,10 @@ class timetable extends Component {
     }
 
     FormAddTimetable = () => {
+        // if(this.state.doctors.length > 2){
+        //     this.state.doctors.pop()
+        // }
+        // console.log(this.state.doctors)
         let tmp = ''
         tmp = <center>
             <Header as='h4'>Add Doctor to Timetable</Header>
@@ -317,7 +334,7 @@ class timetable extends Component {
             </Form>
             <Dropdown
                 placeholder="Doctor"
-                options={this.state.doctors}
+                options={this.state.doctorSelect}
                 simple
                 selection
                 item
@@ -482,8 +499,6 @@ class timetable extends Component {
                     console.log('error')
                 })
         }
-
-
     }
 
     showDetailTimetableDescription = () => {
@@ -574,7 +589,7 @@ class timetable extends Component {
                                 <Dropdown
                                     style={{ marginRight: '5px' }}
                                     placeholder="Doctor"
-                                    options={this.state.doctors}
+                                    options={this.state.doctorSelect}
                                     simple
                                     selection
                                     onChange={(e, { value }) => this.setField("doctorId", value)}
@@ -660,11 +675,34 @@ class timetable extends Component {
         this.setState({ [field]: value });
     };
 
+    chooseDoctor = async value => {
+        console.log(value)
+        await this.getEvents()
+        if (value === 0) {
+            this.setState({
+                events: this.state.events,
+            });
+        }
+        else {
+            const filterEvents = this.state.events.filter(data => (data.doctor == value))
+            this.setState({
+                events: filterEvents,
+                doctorId: value
+            });
+        }
+    };
+
+
+
     render() {
         return (
             <div >
                 <Headerbar />
-                <DropdownQueue />
+                <DropdownQueue
+                    doctors={this.state.doctors}
+                    // departmentId = {this.state.departmentId}
+                    chooseDoctor={this.chooseDoctor}
+                />
 
                 <Modal
                     center
