@@ -7,7 +7,7 @@ import swal from "sweetalert"
 import DropdownQueue from '../components/Dropdown';
 import FormManageDepartment from '../components/formManageDepartment';
 
-import { List, Icon } from 'semantic-ui-react'
+import { List, Icon, Button } from 'semantic-ui-react'
 
 class addOrdeleteDepartment extends Component {
     state = {
@@ -49,12 +49,19 @@ class addOrdeleteDepartment extends Component {
         console.log(this.state.listDepartment)
     }
 
-    showAllDepartment = () => {
+    showAllDepartment = (i) => {
         let tmp = ""
         const datas = this.state.listDepartment
-        tmp = datas.map(data => (
-            < List.Item >
-                <Icon name='plus' />
+        tmp = datas.map((data, i) => (
+            < List.Item key={i}>
+                <List.Content floated='right'>
+                    <Button color='red' size='mini'
+                        onClick={() => {
+                            this.deleteDepartment(i);
+                        }}> Delete
+                    </Button>
+                </List.Content>
+                <Icon name='building' color='blue' />
                 <List.Content>
                     <List.Header>{data.department}</List.Header>
                     <List.Header>{data.type === 1 ? 'Department' : 'Lab'}</List.Header>
@@ -77,6 +84,28 @@ class addOrdeleteDepartment extends Component {
         })
         await this.getListDepartment()
         console.log('suc')
+    }
+
+    deleteDepartment = async (i) => {
+        const departmentId = this.state.listDepartment[i].departmentId
+        console.log(departmentId)
+        let swl = ''
+        swl = swal({
+            title: "Are you sure?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then(async (willDelete) => {
+                if (willDelete) {
+                    await axios.delete(`/deleteDepartment/${departmentId}`)
+                    await this.getListDepartment()
+                }
+                swal("Poof! Your Department has been deleted!", {
+                    icon: "success",
+                });
+                console.log('succ del')
+            });
     }
 
     render() {

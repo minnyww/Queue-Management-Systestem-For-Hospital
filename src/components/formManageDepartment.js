@@ -13,12 +13,13 @@ const formManageDepartment = props => {
     console.log("props", props);
 
     return (
-
         <div>
-            <Grid centered columns={3} divided style={{ marginTop: "2.5%" }}>
+            <Grid centered divided style={{ marginTop: "2.5%" }}>
+                <Header as='h2' color='teal'>Department Management</Header>
                 <Grid.Row stretched >
-                    <Grid.Column style={{ maxHeight: '60%', minHeight: '60%', overflowY: 'scroll' }}>
+                    <Grid.Column width={6} style={{ maxHeight: '60%', minHeight: '60%', overflowY: 'scroll', }}>
                         <Segment color='blue' style={{ maxHeight: '200%' }}>
+                            <Header>List Of Department</Header>
                             <List animated verticalAlign='middle' divided relaxed='very' >
                                 {/* <List.Item>
                                         <Icon name='plus' />
@@ -30,32 +31,38 @@ const formManageDepartment = props => {
                             </List>
                         </Segment>
                     </Grid.Column>
-                    <Grid.Column style={{ width: "50%", height: '60%' }}>
+                    <Grid.Column width={6} style={{ width: "50%", height: '60%' }}>
                         <Segment attached='bottom' color='teal' >
+                            <Header>Add Department</Header>
                             <Form>
-                                <Form.Group widths='equal'>
-                                    <Form.Field
-                                        control={Input}
-                                        value={props.departmentName}
-                                        label='Department Name'
-                                        placeholder='Department Name'
-                                        onChange={(e, { value }) => props.setField("departmentName", value)} />
-                                    <Form.Field
-                                        control={Select}
-                                        value={props.typeOfDepartment}
-                                        label='Choose Department Or Lab type'
-                                        options={departmentOption}
-                                        placeholder='Choose Department Or Lab type'
-                                        onChange={(e, { value }) => props.setField("typeOfDepartment", value)} />
-                                </Form.Group>
+                                {/* <Form.Group widths='equal'> */}
+                                <Form.Field
+                                    required
+                                    control={Input}
+                                    value={props.departmentName}
+                                    label='Department Name'
+                                    placeholder='Department Name'
+                                    onChange={(e, { value }) => props.setField("departmentName", value)} />
+                                <Form.Field
+                                    required
+                                    control={Select}
+                                    value={props.typeOfDepartment}
+                                    label='Choose Department Or Lab type'
+                                    options={departmentOption}
+                                    placeholder='Choose Department Or Lab type'
+                                    onChange={(e, { value }) => props.setField("typeOfDepartment", value)} />
+                                {/* </Form.Group> */}
                             </Form>
-                            <Button
-                                style={{ float: 'right' }}
-                                color='blue'
-                                onClick={() => {
-                                    props.addDepartment();
-                                }}> Add
+                            <br />
+                            <br />
+                            <center>
+                                <Button
+                                    color='blue'
+                                    onClick={() => {
+                                        props.addDepartment();
+                                    }}> Add
                                 </Button>
+                            </center>
                         </Segment>
                     </Grid.Column>
                 </Grid.Row>

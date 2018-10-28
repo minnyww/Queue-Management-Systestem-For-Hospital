@@ -448,24 +448,7 @@ class timetable extends Component {
         this.setState({
             openDetail: false,
         })
-        // console.log(this.state.selectEvent)
-
-        // const getDoctor = this.state.events.map(data => {
-        //     return {
-        //         doctor: data.doctor,
-        //         start: data.start,
-        //         status: data.status
-        //     }
-        // })
-        // let result = this.state.events.filter(data => data.status == 1
-        //     || data.status == 3
-        //     && data.start.getDate() === new Date(this.state.Date).getDate())
-        // console.log(result)
-
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
-        // console.log(result)
-        // console.log(this.state.events.id == this.state.selectEvent)
-        // console.log(result[0].status)
         debugger
         if (result[0].start.getDate() >= new Date().getDate()) {
             console.log('เข้า')
