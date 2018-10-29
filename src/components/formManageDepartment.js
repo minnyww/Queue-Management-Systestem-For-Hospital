@@ -61,10 +61,48 @@ const showContent = props => {
                 </List>
             </Segment>
         </div>
-        );
+        )
     }
+    else if (props.activeItem === 'doctors') {
+        tmp = (<div>
+            <Segment color='blue' style={{ maxHeight: '200%' }}>
+                <Header>List Of Department</Header>
+                <List animated verticalAlign='middle' divided relaxed='very' >
+                    {props.showAllDoctorsLimit()}
+                </List>
+            </Segment>
+        </div>
+        )
+    }
+
     return tmp;
 };
+
+// const showAllDoctors = props => {
+//     let tmp = ''
+//     if (props.activeItem === 'doctors') {
+//         let tmp = ''
+//         const datas = props.listDoctors
+//         tmp = datas.map((data, i) => (
+//             < List.Item key={i}>
+//                 <List.Content floated='right'>
+//                     <Button color='red' size='mini'
+//                         onClick={() => {
+//                             // this.deleteRoom(i);
+//                         }}> Delete
+//                     </Button>
+//                 </List.Content>
+//                 <Icon name='building' color='blue' />
+//                 <List.Content>
+//                     <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
+//                     <List.Header>Room : {data.roomId}</List.Header>
+//                 </List.Content>
+//             </List.Item >
+//         ))
+//         return tmp
+//     }
+//     return tmp
+// }
 
 const showFormRoom = props => {
     let tmp = "";
@@ -161,7 +199,7 @@ const formManageDepartment = props => {
                             </Menu.Item>
                         </Menu>
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ maxHeight: '60%', minHeight: '60%', overflowY: 'scroll', }}>
+                    <Grid.Column width={6} style={{ maxHeight: '80%', minHeight: '80%', overflowY: 'scroll', }}>
                         {showContent(props)}
                         {/* <Segment color='blue' style={{ maxHeight: '200%' }}>
                             <Header>List Of Department</Header>
@@ -173,6 +211,7 @@ const formManageDepartment = props => {
                     <Grid.Column width={6} style={{ width: "50%", height: '60%' }}>
                         {showContentForm(props)}
                         {showFormRoom(props)}
+                        {/* {showAllDoctors(props)} */}
                         {/* <Segment attached='bottom' color='teal' >
                             <Header>Add Department</Header>
                             <Form>

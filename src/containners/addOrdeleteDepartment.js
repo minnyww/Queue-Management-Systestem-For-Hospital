@@ -7,7 +7,7 @@ import swal from "sweetalert"
 import DropdownQueue from '../components/Dropdown';
 import FormManageDepartment from '../components/formManageDepartment';
 
-import { List, Icon, Button } from 'semantic-ui-react'
+import { List, Icon, Button, Form, Input } from 'semantic-ui-react'
 
 class addOrdeleteDepartment extends Component {
     state = {
@@ -17,15 +17,19 @@ class addOrdeleteDepartment extends Component {
 
         listDepartment: [],
         listRooms: [],
+        listDoctors: [],
 
         departmentName: '',
         typeOfDepartment: '',
+
+        Date: new Date(),
 
         roomNumber: 0,
         floor: 0,
         building: '',
         allDepartments: [{ key: "", text: "", value: "" }],
         departmentValueId: 0,
+        patientLimit: 0,
 
         activeItem: 'department',
     }
@@ -35,18 +39,76 @@ class addOrdeleteDepartment extends Component {
         const allDepartment = await axios.get(`/getAllDepartment`);
         const allRoom = await axios.get(`/getAllRoom`);
 
+        const date = this.pharseDate()
+        let allDoctors = await axios.post(`/getAllDoctors`, {
+            Date: this.state.Date.getDate(),
+            day: date.day,
+            month: date.month,
+            year: date.year,
+        });
+
         const departmentOption = this.dropdownDoctors(allDepartment);
 
         await this.getListDepartment()
+
         this.setState({
             nurseId: empId,
             departmentId,
             userType: type,
             listDepartment: allDepartment.data,
             listRooms: allRoom.data,
+            listDoctors: allDoctors.data,
             allDepartments: departmentOption
         })
-        console.log(this.state.listDepartment)
+        console.log(this.state.listDoctors)
+
+    }
+
+    getDoctors = async () => {
+        const date = this.pharseDate()
+        let allDoctors = await axios.post(`/getAllDoctors`, {
+            Date: this.state.Date.getDate(),
+            day: date.day,
+            month: date.month,
+            year: date.year,
+        });
+        this.setState({
+            listDoctors: allDoctors.data,
+        })
+    }
+
+    pharseDate = () => {
+        var month = new Array(
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec"
+        );
+        var day = new Array(7);
+        day[0] = "sun";
+        day[1] = "mon";
+        day[2] = "tue";
+        day[3] = "wed";
+        day[4] = "thu";
+        day[5] = "fri";
+        day[6] = "sat";
+
+        var curr_date = this.state.Date.getDay();
+        var curr_month = this.state.Date.getMonth();
+        var curr_year = this.state.Date.getFullYear();
+        return {
+            day: day[curr_date],
+            month: month[curr_month],
+            year: curr_year,
+        }
     }
 
     setField = (field, value) => {
@@ -91,8 +153,8 @@ class addOrdeleteDepartment extends Component {
                 </List.Content>
                 <Icon name='building' color='blue' />
                 <List.Content>
-                    <List.Header>{data.department}</List.Header>
-                    <List.Header>{data.type === 1 ? 'Department' : 'Lab'}</List.Header>
+                    <List.Header>Department : {data.department}</List.Header>
+                    <List.Header>Type : {data.type === 1 ? 'Department' : 'Lab'}</List.Header>
                 </List.Content>
             </List.Item >
         ))
@@ -113,12 +175,57 @@ class addOrdeleteDepartment extends Component {
                 </List.Content>
                 <Icon name='building' color='blue' />
                 <List.Content>
-                    <List.Header>{data.roomId}</List.Header>
-                    <List.Header>{data.department}</List.Header>
+                    <List.Header>Room Number : {data.roomId}</List.Header>
+                    <List.Header>Department : {data.department}, Building : {data.building}</List.Header>
                 </List.Content>
             </List.Item >
         ))
         return tmp
+    }
+
+    showAllDoctorsLimit = () => {
+        let tmp = ''
+        const datas = this.state.listDoctors
+        tmp = datas.map((data, i) => (
+            < List.Item key={i}>
+                <List.Content floated='right'>
+                    <Button color='green' size='mini'
+                        onClick={() => {
+                            this.updateLimit(i);
+                        }}> Update
+                    </Button>
+                </List.Content>
+                <List.Content floated='right'>
+                    <Form.Field
+                        style={{ width: '70px' }}
+                        control={Input}
+                        onChange={(e, { value }) => this.setField("patientLimit", value)}
+                    />
+                </List.Content>
+                <Icon name='building' color='blue' />
+                <List.Content>
+                    <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
+                    <List.Header>Room : {data.roomId}</List.Header>
+                    <List.Header>Limit : {data.patientLimit}</List.Header>
+                </List.Content>
+            </List.Item >
+        ))
+        return tmp
+    }
+
+    updateLimit = async (i) => {
+        // console.log(this.state.listDoctors[i])
+        let timetableId = this.state.listDoctors[i].timetableId
+        console.log(this.state.patientLimit)
+        await axios.post("/updateLimit", {
+            timetableId: timetableId,
+            patientLimit: this.state.patientLimit,
+        })
+        swal("Poof! Your Department has been deleted!", {
+            icon: "success",
+        });
+        await this.getDoctors()
+        console.log('Hi')
     }
 
     addDepartment = async () => {
@@ -172,7 +279,7 @@ class addOrdeleteDepartment extends Component {
                         icon: "success",
                     });
                 }
-                
+
                 console.log('succ del')
             });
     }
@@ -222,6 +329,7 @@ class addOrdeleteDepartment extends Component {
                     allDepartment={this.state.allDepartment}
                     departmentValueId={this.state.departmentValueId}
                     allDepartments={this.state.allDepartments}
+                    listDoctors={this.state.listDoctors}
 
                     //method
                     setField={this.setField}
@@ -229,6 +337,7 @@ class addOrdeleteDepartment extends Component {
                     addRooms={this.addRooms}
                     showAllDepartment={this.showAllDepartment}
                     showAllRoom={this.showAllRoom}
+                    showAllDoctorsLimit={this.showAllDoctorsLimit}
 
                 />
             </div>
