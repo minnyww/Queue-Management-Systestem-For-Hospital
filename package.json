@@ -3,11 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "authy-client": "^1.1.1",
-=======
     "authy": "^1.4.0",
->>>>>>> e12a381713730ea951d24a521485319bcd899c53
     "axios": "^0.18.0",
     "moment": "^2.22.0",
     "moment-range": "^4.0.1",
