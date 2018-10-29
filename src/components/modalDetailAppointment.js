@@ -5,9 +5,7 @@ const modalDetailAppointment = props => {
 
     return (
         <div>
-
             {props.showPatientDescription()}
-
         </div>
     );
 };

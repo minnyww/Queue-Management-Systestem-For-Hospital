@@ -25,16 +25,16 @@ class Home extends Component {
     getDataPatient: [],
     recipient: '',
     textmessage: '',
-    dataPhoneNumber:'',
+    dataPhoneNumber: '',
     avgTime: 0,
   };
-  
+
   componentWillMount = async () => {
     const getUserData = JSON.parse(localStorage.getItem('getUserData'))
     this.setState({
       HN: getUserData.HN
     })
-
+    // setInterval('window.location.reload()', 10000);
     var dataPatient = await axios.get(`/getPatient`);
     this.setState({
       patientData: dataPatient.data,
@@ -44,7 +44,7 @@ class Home extends Component {
     var dataQueue = await axios.post(`/getQueueData`, {
       HN: this.state.HN
     });
-    
+
     let tmp = {};
     let dataAllStepQueue = []
     if (dataQueue.data.length !== 0) {
@@ -72,20 +72,20 @@ class Home extends Component {
     var dataAllAppointment = await axios.post(`/getAllAppointment`, {
       HN: this.state.HN,
     })
-    
-    var dataPhone = await axios.post(`/getPhoneNumber`,{
+
+    var dataPhone = await axios.post(`/getPhoneNumber`, {
       HN: this.state.HN,
     })
 
-    
+
     this.setState({
       queueData: tmp,
       allStepQueue: dataAllStepQueue,
       allAppointment: dataAllAppointment.data,
       dataPhoneNumber: dataPhone.data[0].phonenumber
     })
-    
-    console.log(this.state.patientData)
+
+    console.log(this.state.allStepQueue)
     this.cutPhoneNumber();
     this.setState({
       recipient: this.cutPhoneNumber()
@@ -93,11 +93,14 @@ class Home extends Component {
     this.sendNotification();
   }
 
-  cutPhoneNumber = () =>{
+
+
+
+  cutPhoneNumber = () => {
     let phone = "";
     var number = this.state.dataPhoneNumber
     let tmp = "+66"
-    phone = number.substr(1,10)
+    phone = number.substr(1, 10)
     let recipient = tmp + phone
     return recipient;
   }
@@ -132,9 +135,13 @@ class Home extends Component {
       <Step completed={data.statusId == 4 ? true : false}
         disabled={data.statusId == 5 ? true : false}
         active={data.statusId == 3 || data.statusId == 1 ? true : false}>
-        <Icon color="blue" name={icon.filter(icon => icon.key == data.roomId).length == 0 ? "" : icon.filter(icon => icon.key == data.roomId)[0].value} />
+        <Icon color="blue" className={icon.filter(icon => icon.key == data.roomId).length == 0 ? ""
+          : icon.filter(icon => icon.key == data.roomId)[0].value} />
         <Step.Content>
-          <Step.Title>{data.type == 1 ? "พบแพทย์ :" + data.firstname + ' ' + data.lastname : "ห้อง Lab/หัตถการ"}</Step.Title>
+          <Step.Title>{data.type == 1 ? "พบแพทย์ :"
+            + data.firstname + ' '
+            + data.lastname : "ห้อง Lab/หัตถการ"}
+          </Step.Title>
           <Step.Description>{'ห้อง : ' + data.roomId + 'แผนก : ' + data.department}</Step.Description>
         </Step.Content>
       </Step>
@@ -166,11 +173,11 @@ class Home extends Component {
     if (tmp === 0) {
       console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
-      this.setState({textmessage:"ถึงคิว"})
-    } else if(tmp === 1) {
+      this.setState({ textmessage: "ถึงคิว" })
+    } else if (tmp === 1) {
       console.log("เหลืออีก 1 คิว")
       NotificationManager.warning('เหลืออีก 1 คิว')
-      this.setState({ textmessage:"เหลืออีก 1 คิว"})
+      this.setState({ textmessage: "เหลืออีก 1 คิว" })
     } else if (tmp === 3) {
       console.log("เหลืออีก 3 คิว")
       NotificationManager.warning('เหลืออีก 3 คิว')
@@ -182,7 +189,6 @@ class Home extends Component {
     }
     this.sendText()
   }
-
   sendText = async () => {
     const recipient = this.state.recipient
     const textmessage = this.state.textmessage
@@ -200,7 +206,7 @@ class Home extends Component {
 
   render() {
 
-    console.log("state",this.state)
+    console.log("state", this.state)
     return (
       <div>
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
@@ -217,7 +223,7 @@ class Home extends Component {
           setField={this.setField}
           getPatientData={this.getPatientData}
           showAppointment={this.showAppointment}
-          
+
         />
         <br />
         <Tablepatient

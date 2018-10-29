@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import logo1 from './../img/logo1.png';
-import './../css/home.css';
-import Modal from 'react-modal';
+import backgroundLogin from './../img/backgroundLogin.png'
 import { Card, Icon, Image, Button, Form, Segment, Header } from 'semantic-ui-react'
 import Login from './../components/login';
-import axios from './../lib/axios'
 class Homeuser extends Component {
-
-    
     render() {
         return (
-
-            <div>
+            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)', height: '700px' }}>
                 <br />
                 <br />
                 <img src={logo1} className="ui small centered image" />
@@ -23,17 +18,9 @@ class Homeuser extends Component {
                 <br />
                 <br />
                 <Login />
-
-
             </div>
-
-
-
-
         );
-
     }
-
 }
 
 

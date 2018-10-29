@@ -31,11 +31,11 @@ class Login extends Component {
     statusValidate:'',
     //modal
     open: false,
-    openOTP:false,
+    openOTP: false,
     //validate
     errorHN: { status: false, message: "" },
     errorPhoneNumber: { status: false, message: "" },
-    errorOTP: {status: false, message:""}
+    errorOTP: { status: false, message: "" }
   };
 
   input = {}
@@ -72,7 +72,7 @@ class Login extends Component {
         
       } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({
-         errorHN: { status: true, message: "HN Does not match" }
+          errorHN: { status: true, message: "HN Does not match" }
         });
       }
     
@@ -91,8 +91,8 @@ class Login extends Component {
       ) {
         this.setState({
           errorPhoneNumber: {
-          status: true,
-          message: "Phone number limit 10 number"
+            status: true,
+            message: "Phone number limit 10 number"
           }
         });
       } else if (
@@ -175,6 +175,7 @@ class Login extends Component {
           });
         } else {
           console.log(data.data[0]);
+          // let dataEmp = splice(fruits.length-1)
           console.log("aaaaaa:", this.props);
           localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
           this.props.history.push({
@@ -231,7 +232,7 @@ class Login extends Component {
 
   render() {
     return (
-      <div>
+      <div >
         <center>
           <Grid.Column style={{ maxWidth: "450px" }}>
             <Segment color="blue">
@@ -250,6 +251,7 @@ class Login extends Component {
                 <Message negative hidden={!this.state.errorHN.status}>
                   {this.state.errorHN.message}
                 </Message>
+
                 <Form.Input
                   fluid
                   label="Phone number"
@@ -262,18 +264,19 @@ class Login extends Component {
                     this.setState({ phoneNumber: value })
                   }
                 />
-
                 <Message negative hidden={!this.state.errorPhoneNumber.status}>
                   {this.state.errorPhoneNumber.message}
                 </Message>
                 <Button color="blue" type="submit">
                   Sign in
                 </Button>
-                
+
               </Form>
-              <Button style={{ marginTop: "2.5%",  }} color="teal" >
-                <Link to={"/Admin"} style ={{ color : 'white' }}>Admin</Link>
-              </Button>
+              {/* <Button style={{ marginTop: "2.5%", float: 'right' }} color="teal" size='tiny'> */}
+              <Label color='teal' size='tiny' attached='bottom right' style={{ marginTop: "2.5%" }}>
+                <Link to={"/Admin"}>Admin</Link>
+              </Label>
+              {/* </Button> */}
             </Segment>
 
             <Modal

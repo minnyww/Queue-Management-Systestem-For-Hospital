@@ -9,12 +9,9 @@ import {
   Form,
   List,
   Message,
-  Radio,
   Segment,
   Table,
-  Label
 } from "semantic-ui-react";
-// import Modal from "react-modal";
 import Modal from "react-responsive-modal";
 
 const showCurrentQueue = props => {
@@ -62,17 +59,10 @@ const listQueue = props => {
   return tmp;
 };
 
-// const goBack = props => {
-//   let tmp = "";
-//   if (props.userType === 2) {
-//     tmp = (
-//       <Button primary onClick={() => { props.goBack(); }} >
-//         Go back
-//       </Button>
-//     );
-//   }
-//   return tmp;
-// };
+const forward = (props) => {
+  props.setField("showModal", true)
+  props.forwardList(props.currentQueue)
+}
 
 const Queue = props => {
   const setField = props.setField;
@@ -160,22 +150,32 @@ const Queue = props => {
             <Button primary onClick={() => { props.callPatient() }} >
               Call
             </Button>
-            
+
             <Menu vertical>
               <Dropdown text="Option" className="link item">
                 <Dropdown.Menu>
                   <Dropdown.Item disabled={props.currentQueue.firstName === undefined ? true : false}>
                     <center>
-                      <p onClick={() => setField("showModal", true)}>
+                      <p onClick={() =>
+                        forward(props)
+                      }>
                         Forward To
                       </p>
                       <Modal
                         styles={{ modal: { width: 800, } }}
                         open={props.showModal}
-                        onClose={() => setField("showModal", false)}
-                      >
+                        onClose={() =>
+                          setField("showModal", false)
+                        }>
                         <br />
                         <br />
+                        {props.currentQueue.step === 1 && props.forwardDepartments.length !== props.forwardDepartments.length + 1 ? ' ' :
+                          <Message
+                            info
+                            attached
+                            header='You want to add more Department ? '
+                            content='Please press + icon in the column Edit or Delete instead of select dropdown'
+                          />}
                         <Table color='teal' >
                           <Table.Header>
                             <Table.Row>

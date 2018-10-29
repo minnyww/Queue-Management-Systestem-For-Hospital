@@ -1,4 +1,5 @@
 /* ของ Queue.js */
+
 #box {
   overflow-y: scroll;
   height: 230px;
@@ -51,3 +52,20 @@ span.rbc-btn-group {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* .active.item:after {
+  background: #00a39b!important;
+  background-color: #00a39b!important
+} */
+
+.ui.inverted.pointing.menu .active.item:after{
+  background: #00a39b !important;
+}
+
+/* .rbc-event {
+  padding: 2px 5px;
+  background-color: #0c8a84;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+} */
