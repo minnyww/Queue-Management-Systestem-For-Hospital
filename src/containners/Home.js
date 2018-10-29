@@ -121,7 +121,7 @@ class Home extends Component {
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
-
+  
   showStepQueue = () => {
     const icon =
       [{ key: '1001', value: 'user doctor', text: 'user doctor' },
@@ -198,6 +198,10 @@ class Home extends Component {
       textmessage: textmessage
     })
     console.log(resp)
+  }
+
+  sendOTP = async () =>{
+    
   }
 
   render() {
