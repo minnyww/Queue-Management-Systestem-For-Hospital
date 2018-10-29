@@ -175,7 +175,7 @@ class Adminhome extends Component {
     })
     return forwardList.data
   }
-  
+
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
@@ -706,10 +706,6 @@ class Adminhome extends Component {
             })
           console.log('insertList', insertList)
         }
-
-
-
-
         for (let index = 0; index < forwardList.data.length; index++) {
           console.log('เข้า For', index, forwardList.data.length)
           let result = null;
@@ -758,7 +754,6 @@ class Adminhome extends Component {
                     }
                   }
                 }
-                debugger;
                 // console.log("forwardList.data[i].roomId === dep.roomId", +forwardList.data[index].roomId, +dep.roomId)
                 // if (+forwardList.data[index].roomId === +dep.roomId) {
                 //   result= { index: i, step: dep.step, runningNumber: dep.runningNumber }

@@ -25,10 +25,10 @@ class Login extends Component {
     phoneNumber: "",
     recipient: '',
     textmessage: '',
-    OTP:'',
-    OTPfield:'',
-    requestId:'',
-    statusValidate:'',
+    OTP: '',
+    OTPfield: '',
+    requestId: '',
+    statusValidate: '',
     //modal
     open: false,
     openOTP: false,
@@ -42,7 +42,7 @@ class Login extends Component {
 
   showOTPModal = async (phoneNumber) => {
     const recipient = await this.cutForOTP()
-    await this.setState({ 
+    await this.setState({
       openOTP: true,
       recipient: recipient,
       // OTP: OTP,
@@ -63,19 +63,19 @@ class Login extends Component {
     var checkHNform = false;
     console.log(phoneNumber);
     console.log(HN);
-    
-    if(checkHNform === false){
+
+    if (checkHNform === false) {
       if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({ errorHN: { status: false, message: "" } });
         checkHNform = true;
         console.log(checkHNform);
-        
+
       } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({
           errorHN: { status: true, message: "HN Does not match" }
         });
       }
-    
+
       //Check phone number
       if (
         this.state.phoneNumber.length <= 10 &&
@@ -107,33 +107,33 @@ class Login extends Component {
         });
       }
 
-    // //Check API
-    // if (check === true) {
-    //   var data = await axios.post("/checkHN", {
-    //     HN: this.state.HN,
-    //     phoneNumber: this.state.phoneNumber
-    //   });
-    //   console.log(data.data);
-    //   if (data.data.length === 0) {
-    //     this.setState({
-    //       errorHN: { status: true, message: "HN Does not match" }
-    //     });
-    //   } else {
-    //     console.log(data.data[0]);
-    //     console.log("aaaaaa:", this.props);
-    //     localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
-    //     this.props.history.push({
-    //       pathname: "/Home",
-    //       state: {
-    //         HN: data.data[0].HN,
-    //         phoneNumber: data.data[0].phonenumber
-    //       }
-    //     });
-    //   }
-    // }
-  }  
+      // //Check API
+      // if (check === true) {
+      //   var data = await axios.post("/checkHN", {
+      //     HN: this.state.HN,
+      //     phoneNumber: this.state.phoneNumber
+      //   });
+      //   console.log(data.data);
+      //   if (data.data.length === 0) {
+      //     this.setState({
+      //       errorHN: { status: true, message: "HN Does not match" }
+      //     });
+      //   } else {
+      //     console.log(data.data[0]);
+      //     console.log("aaaaaa:", this.props);
+      //     localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
+      //     this.props.history.push({
+      //       pathname: "/Home",
+      //       state: {
+      //         HN: data.data[0].HN,
+      //         phoneNumber: data.data[0].phonenumber
+      //       }
+      //     });
+      //   }
+      // }
+    }
 
-};
+  };
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
@@ -148,45 +148,45 @@ class Login extends Component {
   cutForOTP = () => {
     let phone = "";
     var number = this.state.phoneNumber
-    phone = "66"+number.substr(1, 10)
+    phone = "66" + number.substr(1, 10)
     return phone;
   }
   validateOTP = async (otp) => {
     console.log(otp);
     console.log("เข้าvalidateOTP");
-    const check = await axios.post('/validateOTP',{
+    const check = await axios.post('/validateOTP', {
       requestId: this.state.requestId,
       code: otp
     })
     console.log(check.data.message);
-    if(check.data.message.status === '0'){
+    if (check.data.message.status === '0') {
       console.log("เข้าstatusValidate");
-      
+
       //Check API
-      
-        var data = await axios.post("/checkHN", {
-         HN: this.state.HN,
-         phoneNumber: this.state.phoneNumber
+
+      var data = await axios.post("/checkHN", {
+        HN: this.state.HN,
+        phoneNumber: this.state.phoneNumber
+      });
+      console.log(data.data);
+      if (data.data.length === 0) {
+        this.setState({
+          errorHN: { status: true, message: "HN Does not match" }
         });
-        console.log(data.data);
-        if (data.data.length === 0) {
-          this.setState({
-            errorHN: { status: true, message: "HN Does not match" }
-          });
-        } else {
-          console.log(data.data[0]);
-          // let dataEmp = splice(fruits.length-1)
-          console.log("aaaaaa:", this.props);
-          localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
-          this.props.history.push({
-            pathname: "/Home",
-            state: {
-              HN: data.data[0].HN,
-              phoneNumber: data.data[0].phonenumber
-            }
-          });
-        }
-      
+      } else {
+        console.log(data.data[0]);
+        // let dataEmp = splice(fruits.length-1)
+        console.log("aaaaaa:", this.props);
+        localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
+        this.props.history.push({
+          pathname: "/Home",
+          state: {
+            HN: data.data[0].HN,
+            phoneNumber: data.data[0].phonenumber
+          }
+        });
+      }
+
     }
   }
   sendText = async () => {
@@ -210,8 +210,8 @@ class Login extends Component {
     // return textOTP;
     const recipient = this.state.recipient
     console.log("ส่งOTP");
-    const reqOTP = await axios.post('/requestOTP',{
-      recipient : recipient
+    const reqOTP = await axios.post('/requestOTP', {
+      recipient: recipient
     })
     this.setState({
       requestId: reqOTP.data.requestId
@@ -219,11 +219,11 @@ class Login extends Component {
   }
   onChange = (event) => {
     let otp = this.state.OTPfield + event.target.value
-    this.setState({OTPfield:otp})
-    if(event.target.value.length === event.target.maxLength){
-      if(event.target.id < 4){
+    this.setState({ OTPfield: otp })
+    if (event.target.value.length === event.target.maxLength) {
+      if (event.target.id < 4) {
         this.input[event.target.id].focus()
-      }else if(event.target.id == 4){
+      } else if (event.target.id == 4) {
         console.log(otp);
         this.validateOTP(otp)
       }
@@ -283,68 +283,71 @@ class Login extends Component {
               center
               styles={{ modal: { width: 300, top: '40%', borderRadius: '10px' } }}
               open={this.state.openOTP}
-              onClose={() => this.setField("openOTP", false)}>
+              onClose={() => {
+                this.setField("openOTP", false)
+                this.setField("OTPfield", '')
+              }}>
               <Form name='OTP'>
-                  <Form.Group style={{marginLeft:30}}>
+                <Form.Group style={{ marginLeft: 30 }}>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}} >
+                    <Form.Field style={{ paddingRight: 15 }} >
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="1"
-                          autoFocus
-                          ref={input => this.input["0"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(0)}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="1"
+                        autoFocus
+                        ref={input => this.input["0"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.OTPfield.charAt(0)}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="2"
-                          ref={input => this.input["1"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(1)}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="2"
+                        ref={input => this.input["1"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.OTPfield.charAt(1)}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="3"
-                          ref={input => this.input["2"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(2)}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="3"
+                        ref={input => this.input["2"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.OTPfield.charAt(2)}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="4"
-                          ref={input => this.input["3"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(3)}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="4"
+                        ref={input => this.input["3"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.OTPfield.charAt(3)}
                       />
                     </Form.Field>
                   </Grid.Column>
-                  </Form.Group>
-              {/* <Form.Input
+                </Form.Group>
+                {/* <Form.Input
                 fluid
                 name='OTP'
                 placeholder="Enter OTP"
@@ -354,11 +357,11 @@ class Login extends Component {
               <Message negative hidden={!this.state.errorOTP.status}>
                 {this.state.errorOTP.message}
               </Message> */}
-              <center>
-                <Button style={{ marginTop: "2.5%" }} color="blue" type="submit" onClick={this.validateOTP} >
-                  Verify OTP
+                <center>
+                  <Button style={{ marginTop: "2.5%" }} color="blue" type="submit" onClick={this.validateOTP} >
+                    Verify OTP
                 </Button>
-              </center>
+                </center>
               </Form>
             </Modal>
           </Grid.Column>

@@ -121,7 +121,7 @@ class Home extends Component {
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
-  
+
   showStepQueue = () => {
     const icon =
       [{ key: '1001', value: 'user doctor', text: 'user doctor' },
@@ -192,16 +192,16 @@ class Home extends Component {
   sendText = async () => {
     const recipient = this.state.recipient
     const textmessage = this.state.textmessage
+    if (textmessage) {
+      const resp = await axios.post('/sendText', {
+        recipient: recipient,
+        textmessage: textmessage
+      })
+      console.log(resp)
+    } else {
+      console.log('ไม่มีคิว')
+    }
 
-    const resp = await axios.post('/sendText', {
-      recipient: recipient,
-      textmessage: textmessage
-    })
-    console.log(resp)
-  }
-
-  sendOTP = async () =>{
-    
   }
 
   render() {

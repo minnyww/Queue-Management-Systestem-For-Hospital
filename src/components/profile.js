@@ -59,7 +59,11 @@ const profile = props => {
               <Card.Header>คิวที่รอ</Card.Header>
               <Statistic size="mini" >
                 <Statistic.Value>
-                  {props.queueData.queueId - props.queueData.currentQueue < 0 ? '0' : props.queueData.queueId - props.queueData.currentQueue}
+                  {isNaN(props.queueData.queueId - props.queueData.currentQueue) === true
+                    ? '0'
+                    : props.queueData.queueId - props.queueData.currentQueue}
+
+                  {/* {props.queueData.queueId - props.queueData.currentQueue <= 0 ? '0' : props.queueData.queueId - props.queueData.currentQueue} */}
                 </Statistic.Value>
                 <Statistic.Value>
                   Queues
@@ -81,7 +85,8 @@ const profile = props => {
               <Statistic size='mini'>
                 <Statistic.Value>
                   {/* {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + '' : '' } */}
-                  {parseInt(props.queueData.avgtime).toFixed(0) === NaN ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
+
+                  {parseInt(props.queueData.avgtime).toFixed(0) === 'NaN' ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
                   }
                 </Statistic.Value>
                 <Statistic.Value>
