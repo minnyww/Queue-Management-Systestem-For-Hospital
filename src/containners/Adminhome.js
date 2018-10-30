@@ -1239,7 +1239,7 @@ class Adminhome extends Component {
         console.log(this.state.forwardDepartments)
         let swl = ''
         swl = swal({
-          title: "Cannot",
+          title: "Cannot add empty dropdown",
           text: "Please select dropdown",
           icon: "warning",
           button: "Ok",
