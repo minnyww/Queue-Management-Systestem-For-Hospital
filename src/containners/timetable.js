@@ -61,7 +61,8 @@ class timetable extends Component {
                 title: app.firstname + ' ' + app.lastname,
                 id: app.timetableId,
                 doctor: app.doctorId,
-                status: app.statusId
+                status: app.statusId,
+                roomId: app.roomId
             }
         })
 
@@ -71,8 +72,6 @@ class timetable extends Component {
             // year: date.year,
             departmentId: this.state.departmentId
         });
-
-
 
         const rooms = await axios.post(`/getListRoom`, {
             departmentId: this.state.departmentId
@@ -97,8 +96,8 @@ class timetable extends Component {
             doctorSelect: doctorsOptionNoAll,
             roomId: doctors.data[0].roomId,
         })
-        console.log(this.state.doctorSelect)
-        this.getTimetable()
+        console.log(this.state.events)
+        // this.getTimetable()getTimetable
     }
 
     dropdownDoctors = doctors => {
@@ -135,12 +134,14 @@ class timetable extends Component {
                 title: app.firstname + ' ' + app.lastname,
                 id: app.timetableId,
                 doctor: app.doctorId,
-                status: app.statusId
+                status: app.statusId,
+                roomId: app.roomId
             }
         })
         this.setState({
             events: appData,
         })
+        console.log(this.state.events)
     }
 
     getTimetable = async () => {
@@ -243,17 +244,43 @@ class timetable extends Component {
         var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
         var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
 
-        console.log(updatedEvent)
-        console.log(this.state.events)
+        console.log(this.state.events[idx])
         let result = this.state.events
             .filter(event => event.start.getDate() == updatedEvent.start.getDate()
                 && event.start.getMonth() == updatedEvent.start.getMonth()
                 && event.start.getHours() == updatedEvent.start.getHours()
                 && event.doctor === updatedEvent.doctor)
         console.log("result", result)
+        // debugger
+        const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
+
+        const checkStatus = await axios.post("/checkStatusDoctor", {
+            doctorId: updatedEvent.doctor,
+            date: checkDate
+        })
         debugger
-        if (result.length == 0 && (updatedEvent.status !== 1 || updatedEvent.status !== 3)) {
-            // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
+        console.log(checkStatus.data)
+        if (!checkStatus.data) {
+            if (result.length == 0 && (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3)) {
+                // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
+                console.log("UDATE Q")
+                nextEvents.splice(idx, 1, updatedEvent);
+                swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
+                this.setState({
+                    events: nextEvents
+                });
+                await axios.post("/updateDoctorTimetable", {
+                    date: updatedEvent.start.getDate(),
+                    day: day[curr_date].toLowerCase(),
+                    month: month[curr_month].toLowerCase(),
+                    year: curr_year,
+                    timeStart: timeStart,
+                    timeEnd: timeEnd,
+                    timetableId: updatedEvent.id
+                });
+            }
+        }
+        else if (checkStatus.data.length == []) {
             console.log("UDATE Q")
             nextEvents.splice(idx, 1, updatedEvent);
             swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
@@ -269,14 +296,11 @@ class timetable extends Component {
                 timeEnd: timeEnd,
                 timetableId: updatedEvent.id
             });
-            // }
-            // console.log('เข้า if ใน')
-            // swal("Cannot !",
-            //     `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
-            //     "warning");
-        } else {
+        }
+        else {
             swal("Cannot !",
-                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
+                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)} 
+                because doctor cant recieve more patient`,
                 "warning");
         }
     }
@@ -340,6 +364,14 @@ class timetable extends Component {
                 item
                 onChange={(e, { value }) => this.setField("doctorId", value)}
             />
+            <Dropdown
+                placeholder="Room"
+                options={this.state.rooms}
+                simple
+                selection
+                item
+                onChange={(e, { value }) => this.setField("roomValue", value)}
+            />
             <br />
             <Button
                 color='blue'
@@ -354,23 +386,26 @@ class timetable extends Component {
     }
 
     addTimetable = async () => {
-        const { events, timeStart, timeEnd, doctorId } = this.state
-        let tmp = doctorId.split("/")
+        // roomId: tmp[1],
+        const { events, timeStart, timeEnd, doctorId, roomValue } = this.state
+        // let tmp = doctorId.split("/")
         const currentDate = new Date(this.state.Date)
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
-        // console.log(timeStart, this.state.Date)
-
+        console.log(timeStart)
         // const getDoctor = this.state.events.map(data => {
         //     return {
         //         doctor: data.doctor,
         //         start: data.start
         //     }
         // })
-
-        let result = events.filter(data => data.doctor == tmp[0]
+        debugger
+        let result = events.filter(data => data.doctor == doctorId
+            && data.roomId == roomValue
             && data.start.getDate() === new Date(this.state.Date).getDate()
-            && data.timeStart === timeStart)
+            && moment(data.start, "HH:mm").format("HH:mm") == timeStart
+        )
+        console.log(result)
         if (result.length == 0) {
             const data = await axios.post("/addTimetable", {
                 Date: new Date(this.state.Date).getDate(),
@@ -379,8 +414,8 @@ class timetable extends Component {
                 Year: date.year,
                 timeStart: timeStart,
                 timeEnd: timeEnd,
-                doctorId: tmp[0],
-                roomId: tmp[1],
+                doctorId: doctorId,
+                roomId: roomValue,
             });
             await this.setState({
                 open: false,
@@ -391,7 +426,7 @@ class timetable extends Component {
             });
         }
         else {
-            swal("Cannot add in today", {
+            swal("Cannot add Doctor to Timetable", {
                 icon: "warning",
             });
         }
@@ -443,13 +478,22 @@ class timetable extends Component {
         return swl
     }
 
-    deleteTimetable = (index) => {
+    deleteTimetable = async (index) => {
         console.log("เข้า ลบ")
         this.setState({
             openDetail: false,
         })
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
+        console.log(result[0])
         debugger
+
+        // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[this.state.selectEvent].start.getDate() + ' '
+        // console.log(checkDate)
+        // const checkStatus = await axios.post("/checkStatusDoctor", {
+        //     doctorId: updatedEvent.doctor,
+        //     date: checkDate
+        // })
+
         if (result[0].start.getDate() >= new Date().getDate()) {
             console.log('เข้า')
             if (result[0].status === 3 || result[0].status === 1) {
