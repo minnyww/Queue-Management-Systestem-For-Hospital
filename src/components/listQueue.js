@@ -173,9 +173,10 @@ const Queue = props => {
                           <Message
                             info
                             attached
-                            header='You want to add more Department ? '
-                            content='Please press + icon in the column Edit or Delete instead of select dropdown'
+                            header='Need more help ? '
+                            list={['Please press + icon in the column Edit or Delete instead of select dropdown', 'หากต้องการให้คนไข้กลับมาที่ห้องเดิม กรุณาเพิ่มแผนกตัวเองอีกครั้ง']}
                           />}
+                        {/* <Label color='teal' style={{ marginRight: '2%' }}>หากต้องการให้คนไข้กลับมาที่ห้องเดิม กรุณาเพิ่มแผนกตัวเองอีกครั้ง</Label> */}
                         <Table color='teal' >
                           <Table.Header>
                             <Table.Row>

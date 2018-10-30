@@ -447,6 +447,7 @@ class Adminhome extends Component {
     // //เอากรุปของ currentQ ไป select มา เรียงจากน้อยไปมาก
     // //select group ทั้งหมด ของ currentq where status4 , roomId
     //check ว่ามีห้องที่ต้องกลับไหมถ้ามี ให้เอา col แรก status = 1 
+    debugger
     console.log(this.state.currentQueue)
     if (this.state.currentQueue.firstName !== undefined) {
       if (this.state.currentQueue.roomBack !== null) {
@@ -454,7 +455,7 @@ class Adminhome extends Component {
           group: this.state.currentQueue.group,
           // roomId: this.state.roomId
         })
-
+        console.log(checkGroup.data[0].HN, checkGroup.data[0].runningNumber, checkGroup.data[0].queueId)
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
@@ -462,6 +463,7 @@ class Adminhome extends Component {
           runningNumber: checkGroup.data[0].runningNumber,
           queueId: checkGroup.data[0].queueId
         });
+        console.log('เข้า !== null')
       }
     }
     // // เชคว่าผู้ป่วยมคิวต่อไหม (currentQ >> where group , sort running number ) >>>>> API post 
@@ -685,7 +687,8 @@ class Adminhome extends Component {
                     departmentId: dep.departmentId,
                     queueDefault: 'forwardType',
                     groupId: this.state.currentQueue.group,
-                    roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+                    roomBack: null,
+                    // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
                     step: i + 1
                   }
                   console.log("tmp ที่ inert,", tmp)
@@ -739,7 +742,8 @@ class Adminhome extends Component {
                       departmentId: dep.departmentId,
                       queueDefault: 'forwardType',
                       groupId: this.state.currentQueue.group,
-                      roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+                      roomBack: null,
+                      // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
                       step: i + 1
                       // date: this.state.Date,
                       // timeFormat: time,
@@ -794,7 +798,8 @@ class Adminhome extends Component {
               departmentId: dep.departmentId,
               queueDefault: 'forwardType',
               groupId: this.state.currentQueue.group,
-              roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+              roomBack: null,
+              // roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
               step: i + 2
               // date: this.state.Date,
               // timeFormat: time,
@@ -1127,9 +1132,9 @@ class Adminhome extends Component {
           onClick={() => { this.addMoreForward(); }}>
           Add to List
         </Button>
-        <Divider horizontal>Or</Divider>
-        <Label color='teal' style={{ marginRight: '2%' }}>ต้องการให้คนไข้กลับมาที่ห้องเดิมหรือไม่</Label>
-        <Radio
+        {/* <Divider horizontal>Or</Divider>
+        <Label color='teal' style={{ marginRight: '2%' }}>หากต้องการให้คนไข้กลับมาที่ห้องเดิม กรุณาเพิ่มแผนกตัวเองอีกครั้ง</Label> */}
+        {/* <Radio
           disabled={this.state.currentQueue.step === 1 ? false : true}
           style={{ paddingRight: '40px' }}
           label='Yes'
@@ -1149,7 +1154,7 @@ class Adminhome extends Component {
           onChange={async (e, { value }) => {
             this.setState({ forwardComeback: value, })
           }} >
-        </Radio>
+        </Radio> */}
       </center>
 
     </div >
@@ -1211,7 +1216,6 @@ class Adminhome extends Component {
       tmp[i] = dep
     }
     tmp[i].editStatus = status
-    debugger
     console.log('dep !== null')
     console.log('tmp[i] true', tmp[i], this.state.forwardDepartments[i].roomId)
 
@@ -1223,9 +1227,33 @@ class Adminhome extends Component {
       })
     }
 
+    console.log(!this.state.forwardDepartments[i + 1], this.state.forwardDepartments[i])
+    debugger
     if (!this.state.forwardDepartments[i + 1]) {
-      console.log('esass')
-      if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)) {
+      console.log(tmp[i].roomId)
+      if (tmp[i].roomId === undefined) {
+        tmp.splice(i, 1)
+        this.setState({
+          forwardDepartments: tmp
+        })
+        console.log(this.state.forwardDepartments)
+        let swl = ''
+        swl = swal({
+          title: "Cannot",
+          text: "Please select dropdown",
+          icon: "warning",
+          button: "Ok",
+          dangerMode: true,
+        })
+      }
+      else if (!this.state.forwardDepartments[i - 1]) {
+        this.setState({
+          forwardDepartments: tmp
+        })
+      }
+      // if (tmp[i].roomId == '' || tmp[i].type == '' || tmp[i].doctorId == '') {
+      // if (tmp[i].roomId !== undefined) {
+      else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)) {
         let swl = ''
         swl = swal({
           title: "Cannot add same room",
@@ -1238,6 +1266,33 @@ class Adminhome extends Component {
           forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
         })
       }
+      // }
+      // let swl = ''
+      // swl = swal({
+      //   title: "Cannot",
+      //   text: "Cannot",
+      //   icon: "warning",
+      //   button: "Ok",
+      //   dangerMode: true,
+      // })
+      // tmp.splice(i, 1)
+      // this.setState({
+      //   forwardDepartments: tmp
+      // })
+      // }
+      // let swl = ''
+      // swl = swal({
+      //   title: "Please Select !",
+      //   text: "Please select Dropdown",
+      //   icon: "warning",
+      //   button: "Ok",
+      //   dangerMode: true,
+      // })
+      // tmp.splice(i, 1)
+      // this.setState({
+      //   forwardDepartments: tmp
+      // })
+      // console.log(this.state.forwardDepartments)
     }
 
     //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง 
@@ -1363,7 +1418,9 @@ class Adminhome extends Component {
             <Table.Cell>
               <Icon name='save' color="green"
                 onClick={() => this.editStatus(i, false, dep)} />
-              <Icon className="cancel" color='red' />
+              <Icon className="cancel" color='red'
+                onClick={() => this.editStatus(i, false, dep)}
+              />
             </Table.Cell>
           </Table.Row>
         }
