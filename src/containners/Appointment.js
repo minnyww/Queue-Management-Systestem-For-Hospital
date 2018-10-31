@@ -385,8 +385,10 @@ class Appointment extends Component {
       && data.Date === new Date(this.state.Date).getDate())
 
     //check ว่า ใน วันนั้น มีการแอดเวลาซ้ำกันที่หมอเดียวกันหรือป่าว
-    let check = appointment.filter(data => data.doctorId == tmp[0]
-      && data.timeStart.substr(0, 5) == startTime
+    let check = appointment.filter(data => 
+      // data.doctorId == tmp[0]
+      // && 
+      data.timeStart.substr(0, 5) == startTime
       && data.date === new Date(this.state.Date).getDate())
     console.log(check)
 
@@ -410,7 +412,7 @@ class Appointment extends Component {
     
     if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
       swal("Cannot !",
-        `Cannot add Appointment because doctor can't recieve more patient`,
+        `Cannot add Appointment because doctor can't recieve more patient Or Appointment time is duplicate in other doctor`,
         "warning");
     }
     else {
