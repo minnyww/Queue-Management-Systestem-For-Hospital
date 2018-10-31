@@ -252,7 +252,7 @@ class timetable extends Component {
                 && event.doctor === updatedEvent.doctor)
         console.log("result", result)
         // debugger
-        const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
+        // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
 
         const checkStatus = await axios.post("/checkStatusDoctor", {
             doctorId: updatedEvent.doctor,
@@ -399,13 +399,11 @@ class timetable extends Component {
         //         start: data.start
         //     }
         // })
-        debugger
         let result = events.filter(data => data.doctor == doctorId
             && data.roomId == roomValue
             && data.start.getDate() === new Date(this.state.Date).getDate()
             && moment(data.start, "HH:mm").format("HH:mm") == timeStart
         )
-        console.log(result)
         if (result.length == 0) {
             const data = await axios.post("/addTimetable", {
                 Date: new Date(this.state.Date).getDate(),
@@ -485,18 +483,15 @@ class timetable extends Component {
         })
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
         console.log(result[0])
-        debugger
 
-        // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[this.state.selectEvent].start.getDate() + ' '
-        // console.log(checkDate)
-        // const checkStatus = await axios.post("/checkStatusDoctor", {
-        //     doctorId: updatedEvent.doctor,
-        //     date: checkDate
-        // })
+        const checkStatus = await axios.post("/checkStatusDoctor", {
+            doctorId: result[0].doctor,
+        })
+        console.log(checkStatus)
 
-        if (result[0].start.getDate() >= new Date().getDate()) {
+        if (result[0].start.getDate() >= new Date().getDate() && checkStatus.data) {
             console.log('เข้า')
-            if (result[0].status === 3 || result[0].status === 1) {
+            if (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3) {
                 console.log('เข้าใน')
                 swal("Cannot Delete this doctor because has patient in room with this Doctor", {
                     icon: "warning",
