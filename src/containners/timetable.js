@@ -312,7 +312,10 @@ class timetable extends Component {
             // open: true
         })
         debugger
-        if (new Date(this.state.Date).getDate() >= new Date().getDate()) {
+        console.log(new Date(this.state.Date).getMonth(), new Date().getMonth() )
+        if (new Date(this.state.Date).getDate() >= new Date().getDate() 
+        || new Date(this.state.Date).getMonth() > new Date().getMonth() 
+        ) {
             this.setField("open", true)
         }
         else {
@@ -402,6 +405,7 @@ class timetable extends Component {
         let result = events.filter(data => data.doctor == doctorId
             && data.roomId == roomValue
             && data.start.getDate() === new Date(this.state.Date).getDate()
+            // && data.start.getMonth() === new Date(this.state.Date).getMonth()
             && moment(data.start, "HH:mm").format("HH:mm") == timeStart
         )
         if (result.length == 0) {
