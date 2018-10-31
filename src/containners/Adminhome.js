@@ -158,7 +158,7 @@ class Adminhome extends Component {
     this.updateAvgTime()
     this.forwardList(currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0])
 
-    console.log(this.state.labQueues)
+    // console.log(this.state.labQueues)
   };
   //สิ้นสุด Willmount
   forwardList = async (currentQueue) => {
@@ -818,95 +818,6 @@ class Adminhome extends Component {
         })
       }
 
-      this.getLabQueue(this.state.roomId)
-
-
-
-      // this.state.forwardDepartments.map(async (forward, i) => {
-      //   indexStep = i
-      //   console.log('forward.step ', forward.step)
-      //   if (forward.statusId === 3) {
-      //     stepCurrent = forward.step
-      //   }
-      //   console.log('stepCurrent ', stepCurrent)
-      //   if (this.state.addForwardNew) {
-      //     debugger
-      //     if (forward.addStatus) {
-      //       //แทรกเข้า db >> add ตัวที่ addstatus เป้น true ต้องรู้ว่าอยู่ i ที่เท่าไหร่ หลังจากนั้นให้อัพเดทเพิ่มเข้าไป (step + เพิ่ม) 
-      //       let tmp = {
-      //         roomId: forward.roomId,
-      //         day: date.day,
-      //         month: date.month,
-      //         year: date.year,
-      //         statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
-      //         // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
-      //         HN: this.state.currentQueue.HN,
-      //         doctorId: forward.doctorId,
-      //         forward: forward.message,
-      //         nurseId: this.state.nurseId,
-      //         departmentId: forward.departmentId,
-      //         queueDefault: 'forwardType',
-      //         groupId: this.state.currentQueue.group,
-      //         roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
-      //         step: i + 1
-      //         // date: this.state.Date,
-      //         // timeFormat: time,
-      //       }
-      //       if (tmp.statusId === 1) {
-      //         updateWaitStatus = true
-      //       }
-      //       console.log("forward", forward, tmp)
-      //       //uppdate step สร้าง axios เพิ่ม เอา i ไป 
-      //       // for (let j = i; j < this.state.forwardDepartments.length; j++) {
-      //       // j = 2; j < 4 ; j++
-      //       console.log("currentQueue I ", this.state.currentQueue, i)
-      //       console.log('indexStep ',indexStep)
-      //       await axios.post("/updateStep", {
-      //         // step: j + 2,
-      //         // // step = 2+2 =4
-      //         index: indexStep,
-      //         group: tmp.groupId,
-      //         step:i+2
-      //       });
-      //       // await axios.post("/addPatientQ", tmp);
-      //     }
-      //   } else {
-      //     // ไม่มีการอัพเดต (add แรกปกติ)
-      //     let tmp = {
-      //       roomId: forward.roomId,
-      //       day: date.day,
-      //       month: date.month,
-      //       year: date.year,
-      //       statusId: i === 0 ? 1 : 5,
-      //       HN: this.state.currentQueue.HN,
-      //       doctorId: forward.doctorId,
-      //       forward: forward.message,
-      //       nurseId: this.state.nurseId,
-      //       departmentId: forward.departmentId,
-      //       queueDefault: 'forwardType',
-      //       groupId: this.state.currentQueue.group,
-      //       roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
-      //       step: i + 2
-      //       // date: this.state.Date,
-      //       // timeFormat: time,
-      //     }
-      //     console.log("forward", forward, tmp)
-      //     await axios.post("/addPatientQ", tmp)
-      //     this.getLabQueue(this.state.roomId)
-      //   }
-      //   //updateStatus
-      //   if (stepCurrent && forward.step === stepCurrent + 1 && forward.status != 1 && !updateWaitStatus) {
-      //     console.log('update status ', stepCurrent, forward)
-      //     await axios.post("/updateStatus", {
-      //       // HN: this.state.currentQueue.HN,
-      //       statusId: 1,
-      //       // queueId: this.state.currentQueue.queueId,
-      //       runningNumber: forward.runningNumber
-      //     });
-      //   }
-      //   indexStep += 1;
-      // })
-      // update status currentQ = 4
       await axios.post("/updateQueue", {
         date: this.state.Date,
         HN: this.state.currentQueue.HN,
@@ -914,6 +825,8 @@ class Adminhome extends Component {
         queueId: this.state.currentQueue.queueId,
         runningNumber: this.state.currentQueue.runningNumber
       });
+      await this.getLabQueue(this.state.roomId)
+      console.log('hihihihihihihihi lab')
       this.setState({
         currentQueue: {},
         showModal: false,
@@ -988,51 +901,69 @@ class Adminhome extends Component {
   }
   //show patient at lab queues
   showPatientLabQueue = () => {
-    // const data = this.state.labQueues
+
     const data = this.state.labQueues
     let tmp = "";
     let dataQueue = this.state.queues.map(queue => (queue.HN))
     let dataCurrentQueue = this.state.currentQueue.HN
-    tmp = data
-      .filter((queue, i) => queue.roomBack === this.state.roomId
-        && queue.HN !== dataQueue[i]
-        && queue.HN !== dataCurrentQueue
-        && queue.statusId !== 4
-      )
-      .map(queue => (
-        <List divided horizontal
-          style={{
-            backgroundColor: "white",
-            width: "100%",
-            borderBottom: "1px solid #E0E0E0",
-            padding: "5px"
-          }}>
-          <List.Item>
-            <List.Header
-              style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
-              {queue.queueId}
-            </List.Header>
-          </List.Item>
-          <List.Item>
-            <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-              Name : {queue.firstName} {queue.lastName}
-            </List.Header>
-            <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-              HN: {queue.HN}
 
-              <List.Content floated="right">
-                <Icon
-                  className="circle "
-                  color="orange"
-                  style={{ marginTop: "5%" }}
-                />
-              </List.Content>
-            </List.Content>
-          </List.Item>
-        </List>
-      ))
-    // }
+    let dataRoomId = data.map(data => (data.roomId))
+    console.log(dataRoomId)
 
+    let dataQueueRoomId = this.state.queues.map(data => (data.roomId))
+
+    let check = dataRoomId.filter((data, i) => (data === dataQueueRoomId[i]))
+    console.log(check)
+    debugger
+    if (data.length > 1) {
+      if (!check  || check.length !== 0) {
+        tmp = ''
+      } else {
+        tmp = data
+          .filter((queue, i) =>
+            queue.HN !== dataQueue[i]
+            && queue.HN !== dataCurrentQueue
+            && queue.statusId !== 4
+            //group
+          )
+          .map(queue => (
+            <List divided horizontal
+              style={{
+                backgroundColor: "white",
+                width: "100%",
+                borderBottom: "1px solid #E0E0E0",
+                padding: "5px"
+              }}>
+              <List.Item>
+                <List.Header
+                  style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
+                  {queue.queueId}
+                </List.Header>
+              </List.Item>
+              <List.Item>
+                <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
+                  Name : {queue.firstName} {queue.lastName}
+                </List.Header>
+                <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+                  HN: {queue.HN}
+
+                  <List.Content floated="right">
+                    <Icon
+                      className="circle "
+                      color="orange"
+                      style={{ marginTop: "5%" }}
+                    />
+                  </List.Content>
+                </List.Content>
+              </List.Item>
+            </List>
+          ))
+      }
+      // }
+    }
+    else if (check) {
+      tmp = ''
+    }
     return tmp
 
   };

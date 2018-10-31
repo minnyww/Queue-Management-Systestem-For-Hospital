@@ -204,7 +204,7 @@ const Queue = props => {
                       </Modal>
                     </center>
                   </Dropdown.Item>
-                  <Dropdown.Item>Call Again</Dropdown.Item>
+                  <Dropdown.Item>Absent</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Menu>
