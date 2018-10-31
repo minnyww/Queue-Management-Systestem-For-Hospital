@@ -256,7 +256,7 @@ class timetable extends Component {
 
         const checkStatus = await axios.post("/checkStatusDoctor", {
             doctorId: updatedEvent.doctor,
-            date: checkDate
+            // date: checkDate
         })
         debugger
         console.log(checkStatus.data)
