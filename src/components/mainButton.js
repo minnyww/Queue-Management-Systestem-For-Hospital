@@ -13,7 +13,8 @@ const mainButton = props => {
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
                                         width: '300px',
-                                        marginRight: '5px'
+                                        marginRight: '5px',
+                                        // backgroundColor : '#06518B'
                                     }}
                                     size="massive"
                                     color='blue'
@@ -26,9 +27,9 @@ const mainButton = props => {
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
                                         width: '300px',
-                                        marginLeft: '5px'
+                                        marginLeft: '5px',
+                                        // backgroundColor : '#0875C9'
                                     }}
-
                                     size="massive"
                                     color='teal'
                                 ><Icon className='address book' />Appointment</Button>
@@ -42,7 +43,8 @@ const mainButton = props => {
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
                                         width: '300px',
-                                        marginRight: '5px'
+                                        marginRight: '5px',
+                                        // backgroundColor : '#4598D8'
                                     }}
                                     size="massive"
                                     color='green'
@@ -55,10 +57,11 @@ const mainButton = props => {
                                     style={{
                                         height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
                                         width: '300px',
-                                        marginLeft: '5px'
+                                        marginLeft: '5px',
+                                        backgroundColor : '#079F29'
                                     }}
                                     size="massive"
-                                    color='orange'
+                                    color='olive'
                                 ><Icon className='edit outline' />Department and Room Management</Button>
                             </Link>
                         </Grid.Column>

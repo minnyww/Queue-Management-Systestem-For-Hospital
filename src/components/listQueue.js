@@ -11,6 +11,7 @@ import {
   Message,
   Segment,
   Table,
+  Label
 } from "semantic-ui-react";
 import Modal from "react-responsive-modal";
 
@@ -18,20 +19,22 @@ const showCurrentQueue = props => {
   let tmp = "";
   if (props.userType === 1) {
     tmp = (
-      <Segment.Group style={{ width: "80%" }}>
-        <Segment inverted color="blue">
-          <Header as="h1" textAlign="center">
+      <Segment.Group style={{ width: "80%", }}>
+        <Segment attached='bottom' color='teal' style={{ padding: '13px' }}>
+          <Header as="h2" >
             Current Queue
           </Header>
+          {props.getPatientName()}
         </Segment>
-        {props.getPatientName()}
+        {/* <Segment> */}
+        {/* </Segment> */}
       </Segment.Group>
     );
   } else if (props.userType === 2) {
     tmp = (
       <Segment.Group style={{ width: "80%", marginTop: "-5%" }}>
-        <Segment inverted color="blue">
-          <Header as="h1" textAlign="center">
+        <Segment color="blue">
+          <Header as="h2" >
             Current Queue
           </Header>
         </Segment>
@@ -47,8 +50,8 @@ const listQueue = props => {
   if (props.userType === 1) {
     tmp = (
       <Segment.Group id="boxLab">
-        <Segment inverted color="teal">
-          <Header textAlign="center">
+        <Segment inverted color="teal" >
+          <Header textAlign="center" >
             Lab Wait
           </Header>
         </Segment>
@@ -69,33 +72,51 @@ const Queue = props => {
   return (
     <div>
       <div id="app" />
-
       <Grid>
         <Grid.Column width={5} style={{ marginLeft: "3%" }}>
           <Segment.Group id="box">
-            <Segment inverted color="teal">
-              <Header textAlign="center">Queue</Header>
+            <Segment color="teal">
+              <Label color='teal' style={{ fontWeight: 100, fontSize: '14px' }}>Queue</Label>
             </Segment>
             {props.showPatient()}
             {props.renderModal()}
           </Segment.Group>
           {/* {listQueue(props)} */}
-          <Segment.Group id="boxLab">
-            <Segment inverted color="teal">
-              <Header textAlign="center">
-                Lab Wait
-              </Header>
-            </Segment>
-            {props.showPatientLabQueue()}
-          </Segment.Group>
           <center>
-            <Button color="blue" onClick={() => setField("modalIsOpen", true)}>
+            <Button color="teal" onClick={() => setField("modalIsOpen", true)}
+              style={{ marginBottom: '2%', backgroudColor: 'white' }}>
               Add Patient
             </Button>
+          </center>
+          <Segment.Group id="boxLab">
+            <Segment color="teal">
+              <Menu secondary divider>
+                <Menu.Item
+                  active={props.activeBox === 1 ? true : false}
+                  onClick={() => {
+                    props.setField('activeBox', 1);
+                  }}>
+                  Lab Wait
+                </Menu.Item>
+                <Menu.Item
+                  active={props.activeBox === 2 ? true : false}
+                  onClick={() => {
+                    props.setField('activeBox', 2);
+                  }}>
+                  Absent
+                </Menu.Item>
+              </Menu>
+              {/* <Header textAlign="center">
+                Lab Wait
+              </Header> */}
+            </Segment>
+            {props.activeBox === 1 ? props.showPatientLabQueue() : props.showAbsent()}
+          </Segment.Group>
+          <center>
             <Modal
               open={props.modalIsOpen}
               onClose={() => setField("modalIsOpen", false)}
-              styles={{ modal: { width: 600, top: "30%" } }}
+              styles={{ modal: { width: 400, top: "30%", borderRadius: '5px' } }}
             >
               <Form onSubmit={e => { props.addQueue(e); }}>
                 <br />
@@ -121,7 +142,7 @@ const Queue = props => {
                 <center>
                   <List>
                     <List.Item>
-                      <List.Content>
+                      <List.Content style={{ fontSize: '16px' }}>
                         Name: {props.namePatient}
                         {props.lastNamePatient}
                       </List.Content>
@@ -131,7 +152,7 @@ const Queue = props => {
                 <br />
                 <br />
                 <center>
-                  <Button type="submit" color="green">
+                  <Button type="submit" basic color="teal">
                     Add
                   </Button>
                 </center>
@@ -140,14 +161,15 @@ const Queue = props => {
           </center>
         </Grid.Column>
 
-        <Grid.Column width={10} style={{ marginTop: "3%" }}>
+        <Grid.Column width={10}
+        // style={{ marginTop: "3%" }}
+        >
           <center>
             {showCurrentQueue(props)}
-
           </center>
           <center>
             <br />
-            <Button primary onClick={() => { props.callPatient() }} >
+            <Button color='teal' onClick={() => { props.callPatient() }} >
               Call
             </Button>
 
@@ -204,14 +226,15 @@ const Queue = props => {
                       </Modal>
                     </center>
                   </Dropdown.Item>
-                  <Dropdown.Item>Absent</Dropdown.Item>
+                  <Dropdown.Item onClick={() =>
+                    props.absent()}>Absent</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Menu>
           </center>
         </Grid.Column>
       </Grid>
-    </div>
+    </div >
   );
 };
 

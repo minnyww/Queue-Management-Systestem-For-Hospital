@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Headerbar from '.././components/headerbar'
 import MainButton from '../components/mainButton';
-import { Statistic, Label } from "semantic-ui-react";
+import { Statistic, Label, Responsive, Segment } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 class Main extends Component {
     state = {
@@ -29,18 +29,20 @@ class Main extends Component {
     render() {
         console.log(this.state.loginName)
         return (
-            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
-                <Headerbar />
-                <center>
-                    {this.welcomeName()} <Link to={"/Admin"}>
-                        <Label color='red' style={{ marginLeft: '5px' }}
-                            onClick={() => this.logOut()}
-                        >Logout
+            <Responsive as={Segment} {...Responsive.onlyComputer}>
+                <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
+                    <Headerbar />
+                    <center>
+                        {this.welcomeName()} <Link to={"/Admin"}>
+                            <Label color='red' style={{ marginLeft: '5px' }}
+                                onClick={() => this.logOut()}
+                            >Logout
                         </Label>
-                    </Link>
-                    <MainButton />
-                </center>
-            </div>
+                        </Link>
+                        <MainButton />
+                    </center>
+                </div>
+            </Responsive>
         );
     }
 }

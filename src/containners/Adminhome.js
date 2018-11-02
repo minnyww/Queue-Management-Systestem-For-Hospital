@@ -7,7 +7,7 @@ import axios from "./../lib/axios";
 import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label, Divider
+  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
@@ -77,7 +77,10 @@ class Adminhome extends Component {
     editList: false,
 
     loginName: '',
-    addForwardNew: false
+    addForwardNew: false,
+
+    activeBox: 1,
+    listAbsent: [],
 
   };
 
@@ -155,10 +158,9 @@ class Adminhome extends Component {
         year: date.year
       },
     })
+    this.getAbsent()
     this.updateAvgTime()
     this.forwardList(currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0])
-
-    // console.log(this.state.labQueues)
   };
   //สิ้นสุด Willmount
   forwardList = async (currentQueue) => {
@@ -355,42 +357,61 @@ class Adminhome extends Component {
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
-          <List key={i}
-            divided
-            horizontal
-            style={{
-              backgroundColor: "white",
-              width: "100%",
-              borderBottom: "1px solid #E0E0E0",
-              padding: "5px"
-            }}>
-            <List.Item style={{ paddingRight: "7%" }}>
-              <List.Header
-                style={{
-                  fontSize: "36px",
-                  color: "teal",
-                  paddingLeft: "40%"
-                }} >
-                {queue.queueId}
-              </List.Header>
-            </List.Item>
-            <List.Item>
-              <List.Header style={{ fontSize: "16px", marginTop: "3%" }}>
-                Name : {queue.firstName} {queue.lastName}
-              </List.Header>
-              <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-                HN: {queue.HN}
-              </List.Content>
-              <List.Content floated="left">
-                <Icon name="time" size="large" style={{ marginTop: "3%" }} />
-                {queue.avgtime.toFixed(0)} Min
-                </List.Content>
-              {this.showMessage(queue.Forward, i)}
-            </List.Item>
-          </List>
+          <Table stackable style={{
+            border: 'none', marginTop: '-5%' 
+          }}>
+            <Table.Body style={{ borderBottom: '1px solid rgb(224, 224, 224)'}}>
+              <Table.Row>
+                <Table.Cell style={{ fontSize: "38px", color: "teal" }}>{queue.queueId}</Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }} >
+                  Name : {queue.firstName} {queue.lastName}<br />
+                  HN: {queue.HN}
+                </Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell textAlign='right'>
+                  <Icon name="time" size="large" style={{ marginTop: "3%" }} />
+                  {queue.avgtime.toFixed(0)} Min
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+          // <List key={i}
+          //   divided
+          //   horizontal
+          //   style={{
+          //     backgroundColor: "white",
+          //     width: "100%",
+          //     borderBottom: "1px solid #E0E0E0",
+          //     padding: "5px"
+          //   }}>
+          //   <List.Item style={{ paddingRight: "7%" }}>
+          //     <List.Header
+          //       style={{
+          //         fontSize: "36px",
+          //         color: "teal",
+          //         paddingLeft: "40%"
+          //       }} >
+          //       {queue.queueId}
+          //     </List.Header>
+          //   </List.Item>
+          //   <List.Item>
+          //     <List.Header style={{ fontSize: "16px", marginTop: "3%" }}>
+          //       Name : {queue.firstName} {queue.lastName}
+          //     </List.Header>
+          //     <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+          //       HN: {queue.HN}
+          //     </List.Content>
+          //     <List.Content floated="left">
+          //       <Icon name="time" size="large" style={{ marginTop: "3%" }} />
+          //       {queue.avgtime.toFixed(0)} Min
+          //       </List.Content>
+          //     {this.showMessage(queue.Forward, i)}
+          //   </List.Item>
+          // </List>
         ));
     } else {
-      tmp = <Label style={{ marginLeft: '40%', marginRight: '30%', marginTop: '25%' }} color="red" >ไม่มีคิว </Label>
+      tmp = <center><Header as='h4' color='teal' style={{ marginTop: '15%' }}>ไม่มีคิว</Header></center>
+      // <Label style={{ marginLeft: '40%', marginRight: '30%', marginTop: '25%' }} color="red" >ไม่มีคิว </Label>
       // <Icon loading className='hourglass end' size='huge' color='teal'
       //   style={{ marginLeft: '30%', width: '40%', marginRight: '30%', marginTop: '15%' }}
       // />
@@ -565,9 +586,9 @@ class Adminhome extends Component {
         })
       }
     }
-    this.getQueue();
-    this.getListLabQueue();
-    this.updateAvgTime();
+    await this.getQueue();
+    // await this.getListLabQueue();
+    await this.updateAvgTime();
     console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
   };
   updateAvgTime = async () => {
@@ -583,65 +604,89 @@ class Adminhome extends Component {
     let data = this.state.currentQueue;
     if (this.state.userType === 1) {
       return (
-        <Segment id="boxshow">
-          <List relaxed='very'>
-            <List.Item>
-              <Icon name="user circle" size='big' />
-              <List.Content>
-                <List.Header as='h2'>{data.firstName} {' '} {data.lastName}</List.Header>
+        <div>
+          {/* <Item.Group divided> */}
+          <Item>
+            <Statistic color='teal' size='huge'>
+              <Statistic.Value>{data.queueId}</Statistic.Value>
+              <Statistic.Label>Queue</Statistic.Label>
+            </Statistic>
+            <Item.Content>
+              <Item.Header style={{ fontSize: '24px' }}>Pantient's Name : {data.firstName} {data.lastName}</Item.Header>
+              <Item.Meta style={{ fontSize: '18px', padding: '10px' }}>
+                <span className='cinema'>Hospital Number : {data.HN}</span>
+              </Item.Meta>
+              <Item.Description style={{ fontSize: '18px' }}>Room and Department : {data.roomId} {data.department} </Item.Description>
+              {/* <Item.Extra>
+                  <Label>IMAX</Label>
+                  <Label icon='globe' content='Additional Languages' />
+                </Item.Extra> */}
+            </Item.Content>
+          </Item>
+          {/* </Item.Group> */}
+          {/* <List relaxed='very' >
+            <List.Item >
+              <List.Content style={{ float: 'left' }}>
+                <List.Header style={{ fontSize: '18px' }} as='h2'>
+                  Patient's Name  {data.firstName} {' '} {data.lastName}
+                </List.Header>
               </List.Content>
             </List.Item>
             <List.Item>
-              <Icon name="numbered list" size='big' />
-              <List.Content>
-                <List.Header as='h2'>HN :{data.HN}</List.Header>
+              <List.Content style={{ float: 'left' }}>
+                <List.Header style={{ fontSize: '18px' }} as='h2'>
+                  HN {data.HN}
+                </List.Header>
               </List.Content>
             </List.Item>
             <List.Item>
-              <Icon name="arrow right" size='big' />
-              <List.Content>
-                <List.Header as='h2'>Room : {data.roomId}</List.Header>
+              <List.Content style={{ float: 'left' }}>
+                <List.Header as='h2' style={{ fontSize: '18px' }}>
+                  Room  {data.roomId}
+                </List.Header>
               </List.Content>
             </List.Item>
             <List.Item>
-              <Icon name="first aid" size='big' />
-              <List.Content>
-                <List.Header as='h2' >Department : {data.department}</List.Header>
+              <List.Content style={{ float: 'left' }}>
+                <List.Header as='h2' style={{ fontSize: '18px' }}>
+                  Department  {data.department}
+                </List.Header>
               </List.Content>
             </List.Item>
-          </List>
-        </Segment>
+          </List> */}
+        </div>
+
       );
     } else if (this.state.userType === 2) {
       return (
-        <Segment id="boxshow">
-          <List relaxed='very'>
-            <List.Item>
-              <Icon name="user circle" size='big' />
-              <List.Content>
-                <List.Header as='h2'>{data.firstName} {data.lastName}</List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <Icon name="numbered list" size='big' />
-              <List.Content>
-                <List.Header as='h2'>HN :{data.HN}</List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <Icon name="arrow right" size='big' />
-              <List.Content>
-                <List.Header as='h2'>Room : {data.roomId}</List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <Icon name="first aid" size='big' />
-              <List.Content>
-                <List.Header as='h2'>Message : {data.Forward}</List.Header>
-              </List.Content>
-            </List.Item>
-          </List>
-        </Segment>
+        // <Segment>
+        <List relaxed='very'>
+          <List.Item>
+            <Icon name="user circle" size='big' />
+            <List.Content>
+              <List.Header as='h2'>{data.firstName} {data.lastName}</List.Header>
+            </List.Content>
+          </List.Item>
+          <List.Item>
+            <Icon name="numbered list" size='big' />
+            <List.Content>
+              <List.Header as='h2'>HN :{data.HN}</List.Header>
+            </List.Content>
+          </List.Item>
+          <List.Item>
+            <Icon name="arrow right" size='big' />
+            <List.Content>
+              <List.Header as='h2'>Room : {data.roomId}</List.Header>
+            </List.Content>
+          </List.Item>
+          <List.Item>
+            <Icon name="first aid" size='big' />
+            <List.Content>
+              <List.Header as='h2'>Message : {data.Forward}</List.Header>
+            </List.Content>
+          </List.Item>
+        </List>
+        // </Segment>
       )
     }
   };
@@ -899,73 +944,193 @@ class Adminhome extends Component {
 
     // }
   }
+
+  getAbsent = async () => {
+    const data = await axios.get('/getListAbsent')
+    await this.setState({
+      listAbsent: data.data,
+    })
+    return data
+  }
+
+  absent = async () => {
+    //updateAbsent
+    await axios.post("/updateAbsent", {
+      runningNumber: this.state.currentQueue.runningNumber
+    });
+    const data = await this.getAbsent()
+  }
+
+  showAbsent = () => {
+    let data = this.state.listAbsent
+    let tmp = ''
+    tmp = data.map(queue => (
+      <Table stackable style={{ border: 'none', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
+            <Table.Cell style={{ fontSize: "16px" }} >
+              Name : {queue.firstName} {queue.lastName}<br />
+              HN: {queue.HN}
+            </Table.Cell>
+            <Table.Cell></Table.Cell>
+            <Table.Cell textAlign='right' >
+              <Button basic size='tiny' color='teal'>Call</Button>
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+      /* <List divided horizontal relaxed='very'
+        style={{
+          backgroundColor: "white",
+          width: "100%",
+          borderBottom: "1px solid #E0E0E0",
+          padding: "5px"
+        }}>
+        <List.Item>
+          <List.Header
+            style={{ fontSize: "36px", color: "teal" }}>
+            {queue.queueId}
+          </List.Header>
+        </List.Item>
+        <List.Item style={{ paddingRight: '10%' }}>
+          <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
+            Name : {queue.firstName} {queue.lastName}
+          </List.Header>
+          <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+            HN: {queue.HN}
+          </List.Content>
+        </List.Item>
+        <List.Item style={{ marginLeft: '5px' }}>
+          <Button basic size='tiny' color='teal'>Call</Button>
+        </List.Item>
+      </List> */
+    ))
+    return tmp
+  }
+
+
   //show patient at lab queues
   showPatientLabQueue = () => {
-
     const data = this.state.labQueues
+    console.log("data", data)
     let tmp = "";
-    let dataQueue = this.state.queues.map(queue => (queue.HN))
-    let dataCurrentQueue = this.state.currentQueue.HN
+    tmp = data
+      .map(queue => (
+        <Table stackable style={{ border: 'none', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
+              <Table.Cell style={{ fontSize: "16px" }} >
+                Name : {queue.firstName} {queue.lastName}<br />
+                HN: {queue.HN}
+              </Table.Cell>
+              <Table.Cell></Table.Cell>
+              <Table.Cell textAlign='right' >
+                <Label color='orange'>Wait</Label>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        // <List divided horizontal relaxed='very'
+        //   style={{
+        //     backgroundColor: "white",
+        //     width: "100%",
+        //     borderBottom: "1px solid #E0E0E0",
+        //     padding: "5px"
+        //   }}>
+        //   <List.Item>
+        //     <List.Header
+        //       style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
+        //       {queue.queueId}
+        //     </List.Header>
+        //   </List.Item>
+        //   <List.Item>
+        //     <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
+        //       Name : {queue.firstName} {queue.lastName}
+        //     </List.Header>
+        //     <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+        //       HN: {queue.HN}
 
-    let dataRoomId = data.map(data => (data.roomId))
-    console.log(dataRoomId)
+        //       <List.Content floated="right">
+        //         <Icon
+        //           className="circle "
+        //           color="orange"
+        //           style={{ marginTop: "5%" }}
+        //         />
+        //       </List.Content>
+        //     </List.Content>
+        //   </List.Item>
+        // </List>
+      ))
+    return tmp;
+    // }
+    // let dataCurrentQueue = this.state.currentQueue.HN
+    // let dataQueue = this.state.queues.map(queue => (queue.HN))
 
-    let dataQueueRoomId = this.state.queues.map(data => (data.roomId))
+    // //Queue
+    // let dataCheckRoom = this.state.queues.map(dataHN => (dataHN.HN))
+    // let dataQueueRoomId = this.state.queues.map(data => (data.roomId))
 
-    let check = dataRoomId.filter((data, i) => (data === dataQueueRoomId[i]))
-    console.log(check)
-    debugger
-    if (data.length > 1) {
-      if (!check  || check.length !== 0) {
-        tmp = ''
-      } else {
-        tmp = data
-          .filter((queue, i) =>
-            queue.HN !== dataQueue[i]
-            && queue.HN !== dataCurrentQueue
-            && queue.statusId !== 4
-            //group
-          )
-          .map(queue => (
-            <List divided horizontal
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                borderBottom: "1px solid #E0E0E0",
-                padding: "5px"
-              }}>
-              <List.Item>
-                <List.Header
-                  style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
-                  {queue.queueId}
-                </List.Header>
-              </List.Item>
-              <List.Item>
-                <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-                  Name : {queue.firstName} {queue.lastName}
-                </List.Header>
-                <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-                  HN: {queue.HN}
+    // //Lab Queue
+    // let dataRoomId = data.map(data => (data.roomId))
+    // console.log(dataRoomId)
+    // let dataHN = data.map(dataHN => (dataHN.HN))
 
-                  <List.Content floated="right">
-                    <Icon
-                      className="circle "
-                      color="orange"
-                      style={{ marginTop: "5%" }}
-                    />
-                  </List.Content>
-                </List.Content>
-              </List.Item>
-            </List>
-          ))
-      }
-      // }
-    }
-    else if (check) {
-      tmp = ''
-    }
-    return tmp
+    // let check = dataRoomId.filter((data, i) => (data === dataQueueRoomId[i]))
+    // console.log(check)
+    // let checkHN = dataHN.filter((data, i) => (data === dataCheckRoom[i]))
+    // console.log(checkHN)
 
+    // debugger
+    // if (data.length > 1) {
+    //   if (!check || check.length !== 0) {
+    //     tmp = ''
+    //   }
+    //   else {
+    //     tmp = data
+    //       .filter((queue, i) =>
+    //         queue.HN !== dataQueue[i]
+    //         && queue.HN !== dataCurrentQueue
+    //         && queue.statusId !== 4
+    //         //group
+    //       )
+    //       .map(queue => (
+    //         <List divided horizontal
+    //           style={{
+    //             backgroundColor: "white",
+    //             width: "100%",
+    //             borderBottom: "1px solid #E0E0E0",
+    //             padding: "5px"
+    //           }}>
+    //           <List.Item>
+    //             <List.Header
+    //               style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
+    //               {queue.queueId}
+    //             </List.Header>
+    //           </List.Item>
+    //           <List.Item>
+    //             <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
+    //               Name : {queue.firstName} {queue.lastName}
+    //             </List.Header>
+    //             <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
+    //               HN: {queue.HN}
+
+    //               <List.Content floated="right">
+    //                 <Icon
+    //                   className="circle "
+    //                   color="orange"
+    //                   style={{ marginTop: "5%" }}
+    //                 />
+    //               </List.Content>
+    //             </List.Content>
+    //           </List.Item>
+    //         </List>
+    //       ))
+    //   }
+    //   // }
+    // }
+    // return tmp
   };
 
   addMoreForward = async () => {
@@ -995,13 +1160,6 @@ class Adminhome extends Component {
     })
     console.log(this.state.forwardDepartments)
   }
-
-  // setValueInArray = (index, attr, value) => {
-  //   let arr = this.state.forwardDepartments
-  //   arr[index][attr] = value;
-  //   this.setState({ forwardDepartments: arr })
-  // }
-
   //------------------------------------------------------
   showDropdownDepartment = () => {
     let tmp = <div>
@@ -1197,36 +1355,9 @@ class Adminhome extends Component {
           forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
         })
       }
-      // }
-      // let swl = ''
-      // swl = swal({
-      //   title: "Cannot",
-      //   text: "Cannot",
-      //   icon: "warning",
-      //   button: "Ok",
-      //   dangerMode: true,
-      // })
-      // tmp.splice(i, 1)
-      // this.setState({
-      //   forwardDepartments: tmp
-      // })
-      // }
-      // let swl = ''
-      // swl = swal({
-      //   title: "Please Select !",
-      //   text: "Please select Dropdown",
-      //   icon: "warning",
-      //   button: "Ok",
-      //   dangerMode: true,
-      // })
-      // tmp.splice(i, 1)
-      // this.setState({
-      //   forwardDepartments: tmp
-      // })
-      // console.log(this.state.forwardDepartments)
     }
 
-    //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง 
+    //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง
     else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)
       || tmp[i].roomId.toString().includes(this.state.forwardDepartments[i + 1].roomId)) {
       console.log('tmp ในสุด')
@@ -1363,75 +1494,71 @@ class Adminhome extends Component {
   }
   render() {
     return (
-      <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
-        <Headerbar
-          loginName={this.state.loginName}
-        />
-        <DropdownQueue
-          //state
-          doctorId={this.state.doctorId}
-          departmentId={this.state.departmentId}
-          departments={this.state.departments}
-          doctors={this.state.doctors}
-          errorAdd={this.state.errorAdd}
-          type={this.state.type}
-          //Method
-          chooseDoctor={this.chooseDoctor}
-        // handleAdditio={this.handleAddition}
-        />
-        <br />
-        <ListQueue
-          //state
+      <Responsive
+      // {...Responsive.onlyComputer}
+      >
+        <div style={{
+          backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+          height: '100vh'
+        }}>
+          <Headerbar
+            loginName={this.state.loginName}
+          />
+          <DropdownQueue
+            //state
+            doctorId={this.state.doctorId}
+            departmentId={this.state.departmentId}
+            departments={this.state.departments}
+            doctors={this.state.doctors}
+            errorAdd={this.state.errorAdd}
+            type={this.state.type}
+            //Method
+            chooseDoctor={this.chooseDoctor}
+          // handleAdditio={this.handleAddition}
+          />
+          <br />
+          <ListQueue
+            //state
 
-          HN={this.state.HN}
-          modalIsOpen={this.state.modalIsOpen}
-          errorHN={this.state.errorHN}
-          errorGetName={this.state.errorGetName}
-          errorAdd={this.state.errorAdd}
-          namePatient={this.state.namePatient}
-          lastNamePatient={this.state.lastNamePatient}
-          showModal={this.state.showModal}
-          currentQueue={this.state.currentQueue}
-          queues={this.state.queues}
-          allLab={this.state.allLab}
-          typeForward={this.state.typeForward}
-          roomAndDoctors={this.state.roomAndDoctors}
-          doctorRooms={this.state.doctorRooms}
-          userType={this.state.userType}
-          forwardDepartments={this.state.forwardDepartments}
-          // departmentId={this.state.departmentId}
-          // departments={this.state.departments}
-          // doctors={this.state.doctors}
-          // allDepartment={this.state.allDepartment}
-          // forwardId={this.state.forwardId}
-          // forwardLabId={this.state.forwardLabId}
-          // forwardDepartmentId={this.state.forwardDepartmentId}
-          // message={this.state.message}
-          // addForward={this.state.addForward}
-          // amountDepartment={this.state.amountDepartment}
+            HN={this.state.HN}
+            modalIsOpen={this.state.modalIsOpen}
+            errorHN={this.state.errorHN}
+            errorGetName={this.state.errorGetName}
+            errorAdd={this.state.errorAdd}
+            namePatient={this.state.namePatient}
+            lastNamePatient={this.state.lastNamePatient}
+            showModal={this.state.showModal}
+            currentQueue={this.state.currentQueue}
+            queues={this.state.queues}
+            allLab={this.state.allLab}
+            typeForward={this.state.typeForward}
+            roomAndDoctors={this.state.roomAndDoctors}
+            doctorRooms={this.state.doctorRooms}
+            userType={this.state.userType}
+            forwardDepartments={this.state.forwardDepartments}
+            activeBox={this.state.activeBox}
+            listAbsent={this.state.listAbsent}
 
-
-          //Method
-          renderModal={this.renderModal}
-          forward={this.forward}
-          validateHN={this.validateHN}
-          setField={this.setField}
-          addQueue={this.addQueue}
-          showPatient={this.showPatient}
-          getPatientName={this.getPatientName}
-          callPatient={this.callPatient}
-          checkDoctorWithRoom={this.checkDoctorWithRoom}
-          showPatientLabQueue={this.showPatientLabQueue}
-          addMoreForward={this.addMoreForward}
-          showListDepartment={this.showListDepartment}
-          showDropdownDepartment={this.showDropdownDepartment}
-          forwardList={this.forwardList}
-        // setState={this.setState}
-        // setValueInArray={this.setValueInArray}
-        // goBack={this.goBack}
-        // showModalMessage={this.showModalMessage}
-        />
-      </div >
+            //Method
+            renderModal={this.renderModal}
+            forward={this.forward}
+            validateHN={this.validateHN}
+            setField={this.setField}
+            addQueue={this.addQueue}
+            showPatient={this.showPatient}
+            getPatientName={this.getPatientName}
+            callPatient={this.callPatient}
+            checkDoctorWithRoom={this.checkDoctorWithRoom}
+            showPatientLabQueue={this.showPatientLabQueue}
+            addMoreForward={this.addMoreForward}
+            showListDepartment={this.showListDepartment}
+            showDropdownDepartment={this.showDropdownDepartment}
+            forwardList={this.forwardList}
+            absent={this.absent}
+            showAbsent={this.showAbsent}
+          />
+        </div >
+      </Responsive>
     );
   }
 }
