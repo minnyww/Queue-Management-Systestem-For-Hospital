@@ -41,6 +41,7 @@ class Appointment extends Component {
     HN: "",
     appointment: [],
     timetable: [],
+    queues: [],
     selectEvent: 0,
     errorHN: "",
     addSuccess: false,
@@ -114,13 +115,14 @@ class Appointment extends Component {
       doctorId: doctors.data[0].doctorId,
       date: new Date(this.state.Date)
     })
-
+    var datas = await axios.get(`/getQueue/${doctors.data[0].roomId}`)
     const doctorsOption = this.dropdownDoctors(doctors);
     this.setState({
       doctors: doctorsOption,
       roomId: doctors.data[0].roomId,
       doctorId: doctors.data[0].doctorId,
-      sumQueueCountLimit: getSumQueue
+      sumQueueCountLimit: getSumQueue,
+      queues: datas.data
     })
     this.showPatientDescription()
   }
@@ -373,7 +375,63 @@ class Appointment extends Component {
   }
 
   addToQueue = async (i) => {
-    console.log(this.state.selectEvent)
+    console.log(this.state.selectEvent, new Date(this.state.Date))
+    const datas = await axios.post(`/getDataAppointment`, {
+      appointmentId: this.state.selectEvent,
+    })
+    let getData = datas.data.map(item => {
+      return {
+        date: item.date,
+        day: item.day,
+        month: item.month,
+        year: item.year,
+        doctorId: item.doctorId,
+        HN: item.HN
+      }
+    })
+    console.log(getData)
+    const mergeData = await axios.post(`/getDataTimetable`, {
+      date: getData[0].date,
+      day: getData[0].day.toLowerCase(),
+      month: getData[0].month.toLowerCase(),
+      year: getData[0].year,
+      doctorId: getData[0].doctorId
+    })
+    console.log(mergeData)
+
+    const min = this.state.queues.filter(queue => {
+      queue.HN === getData[0].HN;
+    });
+
+    if (min.length === 0) {
+      var checkHNDepartments = await axios.get(
+        `/checkHNatDepartment/${this.state.departmentId}`
+      );
+      const checks = checkHNDepartments.data.filter(
+        check => check.HN === getData[0].HN
+      );
+      console.log(checks)
+      if (checks.length === 0) {
+        await axios.post("/addPatientQ", {
+          roomId: mergeData.data[0].roomId,
+          statusId: 1,
+          HN: getData[0].HN,
+          doctorId: mergeData.data[0].doctorId,
+          nurseId: this.state.nurseId,
+          departmentId: this.state.departmentId,
+          queueDefault: 'queueDefault',
+          step: 1
+        })
+        swal("Success !",
+          `Add to Queue success`,
+          "success")
+      } else {
+        swal("Cannot !",
+          `Cannot add to queue`,
+          "warning");
+      }
+    }
+    console.log('suusususus')
   }
 
   addAppoinment = async () => {
