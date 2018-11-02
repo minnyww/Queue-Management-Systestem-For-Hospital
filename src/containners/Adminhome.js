@@ -17,6 +17,8 @@ import { extendMoment } from 'moment-range';
 import * as Moment from "moment";
 import { fail } from "assert";
 
+import logo from './../img/stethoscope.png';
+
 const moment = extendMoment(Moment);
 
 
@@ -606,88 +608,75 @@ class Adminhome extends Component {
     if (this.state.userType === 1 && !R.isEmpty(data)) {
       return (
         <div>
-          {/* <Item.Group divided> */}
-          <Item>
-            <Statistic color='teal' size='huge'>
-              <Statistic.Value>{data.queueId}</Statistic.Value>
-              <Statistic.Label>Queue</Statistic.Label>
-            </Statistic>
-            <Item.Content>
-              <Item.Header style={{ fontSize: '24px' }}>{data.firstName} {data.lastName}</Item.Header>
-              <Item.Meta style={{ fontSize: '18px', padding: '10px' }}>
-                <span className='cinema'>Hospital Number : {data.HN}</span>
-              </Item.Meta>
-              <Item.Description style={{ fontSize: '18px' }}>Room and Department : {data.roomId} {data.department} </Item.Description>
-              {/* <Item.Extra>
-                  <Label>IMAX</Label>
-                  <Label icon='globe' content='Additional Languages' />
-                </Item.Extra> */}
+          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '4%' }} />
+          <Item textAlign='center'>
+            <Label color='teal' size='massive'
+              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+              {data.queueId}
+            </Label>
+            <Label basic color='teal'
+              size='massive'
+              style={{
+                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
+                border: 'none', borderLeft: '1px solid green'
+              }}>
+              {data.firstName} {data.lastName}
+            </Label>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic
+                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+                HN : {data.HN}
+              </Label>
+            </Item.Content>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic size='massive'
+                style={{ fontSize: '20px', border: 'none' }}>
+                Room : {data.roomId}
+              </Label>
+              <Label basic
+                size='massive' style={{ fontSize: '20px', border: 'none' }}>
+                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              </Label>
             </Item.Content>
           </Item>
-          {/* </Item.Group> */}
-          {/* <List relaxed='very' >
-            <List.Item >
-              <List.Content style={{ float: 'left' }}>
-                <List.Header style={{ fontSize: '18px' }} as='h2'>
-                  Patient's Name  {data.firstName} {' '} {data.lastName}
-                </List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <List.Content style={{ float: 'left' }}>
-                <List.Header style={{ fontSize: '18px' }} as='h2'>
-                  HN {data.HN}
-                </List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <List.Content style={{ float: 'left' }}>
-                <List.Header as='h2' style={{ fontSize: '18px' }}>
-                  Room  {data.roomId}
-                </List.Header>
-              </List.Content>
-            </List.Item>
-            <List.Item>
-              <List.Content style={{ float: 'left' }}>
-                <List.Header as='h2' style={{ fontSize: '18px' }}>
-                  Department  {data.department}
-                </List.Header>
-              </List.Content>
-            </List.Item>
-          </List> */}
         </div>
 
       );
-    } else if (this.state.userType === 2) {
+    } else if (this.state.userType === 2 && !R.isEmpty(data) ) {
       return (
-        // <Segment>
-        <List relaxed='very'>
-          <List.Item>
-            <Icon name="user circle" size='big' />
-            <List.Content>
-              <List.Header as='h2'>{data.firstName} {data.lastName}</List.Header>
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <Icon name="numbered list" size='big' />
-            <List.Content>
-              <List.Header as='h2'>HN :{data.HN}</List.Header>
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <Icon name="arrow right" size='big' />
-            <List.Content>
-              <List.Header as='h2'>Room : {data.roomId}</List.Header>
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <Icon name="first aid" size='big' />
-            <List.Content>
-              <List.Header as='h2'>Message : {data.Forward}</List.Header>
-            </List.Content>
-          </List.Item>
-        </List>
-        // </Segment>
+        <div>
+          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
+          <Item textAlign='center'>
+            <Label color='teal' size='massive'
+              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+              {data.queueId}
+            </Label>
+            <Label basic color='teal'
+              size='massive'
+              style={{
+                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
+                border: 'none', borderLeft: '1px solid green'
+              }}>
+              {data.firstName} {data.lastName}
+            </Label>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic
+                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+                HN : {data.HN}
+              </Label>
+            </Item.Content>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic size='massive'
+                style={{ fontSize: '20px', border: 'none' }}>
+                Room : {data.roomId}
+              </Label>
+              <Label basic
+                size='massive' style={{ fontSize: '20px', border: 'none' }}>
+                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              </Label>
+            </Item.Content>
+          </Item>
+        </div>
       )
     }
   };
@@ -945,7 +934,7 @@ class Adminhome extends Component {
 
     // }
   }
-  callAbsent = async (i) =>{
+  callAbsent = async (i) => {
     console.log(this.state.listAbsent[i])
     await axios.post("/updateQueueAbsent", {
       runningNumber: this.state.listAbsent[i].runningNumber
@@ -958,22 +947,28 @@ class Adminhome extends Component {
     const data = await axios.get('/getListAbsent')
     await this.setState({
       listAbsent: data.data,
+
     })
     return data
   }
 
   absent = async () => {
-    //updateAbsent
     await axios.post("/updateAbsent", {
-      runningNumber: this.state.currentQueue.runningNumber
+      runningNumber: this.state.currentQueue.runningNumber,
     });
+    this.setState({
+      currentQueue: '',
+      activeBox : 2
+
+    })
     const data = await this.getAbsent()
+    console.log(this.state.currentQueue)
   }
 
   showAbsent = () => {
     let data = this.state.listAbsent
     let tmp = ''
-    tmp = data.map((queue,i) => (
+    tmp = data.map((queue, i) => (
       <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
         <Table.Body>
           <Table.Row>
@@ -1328,9 +1323,14 @@ class Adminhome extends Component {
       })
     }
 
-    console.log(!this.state.forwardDepartments[i + 1], this.state.forwardDepartments[i])
+    console.log(!this.state.forwardDepartments[i - 1], this.state.forwardDepartments[i])
     debugger
-    if (!this.state.forwardDepartments[i + 1]) {
+    if(this.state.forwardDepartments[i + 1]){
+      this.setState({
+        forwardDepartments: tmp
+      })
+    }
+    else if(!this.state.forwardDepartments[i + 1]) {  
       console.log(tmp[i].roomId)
       if (tmp[i].roomId === undefined) {
         tmp.splice(i, 1)
@@ -1383,14 +1383,6 @@ class Adminhome extends Component {
       })
       console.log(tmp[i])
       console.log(this.state.forwardDepartments.filter(item => item !== tmp[i]))
-      // let entryList = {
-      //   type: '',
-      //   departmentId: '',
-      //   doctorId: '',
-      //   roomId: '',
-      //   message: '',
-      // }
-      // this.state.forwardDepartments[i] = entryList
       this.setState({
         forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
       })

@@ -51,7 +51,9 @@ span.rbc-btn-group {
 .rbc-month-view {
   background-color: white;
 }
-
+.rbc-event {
+  background-color: #00b5ad !important;
+}
 /* hiiden scrollbar */
 ::-webkit-scrollbar {
   display: none;

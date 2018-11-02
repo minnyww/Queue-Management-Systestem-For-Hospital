@@ -372,6 +372,10 @@ class Appointment extends Component {
     })
   }
 
+  addToQueue = async (i) => {
+    console.log(this.state.selectEvent)
+  }
+
   addAppoinment = async () => {
 
     const date = this.pharseDate(new Date());
@@ -385,7 +389,7 @@ class Appointment extends Component {
       && data.Date === new Date(this.state.Date).getDate())
 
     //check ว่า ใน วันนั้น มีการแอดเวลาซ้ำกันที่หมอเดียวกันหรือป่าว
-    let check = appointment.filter(data => 
+    let check = appointment.filter(data =>
       // data.doctorId == tmp[0]
       // && 
       data.timeStart.substr(0, 5) == startTime
@@ -409,7 +413,7 @@ class Appointment extends Component {
     let sumCount = sumQueue + sumAppointment
     console.log(sumCount)
 
-    
+
     if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
       swal("Cannot !",
         `Cannot add Appointment because doctor can't recieve more patient Or Appointment time is duplicate in other doctor`,
@@ -512,6 +516,14 @@ class Appointment extends Component {
                 <List.Icon name='building' size='large' verticalAlign='middle' />
                 <List.Content>
                   <List.Header as="h4">Department : {data.department}</List.Header>
+                </List.Content>
+              </List.Item>
+              <List.Item >
+                <List.Content floated='right' >
+                  <Button color='teal' size='tiny'
+                    onClick={() => this.addToQueue()}>
+                    Add to queue
+                  </Button>
                 </List.Content>
               </List.Item>
             </List>
@@ -691,7 +703,7 @@ class Appointment extends Component {
     await this.checkCount(getDoctor[0])
     console.log(this.state.doctorWithRemaining)
 
-    
+
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
       || this.state.appointmentDepId == "" || sumCount > this.state.doctorWithRemaining.remaining) {
@@ -835,7 +847,7 @@ class Appointment extends Component {
   }
 
   checkCount = async (doctorId) => {
-    
+
     if (!doctorId) {
     } else {
       let getDoctor = doctorId.toString().split('/')
