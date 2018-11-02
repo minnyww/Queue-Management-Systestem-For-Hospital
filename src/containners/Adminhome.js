@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
-
+import * as R from 'ramda'
 
 import { extendMoment } from 'moment-range';
 import * as Moment from "moment";
@@ -358,9 +358,9 @@ class Adminhome extends Component {
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
           <Table stackable style={{
-            border: 'none', marginTop: '-5%' 
+            border: 'none', marginTop: '-3%'
           }}>
-            <Table.Body style={{ borderBottom: '1px solid rgb(224, 224, 224)'}}>
+            <Table.Body style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
               <Table.Row>
                 <Table.Cell style={{ fontSize: "38px", color: "teal" }}>{queue.queueId}</Table.Cell>
                 <Table.Cell style={{ fontSize: "16px" }} >
@@ -370,7 +370,8 @@ class Adminhome extends Component {
                 <Table.Cell></Table.Cell>
                 <Table.Cell textAlign='right'>
                   <Icon name="time" size="large" style={{ marginTop: "3%" }} />
-                  {queue.avgtime.toFixed(0)} Min
+                  {queue.avgtime.toFixed(0)} Min <br />
+                  {this.showMessage(queue.Forward, i)}
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
@@ -602,7 +603,7 @@ class Adminhome extends Component {
   };
   getPatientName = () => {
     let data = this.state.currentQueue;
-    if (this.state.userType === 1) {
+    if (this.state.userType === 1 && !R.isEmpty(data)) {
       return (
         <div>
           {/* <Item.Group divided> */}
@@ -612,7 +613,7 @@ class Adminhome extends Component {
               <Statistic.Label>Queue</Statistic.Label>
             </Statistic>
             <Item.Content>
-              <Item.Header style={{ fontSize: '24px' }}>Pantient's Name : {data.firstName} {data.lastName}</Item.Header>
+              <Item.Header style={{ fontSize: '24px' }}>{data.firstName} {data.lastName}</Item.Header>
               <Item.Meta style={{ fontSize: '18px', padding: '10px' }}>
                 <span className='cinema'>Hospital Number : {data.HN}</span>
               </Item.Meta>
@@ -944,7 +945,15 @@ class Adminhome extends Component {
 
     // }
   }
-
+  callAbsent = async (i) =>{
+    console.log(this.state.listAbsent[i])
+    await axios.post("/updateQueueAbsent", {
+      runningNumber: this.state.listAbsent[i].runningNumber
+    });
+    await this.getAbsent()
+    await this.getQueue()
+    console.log('Success')
+  }
   getAbsent = async () => {
     const data = await axios.get('/getListAbsent')
     await this.setState({
@@ -964,8 +973,8 @@ class Adminhome extends Component {
   showAbsent = () => {
     let data = this.state.listAbsent
     let tmp = ''
-    tmp = data.map(queue => (
-      <Table stackable style={{ border: 'none', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+    tmp = data.map((queue,i) => (
+      <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
         <Table.Body>
           <Table.Row>
             <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -975,7 +984,10 @@ class Adminhome extends Component {
             </Table.Cell>
             <Table.Cell></Table.Cell>
             <Table.Cell textAlign='right' >
-              <Button basic size='tiny' color='teal'>Call</Button>
+              <Button basic size='tiny' color='teal'
+                onClick={() => this.callAbsent(i)}>
+                Call
+              </Button>
             </Table.Cell>
           </Table.Row>
         </Table.Body>
@@ -1017,7 +1029,7 @@ class Adminhome extends Component {
     let tmp = "";
     tmp = data
       .map(queue => (
-        <Table stackable style={{ border: 'none', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -1499,7 +1511,7 @@ class Adminhome extends Component {
       >
         <div style={{
           backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-          height: '100vh'
+          backgroundRepeat: 'repeat',
         }}>
           <Headerbar
             loginName={this.state.loginName}

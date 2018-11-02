@@ -19,8 +19,8 @@ const showCurrentQueue = props => {
   let tmp = "";
   if (props.userType === 1) {
     tmp = (
-      <Segment.Group style={{ width: "80%", }}>
-        <Segment attached='bottom' color='teal' style={{ padding: '13px' }}>
+      <Segment.Group style={{ width: "80%",height:'400px',marginLeft:'10%' }} >
+        <Segment attached='bottom' color='teal' style={{ padding: '13px',height:'400px' }}>
           <Header as="h2" >
             Current Queue
           </Header>
@@ -73,7 +73,8 @@ const Queue = props => {
     <div>
       <div id="app" />
       <Grid>
-        <Grid.Column width={5} style={{ marginLeft: "3%" }}>
+      <Grid.Row style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+        <Grid.Column width={6}>
           <Segment.Group id="box">
             <Segment color="teal">
               <Label color='teal' style={{ fontWeight: 100, fontSize: '14px' }}>Queue</Label>
@@ -164,9 +165,9 @@ const Queue = props => {
         <Grid.Column width={10}
         // style={{ marginTop: "3%" }}
         >
-          <center>
+          {/* <center> */}
             {showCurrentQueue(props)}
-          </center>
+          {/* </center> */}
           <center>
             <br />
             <Button color='teal' onClick={() => { props.callPatient() }} >
@@ -233,6 +234,7 @@ const Queue = props => {
             </Menu>
           </center>
         </Grid.Column>
+      </Grid.Row>
       </Grid>
     </div >
   );
