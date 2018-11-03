@@ -20,8 +20,8 @@ const showCurrentQueue = props => {
   let tmp = "";
   if (props.userType === 1 || props.userType === 2) {
     tmp = (
-      <Segment.Group style={{ width: "80%", height: '500px', }} >
-        <Segment attached='bottom' color='teal' style={{ padding: '13px', height: '500px', }}>
+      <Segment.Group style={{ width: "80%", height: '600px', }} >
+        <Segment attached='bottom' color='teal' style={{ padding: '13px', height: '600px', }}>
           <Header as="h2" style={{ borderBottom: '1px solid #dededf', padding: '1%' }}>
             Current Queue
           </Header>

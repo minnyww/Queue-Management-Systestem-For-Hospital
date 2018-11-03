@@ -7,7 +7,7 @@ import axios from "./../lib/axios";
 import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid
+  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid,Card
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
@@ -20,7 +20,7 @@ import { fail } from "assert";
 import logo from './../img/patient.png';
 import cardiogram from './../img/cardiogram.png';
 import notes from './../img/notes.png';
-
+import error from './../img/drug.png'
 
 const moment = extendMoment(Moment);
 
@@ -363,7 +363,7 @@ class Adminhome extends Component {
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
           <Table stackable style={{
-            border: 'none', marginTop: '-3%'
+            border: 'none', marginTop: '-2%'
           }}>
             <Table.Body style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
               <Table.Row>
@@ -386,7 +386,7 @@ class Adminhome extends Component {
       cardiogram//
       tmp = <center>
         <Image
-          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+          src={cardiogram} style={{ width: '25%', height: '25%' }}>
         </Image>
         <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
       </center>
@@ -947,7 +947,7 @@ class Adminhome extends Component {
     let tmp = ''
     if (!R.isEmpty(data)) {
       tmp = data.map((queue, i) => (
-        <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        <Table stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -969,7 +969,7 @@ class Adminhome extends Component {
     } else {
       tmp = <center>
         <Image
-          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+          src={cardiogram} style={{ width: '25%', height: '25%' }}>
         </Image>
         <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
       </center>
@@ -988,7 +988,7 @@ class Adminhome extends Component {
     if (!R.isEmpty(data)) {
       tmp = data
         .map(queue => (
-          <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+          <Table stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
             <Table.Body>
               <Table.Row>
                 <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -1008,7 +1008,7 @@ class Adminhome extends Component {
     else if (R.isEmpty(data)) {
       tmp = <center>
         <Image
-          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+          src={cardiogram} style={{ width: '25%', height: '25%' }}>
         </Image>
         <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
       </center>
@@ -1094,7 +1094,7 @@ class Adminhome extends Component {
         disabled={this.state.forwardDoctorId === "" ? true : false}
         style={{
           height: '100px', width: "60%", padding: "10px",
-          marginTop: "5%",borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
+          marginTop: "5%", borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
         }}
         placeholder="Tell us more , Leave Message to Doctor"
         onChange={async (e, { value }) => {
@@ -1103,7 +1103,7 @@ class Adminhome extends Component {
       <center>
         <Button
           disabled={this.state.forwardDoctorId === "" ? true : false}
-          color="teal" 
+          color="teal"
           onClick={() => { this.addMoreForward(); }}>
           Add to List
         </Button>
@@ -1351,70 +1351,148 @@ class Adminhome extends Component {
   }
   render() {
     return (
-      <Responsive
-      // {...Responsive.onlyComputer}
-      >
-        <div style={{
-          backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-          backgroundRepeat: 'repeat',
-        }}>
-          <Headerbar
-            loginName={this.state.loginName}
-          />
-          <DropdownQueue
-            //state
-            doctorId={this.state.doctorId}
-            departmentId={this.state.departmentId}
-            departments={this.state.departments}
-            doctors={this.state.doctors}
-            errorAdd={this.state.errorAdd}
-            type={this.state.type}
-            //Method
-            chooseDoctor={this.chooseDoctor}
-          />
-          <br />
-          <ListQueue
-            //state
+      <div>
+        <Responsive  {...Responsive.onlyComputer}>
+          <div style={{
+            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+            backgroundRepeat: 'repeat',
+          }}>
+            <Headerbar
+              loginName={this.state.loginName}
+            />
+            <DropdownQueue
+              //state
+              doctorId={this.state.doctorId}
+              departmentId={this.state.departmentId}
+              departments={this.state.departments}
+              doctors={this.state.doctors}
+              errorAdd={this.state.errorAdd}
+              type={this.state.type}
+              //Method
+              chooseDoctor={this.chooseDoctor}
+            />
+            <br />
+            <ListQueue
+              //state
 
-            HN={this.state.HN}
-            modalIsOpen={this.state.modalIsOpen}
-            errorHN={this.state.errorHN}
-            errorGetName={this.state.errorGetName}
-            errorAdd={this.state.errorAdd}
-            namePatient={this.state.namePatient}
-            lastNamePatient={this.state.lastNamePatient}
-            showModal={this.state.showModal}
-            currentQueue={this.state.currentQueue}
-            queues={this.state.queues}
-            allLab={this.state.allLab}
-            typeForward={this.state.typeForward}
-            roomAndDoctors={this.state.roomAndDoctors}
-            doctorRooms={this.state.doctorRooms}
-            userType={this.state.userType}
-            forwardDepartments={this.state.forwardDepartments}
-            activeBox={this.state.activeBox}
-            listAbsent={this.state.listAbsent}
+              HN={this.state.HN}
+              modalIsOpen={this.state.modalIsOpen}
+              errorHN={this.state.errorHN}
+              errorGetName={this.state.errorGetName}
+              errorAdd={this.state.errorAdd}
+              namePatient={this.state.namePatient}
+              lastNamePatient={this.state.lastNamePatient}
+              showModal={this.state.showModal}
+              currentQueue={this.state.currentQueue}
+              queues={this.state.queues}
+              allLab={this.state.allLab}
+              typeForward={this.state.typeForward}
+              roomAndDoctors={this.state.roomAndDoctors}
+              doctorRooms={this.state.doctorRooms}
+              userType={this.state.userType}
+              forwardDepartments={this.state.forwardDepartments}
+              activeBox={this.state.activeBox}
+              listAbsent={this.state.listAbsent}
 
-            //Method
-            renderModal={this.renderModal}
-            forward={this.forward}
-            validateHN={this.validateHN}
-            setField={this.setField}
-            addQueue={this.addQueue}
-            showPatient={this.showPatient}
-            getPatientName={this.getPatientName}
-            callPatient={this.callPatient}
-            checkDoctorWithRoom={this.checkDoctorWithRoom}
-            showPatientLabQueue={this.showPatientLabQueue}
-            addMoreForward={this.addMoreForward}
-            showListDepartment={this.showListDepartment}
-            showDropdownDepartment={this.showDropdownDepartment}
-            forwardList={this.forwardList}
-            absent={this.absent}
-            showAbsent={this.showAbsent}
-          />
-        </div >
-      </Responsive>
+              //Method
+              renderModal={this.renderModal}
+              forward={this.forward}
+              validateHN={this.validateHN}
+              setField={this.setField}
+              addQueue={this.addQueue}
+              showPatient={this.showPatient}
+              getPatientName={this.getPatientName}
+              callPatient={this.callPatient}
+              checkDoctorWithRoom={this.checkDoctorWithRoom}
+              showPatientLabQueue={this.showPatientLabQueue}
+              addMoreForward={this.addMoreForward}
+              showListDepartment={this.showListDepartment}
+              showDropdownDepartment={this.showDropdownDepartment}
+              forwardList={this.forwardList}
+              absent={this.absent}
+              showAbsent={this.showAbsent}
+            />
+          </div >
+        </Responsive>
+        <Responsive  {...Responsive.onlyTablet}>
+          <div style={{
+            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+            backgroundRepeat: 'repeat',
+          }}>
+            <Headerbar
+              loginName={this.state.loginName}
+            />
+            <DropdownQueue
+              //state
+              doctorId={this.state.doctorId}
+              departmentId={this.state.departmentId}
+              departments={this.state.departments}
+              doctors={this.state.doctors}
+              errorAdd={this.state.errorAdd}
+              type={this.state.type}
+              //Method
+              chooseDoctor={this.chooseDoctor}
+            />
+            <br />
+            <ListQueue
+              //state
+
+              HN={this.state.HN}
+              modalIsOpen={this.state.modalIsOpen}
+              errorHN={this.state.errorHN}
+              errorGetName={this.state.errorGetName}
+              errorAdd={this.state.errorAdd}
+              namePatient={this.state.namePatient}
+              lastNamePatient={this.state.lastNamePatient}
+              showModal={this.state.showModal}
+              currentQueue={this.state.currentQueue}
+              queues={this.state.queues}
+              allLab={this.state.allLab}
+              typeForward={this.state.typeForward}
+              roomAndDoctors={this.state.roomAndDoctors}
+              doctorRooms={this.state.doctorRooms}
+              userType={this.state.userType}
+              forwardDepartments={this.state.forwardDepartments}
+              activeBox={this.state.activeBox}
+              listAbsent={this.state.listAbsent}
+
+              //Method
+              renderModal={this.renderModal}
+              forward={this.forward}
+              validateHN={this.validateHN}
+              setField={this.setField}
+              addQueue={this.addQueue}
+              showPatient={this.showPatient}
+              getPatientName={this.getPatientName}
+              callPatient={this.callPatient}
+              checkDoctorWithRoom={this.checkDoctorWithRoom}
+              showPatientLabQueue={this.showPatientLabQueue}
+              addMoreForward={this.addMoreForward}
+              showListDepartment={this.showListDepartment}
+              showDropdownDepartment={this.showDropdownDepartment}
+              forwardList={this.forwardList}
+              absent={this.absent}
+              showAbsent={this.showAbsent}
+            />
+          </div>
+        </Responsive>
+        <Responsive {...Responsive.onlyMobile}>
+          <Headerbar />
+          <center>
+            <Card>
+              <Image src={error} />
+              <Card.Content>
+                <Card.Header>Don't Support</Card.Header>
+                <Card.Meta>Queue Management System</Card.Meta>
+                <Card.Description>Don't Support on mobile screen</Card.Description>
+              </Card.Content>
+              <Card.Content extra>
+
+              </Card.Content>
+            </Card>
+          </center>
+        </Responsive>
+      </div>
     );
   }
 }

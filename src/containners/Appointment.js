@@ -538,10 +538,13 @@ class Appointment extends Component {
   };
 
   showDetailAppointment = async (e) => {
+    console.log(e)
     this.setState({
       openDetail: true,
-      selectEvent: e.id
+      selectEvent: e.id,
+      Date: moment(e.start).format('YYYY-MM-DD'),
     })
+    console.log(this.state.Date)
   };
 
   showPatientDescription = () => {
@@ -733,38 +736,45 @@ class Appointment extends Component {
     var curr_month = new Date(this.state.Date).getMonth();
     var curr_year = new Date(this.state.Date).getFullYear();
 
-    let getDoctor = this.state.appointmentDepId.split('/')
+    let getDoctor
+    let sumQueue
+    let sumAppointment
+    let sumCount
+    if (this.state.appointmentDepId) {
+      getDoctor = this.state.appointmentDepId.split('/')
 
-    //check couunt ว่าทั้งหมดมีเท่าไหร่ของหมดคนที่เืลือก Dropdown มีค่าเสมอ เอาตัวแปรไป .patientLimit
-    let countAppointment = this.state.timetable.filter(data => data.doctorId == getDoctor[0]
-      && data.Date === new Date(this.state.Date).getDate())
-    console.log('timetable', countAppointment)
+      //check couunt ว่าทั้งหมดมีเท่าไหร่ของหมดคนที่เืลือก Dropdown มีค่าเสมอ เอาตัวแปรไป .patientLimit
+      let countAppointment = this.state.timetable.filter(data => data.doctorId == getDoctor[0]
+        && data.Date === new Date(this.state.Date).getDate())
+      console.log('timetable', countAppointment)
 
-    //ดึงค่า count จาก db มาเช็ค 
-    let getSumQueue = await axios.post(`/getCountQueue`, {
-      doctorId: getDoctor[0],
-      date: new Date(this.state.Date)
-    })
-    let getSumAppointment = await axios.post(`/getCountAppointment`, {
-      doctorId: getDoctor[0],
-      date: new Date(this.state.Date).getDate()
-    })
+      //ดึงค่า count จาก db มาเช็ค 
+      let getSumQueue = await axios.post(`/getCountQueue`, {
+        doctorId: getDoctor[0],
+        date: new Date(this.state.Date)
+      })
+      let getSumAppointment = await axios.post(`/getCountAppointment`, {
+        doctorId: getDoctor[0],
+        date: new Date(this.state.Date).getDate()
+      })
 
-    //เอาค่า count ของ ตารางคิวมา
-    let sumQueue = getSumQueue.data[0].countQueueId
-    //เอาค่า count  ของ ตาราง appointment มา 
-    let sumAppointment = getSumAppointment.data[0].countAppointmentId
-    //เอาสองค่ามารวมกัน เพื่อเช็คว่ามีค่ามากกว่า countAppointment.patientLimit ไหม ถ้ามากกว่าจะไม่ให้แอด 
-    let sumCount = sumQueue + sumAppointment
-    console.log('count ท้้งหมด', sumCount)
+      //เอาค่า count ของ ตารางคิวมา
+      sumQueue = getSumQueue.data[0].countQueueId
+      //เอาค่า count  ของ ตาราง appointment มา 
+      sumAppointment = getSumAppointment.data[0].countAppointmentId
+      //เอาสองค่ามารวมกัน เพื่อเช็คว่ามีค่ามากกว่า countAppointment.patientLimit ไหม ถ้ามากกว่าจะไม่ให้แอด 
+      sumCount = sumQueue + sumAppointment
+      console.log('count ท้้งหมด', sumCount)
 
-    await this.checkCount(getDoctor[0])
-    console.log(this.state.doctorWithRemaining)
-
+      await this.checkCount(getDoctor[0])
+      console.log(this.state.doctorWithRemaining)
+    } else {
+      swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
+    }
 
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
-      || this.state.appointmentDepId == "" || sumCount > this.state.doctorWithRemaining.remaining) {
+      || this.state.appointmentDepId == 0 || sumCount > this.state.doctorWithRemaining.remaining) {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
       this.setState({
         editStatus: true,
