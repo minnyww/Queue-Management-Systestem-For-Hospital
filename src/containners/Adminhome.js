@@ -7,7 +7,7 @@ import axios from "./../lib/axios";
 import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item
+  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
@@ -17,7 +17,10 @@ import { extendMoment } from 'moment-range';
 import * as Moment from "moment";
 import { fail } from "assert";
 
-import logo from './../img/stethoscope.png';
+import logo from './../img/patient.png';
+import cardiogram from './../img/cardiogram.png';
+import notes from './../img/notes.png';
+
 
 const moment = extendMoment(Moment);
 
@@ -413,7 +416,13 @@ class Adminhome extends Component {
           // </List>
         ));
     } else {
-      tmp = <center><Header as='h4' color='teal' style={{ marginTop: '15%' }}>ไม่มีคิว</Header></center>
+      cardiogram//
+      tmp = <center>
+        <Image
+          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+        </Image>
+        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
+      </center>
       // <Label style={{ marginLeft: '40%', marginRight: '30%', marginTop: '25%' }} color="red" >ไม่มีคิว </Label>
       // <Icon loading className='hourglass end' size='huge' color='teal'
       //   style={{ marginLeft: '30%', width: '40%', marginRight: '30%', marginTop: '15%' }}
@@ -608,7 +617,7 @@ class Adminhome extends Component {
     if (this.state.userType === 1 && !R.isEmpty(data)) {
       return (
         <div>
-          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '4%' }} />
+          <Image src={logo} circular style={{ width: '30%', height: '30%', marginTop: '4%' }} />
           <Item textAlign='center'>
             <Label color='teal' size='massive'
               style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
@@ -625,7 +634,7 @@ class Adminhome extends Component {
             <Item.Content style={{ marginTop: '2.5%' }}>
               <Label basic
                 size='massive' style={{ fontSize: '22px', border: 'none' }}>
-                HN : {data.HN}
+                Hospital Number : {data.HN}
               </Label>
             </Item.Content>
             <Item.Content style={{ marginTop: '2.5%' }}>
@@ -642,7 +651,7 @@ class Adminhome extends Component {
         </div>
 
       );
-    } else if (this.state.userType === 2 && !R.isEmpty(data) ) {
+    } else if (this.state.userType === 2 && !R.isEmpty(data)) {
       return (
         <div>
           <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
@@ -662,7 +671,7 @@ class Adminhome extends Component {
             <Item.Content style={{ marginTop: '2.5%' }}>
               <Label basic
                 size='massive' style={{ fontSize: '22px', border: 'none' }}>
-                HN : {data.HN}
+                Hospital Number : {data.HN}
               </Label>
             </Item.Content>
             <Item.Content style={{ marginTop: '2.5%' }}>
@@ -678,6 +687,14 @@ class Adminhome extends Component {
           </Item>
         </div>
       )
+    }
+    else {
+      return <center>
+        <Image
+          src={cardiogram} style={{ marginTop: '17%', width: '30%', height: '30%' }}>
+        </Image>
+        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
+      </center>
     }
   };
 
@@ -958,7 +975,7 @@ class Adminhome extends Component {
     });
     this.setState({
       currentQueue: '',
-      activeBox : 2
+      activeBox: 2
 
     })
     const data = await this.getAbsent()
@@ -968,62 +985,8 @@ class Adminhome extends Component {
   showAbsent = () => {
     let data = this.state.listAbsent
     let tmp = ''
-    tmp = data.map((queue, i) => (
-      <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
-        <Table.Body>
-          <Table.Row>
-            <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
-            <Table.Cell style={{ fontSize: "16px" }} >
-              Name : {queue.firstName} {queue.lastName}<br />
-              HN: {queue.HN}
-            </Table.Cell>
-            <Table.Cell></Table.Cell>
-            <Table.Cell textAlign='right' >
-              <Button basic size='tiny' color='teal'
-                onClick={() => this.callAbsent(i)}>
-                Call
-              </Button>
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
-      /* <List divided horizontal relaxed='very'
-        style={{
-          backgroundColor: "white",
-          width: "100%",
-          borderBottom: "1px solid #E0E0E0",
-          padding: "5px"
-        }}>
-        <List.Item>
-          <List.Header
-            style={{ fontSize: "36px", color: "teal" }}>
-            {queue.queueId}
-          </List.Header>
-        </List.Item>
-        <List.Item style={{ paddingRight: '10%' }}>
-          <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-            Name : {queue.firstName} {queue.lastName}
-          </List.Header>
-          <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-            HN: {queue.HN}
-          </List.Content>
-        </List.Item>
-        <List.Item style={{ marginLeft: '5px' }}>
-          <Button basic size='tiny' color='teal'>Call</Button>
-        </List.Item>
-      </List> */
-    ))
-    return tmp
-  }
-
-
-  //show patient at lab queues
-  showPatientLabQueue = () => {
-    const data = this.state.labQueues
-    console.log("data", data)
-    let tmp = "";
-    tmp = data
-      .map(queue => (
+    if (!R.isEmpty(data)) {
+      tmp = data.map((queue, i) => (
         <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
           <Table.Body>
             <Table.Row>
@@ -1034,110 +997,63 @@ class Adminhome extends Component {
               </Table.Cell>
               <Table.Cell></Table.Cell>
               <Table.Cell textAlign='right' >
-                <Label color='orange'>Wait</Label>
+                <Button size='tiny' color='teal'
+                  onClick={() => this.callAbsent(i)}>
+                  Call
+              </Button>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
-        // <List divided horizontal relaxed='very'
-        //   style={{
-        //     backgroundColor: "white",
-        //     width: "100%",
-        //     borderBottom: "1px solid #E0E0E0",
-        //     padding: "5px"
-        //   }}>
-        //   <List.Item>
-        //     <List.Header
-        //       style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
-        //       {queue.queueId}
-        //     </List.Header>
-        //   </List.Item>
-        //   <List.Item>
-        //     <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-        //       Name : {queue.firstName} {queue.lastName}
-        //     </List.Header>
-        //     <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-        //       HN: {queue.HN}
-
-        //       <List.Content floated="right">
-        //         <Icon
-        //           className="circle "
-        //           color="orange"
-        //           style={{ marginTop: "5%" }}
-        //         />
-        //       </List.Content>
-        //     </List.Content>
-        //   </List.Item>
-        // </List>
       ))
+    } else {
+      tmp = <center>
+        <Image
+          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+        </Image>
+        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
+      </center>
+    }
+
+    return tmp
+  }
+
+
+  //show patient at lab queues
+  showPatientLabQueue = () => {
+    const data = this.state.labQueues
+    console.log("data", data)
+    let tmp = "";
+    debugger
+    if (!R.isEmpty(data)) {
+      tmp = data
+        .map(queue => (
+          <Table stackable style={{ border: 'none', marginTop: '-5%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }} >
+                  Name : {queue.firstName} {queue.lastName}<br />
+                  HN: {queue.HN}
+                </Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell textAlign='right' >
+                  <Label color='orange'>Wait</Label>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+        ))
+    }
+    else if (R.isEmpty(data)) {
+      tmp = <center>
+        <Image
+          src={cardiogram} style={{ marginTop: '5%', width: '30%', height: '30%' }}>
+        </Image>
+        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
+      </center>
+    }
     return tmp;
-    // }
-    // let dataCurrentQueue = this.state.currentQueue.HN
-    // let dataQueue = this.state.queues.map(queue => (queue.HN))
-
-    // //Queue
-    // let dataCheckRoom = this.state.queues.map(dataHN => (dataHN.HN))
-    // let dataQueueRoomId = this.state.queues.map(data => (data.roomId))
-
-    // //Lab Queue
-    // let dataRoomId = data.map(data => (data.roomId))
-    // console.log(dataRoomId)
-    // let dataHN = data.map(dataHN => (dataHN.HN))
-
-    // let check = dataRoomId.filter((data, i) => (data === dataQueueRoomId[i]))
-    // console.log(check)
-    // let checkHN = dataHN.filter((data, i) => (data === dataCheckRoom[i]))
-    // console.log(checkHN)
-
-    // debugger
-    // if (data.length > 1) {
-    //   if (!check || check.length !== 0) {
-    //     tmp = ''
-    //   }
-    //   else {
-    //     tmp = data
-    //       .filter((queue, i) =>
-    //         queue.HN !== dataQueue[i]
-    //         && queue.HN !== dataCurrentQueue
-    //         && queue.statusId !== 4
-    //         //group
-    //       )
-    //       .map(queue => (
-    //         <List divided horizontal
-    //           style={{
-    //             backgroundColor: "white",
-    //             width: "100%",
-    //             borderBottom: "1px solid #E0E0E0",
-    //             padding: "5px"
-    //           }}>
-    //           <List.Item>
-    //             <List.Header
-    //               style={{ fontSize: "36px", color: "teal", paddingLeft: "3%" }}>
-    //               {queue.queueId}
-    //             </List.Header>
-    //           </List.Item>
-    //           <List.Item>
-    //             <List.Header style={{ fontSize: "16px", marginTop: "2%" }}>
-    //               Name : {queue.firstName} {queue.lastName}
-    //             </List.Header>
-    //             <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-    //               HN: {queue.HN}
-
-    //               <List.Content floated="right">
-    //                 <Icon
-    //                   className="circle "
-    //                   color="orange"
-    //                   style={{ marginTop: "5%" }}
-    //                 />
-    //               </List.Content>
-    //             </List.Content>
-    //           </List.Item>
-    //         </List>
-    //       ))
-    //   }
-    //   // }
-    // }
-    // return tmp
   };
 
   addMoreForward = async () => {
@@ -1210,12 +1126,16 @@ class Adminhome extends Component {
           {/* </Dropdown.Menu > */}
         </Menu >
       </center>
+      <Image src={notes} circular
+        style={{
+          width: '15%', height: '15%', marginRight: '10%',
+          marginLeft: ' 6%', marginTop: '-15%'
+        }} verticalAlign='middle' />
       <TextArea
         disabled={this.state.forwardDoctorId === "" ? true : false}
         style={{
           height: '100px', width: "60%", padding: "10px",
-          marginRight: "20%", marginLeft: '20%', marginTop: "5%",
-          borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
+          marginTop: "5%",borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
         }}
         placeholder="Tell us more , Leave Message to Doctor"
         onChange={async (e, { value }) => {
@@ -1224,7 +1144,7 @@ class Adminhome extends Component {
       <center>
         <Button
           disabled={this.state.forwardDoctorId === "" ? true : false}
-          color="teal" style={{ marginTop: '2%' }}
+          color="teal" 
           onClick={() => { this.addMoreForward(); }}>
           Add to List
         </Button>
@@ -1325,12 +1245,12 @@ class Adminhome extends Component {
 
     console.log(!this.state.forwardDepartments[i - 1], this.state.forwardDepartments[i])
     debugger
-    if(this.state.forwardDepartments[i + 1]){
+    if (this.state.forwardDepartments[i + 1]) {
       this.setState({
         forwardDepartments: tmp
       })
     }
-    else if(!this.state.forwardDepartments[i + 1]) {  
+    else if (!this.state.forwardDepartments[i + 1]) {
       console.log(tmp[i].roomId)
       if (tmp[i].roomId === undefined) {
         tmp.splice(i, 1)
@@ -1518,7 +1438,6 @@ class Adminhome extends Component {
             type={this.state.type}
             //Method
             chooseDoctor={this.chooseDoctor}
-          // handleAdditio={this.handleAddition}
           />
           <br />
           <ListQueue

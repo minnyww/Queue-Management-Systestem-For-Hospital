@@ -12,7 +12,7 @@ import {
   Segment,
   Table,
   Label,
-  Divider
+  Divider,Dimmer,Loader
 } from "semantic-ui-react";
 import Modal from "react-responsive-modal";
 
@@ -25,7 +25,12 @@ const showCurrentQueue = props => {
           <Header as="h2" style={{ borderBottom: '1px solid #dededf', padding: '1%' }}>
             Current Queue
           </Header>
-          {props.getPatientName()}
+          <Dimmer.Dimmable as={Segment} dimmed={R.isEmpty(props.currentQueue) ? true : false}>
+            <Dimmer active={R.isEmpty(props.currentQueue) ? true : false} inverted>
+              <Loader>Loading</Loader>
+            </Dimmer>
+            {props.getPatientName()}
+          </Dimmer.Dimmable>
         </Segment>
       </Segment.Group>
     );
@@ -164,7 +169,7 @@ const Queue = props => {
                   onClick={() => {
                     props.callPatient()
                   }} >
-                  {props.currentQueue.firstName === undefined ? 'Call' : 'Next'}
+                  {props.currentQueue.firstName === undefined ? 'Call' : 'Call Next'}
                 </Button>
                 <Button.Or />
                 <Button positive
@@ -215,7 +220,9 @@ const Queue = props => {
                 <br />
                 <center>
                   <Divider horizontal>Or</Divider>
-                  <Button color="blue" onClick={() => props.forward()}>
+                  <Button color="blue" onClick={() => props.forward()}
+                    disabled={R.isEmpty(props.forwardDepartments) ? true : false}
+                  >
                     Forward
                   </Button>
                 </center>

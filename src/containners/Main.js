@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Headerbar from '.././components/headerbar'
 import MainButton from '../components/mainButton';
-import { Statistic, Label, Responsive, Segment } from "semantic-ui-react";
+import { Statistic, Label, Responsive, Segment, Card, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import logo from './../img/drug.png'
+
 class Main extends Component {
     state = {
         loginName: ''
@@ -29,20 +31,58 @@ class Main extends Component {
     render() {
         console.log(this.state.loginName)
         return (
-            <Responsive as={Segment} {...Responsive.onlyComputer}>
-                <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)' }}>
+            <div>
+                <Responsive  {...Responsive.onlyComputer}>
+                    <div style={{
+                        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                        backgroundRepeat: 'repeat',
+                    }}>
+                        <Headerbar />
+                        <center>
+                            {this.welcomeName()} <Link to={"/Admin"}>
+                                <Label color='red' style={{ marginLeft: '5px' }}
+                                    onClick={() => this.logOut()}
+                                >Logout
+                        </Label>
+                            </Link>
+                            <MainButton />
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive  {...Responsive.onlyTablet}>
+                    <div style={{
+                        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                        backgroundRepeat: 'repeat',
+                    }}>
+                        <Headerbar />
+                        <center>
+                            {this.welcomeName()} <Link to={"/Admin"}>
+                                <Label color='red' style={{ marginLeft: '5px' }}
+                                    onClick={() => this.logOut()}
+                                >Logout
+                        </Label>
+                            </Link>
+                            <MainButton />
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive {...Responsive.onlyMobile}>
                     <Headerbar />
                     <center>
-                        {this.welcomeName()} <Link to={"/Admin"}>
-                            <Label color='red' style={{ marginLeft: '5px' }}
-                                onClick={() => this.logOut()}
-                            >Logout
-                        </Label>
-                        </Link>
-                        <MainButton />
+                        <Card>
+                            <Image src={logo} />
+                            <Card.Content>
+                                <Card.Header>Don't Support</Card.Header>
+                                <Card.Meta>Queue Management System</Card.Meta>
+                                <Card.Description>Don't Support on mobile screen</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+
+                            </Card.Content>
+                        </Card>
                     </center>
-                </div>
-            </Responsive>
+                </Responsive>
+            </div>
         );
     }
 }
