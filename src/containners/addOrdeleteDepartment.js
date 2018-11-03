@@ -7,7 +7,8 @@ import swal from "sweetalert"
 import DropdownQueue from '../components/Dropdown';
 import FormManageDepartment from '../components/formManageDepartment';
 
-import { List, Icon, Button, Form, Input } from 'semantic-ui-react'
+import { List, Icon, Button, Form, Input, Responsive, Card, Image } from 'semantic-ui-react'
+import logo from './../img/drug.png'
 
 class addOrdeleteDepartment extends Component {
     state = {
@@ -397,40 +398,97 @@ class addOrdeleteDepartment extends Component {
     render() {
         console.log(this.state.departmentValueId)
         return (
-            <div >
-                <Headerbar />
-                <DropdownQueue />
-                <FormManageDepartment
-                    //state
-                    departmentName={this.state.departmentName}
-                    typeOfDepartment={this.state.typeOfDepartment}
-                    activeItem={this.state.activeItem}
-                    roomNumber={this.state.roomNumber}
-                    floor={this.state.floor}
-                    building={this.state.building}
-                    allDepartment={this.state.allDepartment}
-                    departmentValueId={this.state.departmentValueId}
-                    allDepartments={this.state.allDepartments}
-                    listDoctors={this.state.listDoctors}
+            <div>
+                <Responsive  {...Responsive.onlyComputer}>
+                    <div >
+                        <Headerbar />
+                        <DropdownQueue />
+                        <FormManageDepartment
+                            //state
+                            departmentName={this.state.departmentName}
+                            typeOfDepartment={this.state.typeOfDepartment}
+                            activeItem={this.state.activeItem}
+                            roomNumber={this.state.roomNumber}
+                            floor={this.state.floor}
+                            building={this.state.building}
+                            allDepartment={this.state.allDepartment}
+                            departmentValueId={this.state.departmentValueId}
+                            allDepartments={this.state.allDepartments}
+                            listDoctors={this.state.listDoctors}
 
-                    patientLimit={this.state.patientLimit}
-                    lastnameDoctor={this.state.lastnameDoctor}
-                    employeeId={this.state.employeeId}
-                    avgTimeDoctor={this.state.avgTimeDoctor}
+                            patientLimit={this.state.patientLimit}
+                            lastnameDoctor={this.state.lastnameDoctor}
+                            employeeId={this.state.employeeId}
+                            avgTimeDoctor={this.state.avgTimeDoctor}
 
-                    todayItem={this.state.todayItem}
+                            todayItem={this.state.todayItem}
 
-                    //method
-                    setField={this.setField}
-                    addDepartment={this.addDepartment}
-                    addRooms={this.addRooms}
-                    showAllDepartment={this.showAllDepartment}
-                    showAllRoom={this.showAllRoom}
-                    showAllDoctorsLimit={this.showAllDoctorsLimit}
-                    addDoctors={this.addDoctors}
-                    showDoctors={this.showDoctors}
+                            //method
+                            setField={this.setField}
+                            addDepartment={this.addDepartment}
+                            addRooms={this.addRooms}
+                            showAllDepartment={this.showAllDepartment}
+                            showAllRoom={this.showAllRoom}
+                            showAllDoctorsLimit={this.showAllDoctorsLimit}
+                            addDoctors={this.addDoctors}
+                            showDoctors={this.showDoctors}
 
-                />
+                        />
+                    </div>
+                </Responsive>
+                <Responsive  {...Responsive.onlyTablet}>
+                    <div >
+                        <Headerbar />
+                        <DropdownQueue />
+                        <FormManageDepartment
+                            //state
+                            departmentName={this.state.departmentName}
+                            typeOfDepartment={this.state.typeOfDepartment}
+                            activeItem={this.state.activeItem}
+                            roomNumber={this.state.roomNumber}
+                            floor={this.state.floor}
+                            building={this.state.building}
+                            allDepartment={this.state.allDepartment}
+                            departmentValueId={this.state.departmentValueId}
+                            allDepartments={this.state.allDepartments}
+                            listDoctors={this.state.listDoctors}
+
+                            patientLimit={this.state.patientLimit}
+                            lastnameDoctor={this.state.lastnameDoctor}
+                            employeeId={this.state.employeeId}
+                            avgTimeDoctor={this.state.avgTimeDoctor}
+
+                            todayItem={this.state.todayItem}
+
+                            //method
+                            setField={this.setField}
+                            addDepartment={this.addDepartment}
+                            addRooms={this.addRooms}
+                            showAllDepartment={this.showAllDepartment}
+                            showAllRoom={this.showAllRoom}
+                            showAllDoctorsLimit={this.showAllDoctorsLimit}
+                            addDoctors={this.addDoctors}
+                            showDoctors={this.showDoctors}
+
+                        />
+                    </div>
+                </Responsive>
+                <Responsive {...Responsive.onlyMobile}>
+                    <Headerbar />
+                    <center>
+                        <Card>
+                            <Image src={logo} />
+                            <Card.Content>
+                                <Card.Header>Don't Support</Card.Header>
+                                <Card.Meta>Queue Management System</Card.Meta>
+                                <Card.Description>Don't Support on mobile screen</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+
+                            </Card.Content>
+                        </Card>
+                    </center>
+                </Responsive>
             </div>
         );
     }

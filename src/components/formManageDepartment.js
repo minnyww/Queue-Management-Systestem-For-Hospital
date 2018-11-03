@@ -37,7 +37,7 @@ const showContentForm = props => {
                 <br />
                 <center>
                     <Button
-                        color='blue'
+                        color='teal'
                         onClick={() => {
                             props.addDepartment();
                         }}> Add
@@ -112,6 +112,8 @@ const showFormRoom = props => {
                             label='Room Number'
                             placeholder='Room Number'
                             onChange={(e, { value }) => props.setField("roomNumber", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Input}
@@ -128,6 +130,8 @@ const showFormRoom = props => {
                             label='Floor'
                             placeholder='Floor'
                             onChange={(e, { value }) => props.setField("floor", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Select}
@@ -164,6 +168,9 @@ const showFormRoom = props => {
                             label='Firstname'
                             placeholder='Firstname'
                             onChange={(e, { value }) => props.setField("firstnameDoctor", value)} />
+
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Input}
@@ -180,6 +187,8 @@ const showFormRoom = props => {
                             label='Employee Id'
                             placeholder='Employee Id'
                             onChange={(e, { value }) => props.setField("employeeId", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Input}
@@ -202,7 +211,7 @@ const showFormRoom = props => {
                 <br />
                 <center>
                     <Button
-                        color='blue'
+                        color='teal'
                         onClick={() => {
                             props.addDoctors();
                         }}> Add
@@ -223,8 +232,9 @@ const formManageDepartment = props => {
                 marginTop: "2.5%",
             }}>
                 <Header as='h2' color='teal'>Department Management</Header>
-                <Grid.Row stretched >
-                    <Grid.Column width={3} style={{ maxHeight: '60%', minHeight: '60%', height: 450 }} >
+                <Grid.Row stretched style={{ paddingRight: '3%', paddingLeft: '3%' }}>
+                    <Grid.Column width={4}
+                        style={{ maxHeight: '250px', minHeight: '150px', height: 450, paddingLeft: '5%' }} >
                         <Menu pointing vertical color='teal'>
                             <Menu.Item
                                 name='Add or Delete Department'
@@ -252,10 +262,10 @@ const formManageDepartment = props => {
                             </Menu.Item>
                         </Menu>
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ maxHeight: '80%', minHeight: '80%', overflowY: 'scroll', }}>
+                    <Grid.Column width={6} style={{ maxHeight: '400px', minHeight: '400px', overflowY: 'scroll', }}>
                         {showContent(props)}
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ width: "50%", height: '60%' }}>
+                    <Grid.Column width={6} style={{ height: '60%' }}>
                         {showContentForm(props)}
                         {showFormRoom(props)}
                     </Grid.Column>
