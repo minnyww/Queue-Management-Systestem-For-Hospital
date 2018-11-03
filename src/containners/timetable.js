@@ -312,9 +312,9 @@ class timetable extends Component {
             // open: true
         })
         debugger
-        console.log(new Date(this.state.Date).getMonth(), new Date().getMonth() )
-        if (new Date(this.state.Date).getDate() >= new Date().getDate() 
-        || new Date(this.state.Date).getMonth() > new Date().getMonth() 
+        console.log(new Date(this.state.Date).getMonth(), new Date().getMonth())
+        if (new Date(this.state.Date).getDate() >= new Date().getDate()
+            || new Date(this.state.Date).getMonth() > new Date().getMonth()
         ) {
             this.setField("open", true)
         }
@@ -338,6 +338,7 @@ class timetable extends Component {
             <Form>
                 <Form.Input
                     style={{ width: '65%' }}
+                    disabled
                     type="date"
                     value={this.state.Date}
                     onChange={(e, { value }) => this.setField("Date", value)}
@@ -396,41 +397,44 @@ class timetable extends Component {
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
         console.log(timeStart)
-        // const getDoctor = this.state.events.map(data => {
-        //     return {
-        //         doctor: data.doctor,
-        //         start: data.start
-        //     }
-        // })
-        let result = events.filter(data => data.doctor == doctorId
-            && data.roomId == roomValue
-            && data.start.getDate() === new Date(this.state.Date).getDate()
-            // && data.start.getMonth() === new Date(this.state.Date).getMonth()
-            && moment(data.start, "HH:mm").format("HH:mm") == timeStart
-        )
-        if (result.length == 0) {
-            const data = await axios.post("/addTimetable", {
-                Date: new Date(this.state.Date).getDate(),
-                day: date.day,
-                month: date.month,
-                Year: date.year,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
-                doctorId: doctorId,
-                roomId: roomValue,
-            });
-            await this.setState({
-                open: false,
-                startTime: '',
-                endTime: ' ',
-                HN: '',
-                Date: new Date(this.state.Date)
-            });
-        }
-        else {
+
+        if (timeStart === '' || timeEnd === '' || doctorId === '' || roomValue === '') {
             swal("Cannot add Doctor to Timetable", {
                 icon: "warning",
             });
+        }
+        else {
+            let result = events.filter(data => data.doctor == doctorId
+                && data.roomId == roomValue
+                && data.start.getDate() === new Date(this.state.Date).getDate()
+                // && data.start.getMonth() === new Date(this.state.Date).getMonth()
+                && moment(data.start, "HH:mm").format("HH:mm") == timeStart
+            )
+            if (result.length == 0) {
+                const data = await axios.post("/addTimetable", {
+                    Date: new Date(this.state.Date).getDate(),
+                    day: date.day,
+                    month: date.month,
+                    Year: date.year,
+                    timeStart: timeStart,
+                    timeEnd: timeEnd,
+                    doctorId: doctorId,
+                    roomId: roomValue,
+                });
+                await this.setState({
+                    open: false,
+                    startTime: '',
+                    endTime: ' ',
+                    HN: '',
+                    Date: new Date(this.state.Date)
+                });
+            }
+
+            else {
+                swal("Cannot add Doctor to Timetable", {
+                    icon: "warning",
+                });
+            }
         }
         await this.getEvents()
         await this.getTimetable()
