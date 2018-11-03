@@ -12,7 +12,7 @@ import {
   Segment,
   Table,
   Label,
-  Divider,Dimmer,Loader
+  Divider, Dimmer, Loader
 } from "semantic-ui-react";
 import Modal from "react-responsive-modal";
 
@@ -25,12 +25,12 @@ const showCurrentQueue = props => {
           <Header as="h2" style={{ borderBottom: '1px solid #dededf', padding: '1%' }}>
             Current Queue
           </Header>
-          <Dimmer.Dimmable as={Segment} dimmed={R.isEmpty(props.currentQueue) ? true : false}>
+          {/* <Dimmer.Dimmable as={Segment} dimmed={R.isEmpty(props.currentQueue) ? true : false}>
             <Dimmer active={R.isEmpty(props.currentQueue) ? true : false} inverted>
               <Loader>Loading</Loader>
-            </Dimmer>
+            </Dimmer> */}
             {props.getPatientName()}
-          </Dimmer.Dimmable>
+          {/* </Dimmer.Dimmable> */}
         </Segment>
       </Segment.Group>
     );
@@ -73,7 +73,12 @@ const Queue = props => {
               <Segment color="teal">
                 <Label color='teal' style={{ fontWeight: 100, fontSize: '14px' }}>Queue</Label>
               </Segment>
-              {props.showPatient()}
+              {/* <Dimmer.Dimmable dimmed={R.isEmpty(props.queues) ? true : false}>
+                <Dimmer active={R.isEmpty(props.queues) ? true : false} inverted>
+                  <Loader>Loading</Loader>
+                </Dimmer> */}
+                {props.showPatient()}
+              {/* </Dimmer.Dimmable> */}
               {props.renderModal()}
             </Segment.Group>
             <center>

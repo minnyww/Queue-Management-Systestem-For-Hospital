@@ -141,7 +141,7 @@ const showFormRoom = props => {
                 <br />
                 <center>
                     <Button
-                        color='blue'
+                        color='teal'
                         onClick={() => {
                             props.addRooms();
                         }}> Add

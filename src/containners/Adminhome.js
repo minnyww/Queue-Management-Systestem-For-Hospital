@@ -381,39 +381,6 @@ class Adminhome extends Component {
               </Table.Row>
             </Table.Body>
           </Table>
-          // <List key={i}
-          //   divided
-          //   horizontal
-          //   style={{
-          //     backgroundColor: "white",
-          //     width: "100%",
-          //     borderBottom: "1px solid #E0E0E0",
-          //     padding: "5px"
-          //   }}>
-          //   <List.Item style={{ paddingRight: "7%" }}>
-          //     <List.Header
-          //       style={{
-          //         fontSize: "36px",
-          //         color: "teal",
-          //         paddingLeft: "40%"
-          //       }} >
-          //       {queue.queueId}
-          //     </List.Header>
-          //   </List.Item>
-          //   <List.Item>
-          //     <List.Header style={{ fontSize: "16px", marginTop: "3%" }}>
-          //       Name : {queue.firstName} {queue.lastName}
-          //     </List.Header>
-          //     <List.Content style={{ fontSize: "16px", marginTop: "3%" }}>
-          //       HN: {queue.HN}
-          //     </List.Content>
-          //     <List.Content floated="left">
-          //       <Icon name="time" size="large" style={{ marginTop: "3%" }} />
-          //       {queue.avgtime.toFixed(0)} Min
-          //       </List.Content>
-          //     {this.showMessage(queue.Forward, i)}
-          //   </List.Item>
-          // </List>
         ));
     } else {
       cardiogram//
@@ -423,10 +390,6 @@ class Adminhome extends Component {
         </Image>
         <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
       </center>
-      // <Label style={{ marginLeft: '40%', marginRight: '30%', marginTop: '25%' }} color="red" >ไม่มีคิว </Label>
-      // <Icon loading className='hourglass end' size='huge' color='teal'
-      //   style={{ marginLeft: '30%', width: '40%', marginRight: '30%', marginTop: '15%' }}
-      // />
     }
     return tmp;
   };
@@ -795,10 +758,7 @@ class Adminhome extends Component {
                       queueDefault: 'forwardType',
                       groupId: this.state.currentQueue.group,
                       roomBack: null,
-                      // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
                       step: i + 1
-                      // date: this.state.Date,
-                      // timeFormat: time,
                     }
                     debugger;
                     console.log("tmp ที่ inert,", tmp)
@@ -1123,7 +1083,6 @@ class Adminhome extends Component {
                 forwardDoctorId: value,
               })
             }} />
-          {/* </Dropdown.Menu > */}
         </Menu >
       </center>
       <Image src={notes} circular
@@ -1148,31 +1107,7 @@ class Adminhome extends Component {
           onClick={() => { this.addMoreForward(); }}>
           Add to List
         </Button>
-        {/* <Divider horizontal>Or</Divider>
-        <Label color='teal' style={{ marginRight: '2%' }}>หากต้องการให้คนไข้กลับมาที่ห้องเดิม กรุณาเพิ่มแผนกตัวเองอีกครั้ง</Label> */}
-        {/* <Radio
-          disabled={this.state.currentQueue.step === 1 ? false : true}
-          style={{ paddingRight: '40px' }}
-          label='Yes'
-          name='checkComeOrNot'
-          value={true}
-          checked={this.state.forwardComeback === true}
-          onChange={async (e, { value }) => {
-            this.setState({ forwardComeback: value, })
-          }}>
-        </Radio>
-        <Radio
-          disabled={this.state.currentQueue.step === 1 ? false : true}
-          label='No'
-          name='checkComeOrNot'
-          value={false}
-          checked={this.state.forwardComeback === false}
-          onChange={async (e, { value }) => {
-            this.setState({ forwardComeback: value, })
-          }} >
-        </Radio> */}
       </center>
-
     </div >
     return tmp
   }
@@ -1410,9 +1345,7 @@ class Adminhome extends Component {
             </Table.Cell>
           </Table.Row>
         }
-
       })
-
       return tmp
     }
   }

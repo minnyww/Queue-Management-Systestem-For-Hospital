@@ -207,7 +207,7 @@ class addOrdeleteDepartment extends Component {
         tmp = datas.map((data, i) => (
             <List.Item key={i}>
                 <List.Content floated='right'>
-                    <Button color='green' size='mini'
+                    <Button color='teal' size='mini'
                         style={{ marginTop: '6px' }}
                         onClick={() => {
                             this.updateLimit(i);
