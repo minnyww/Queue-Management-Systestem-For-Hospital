@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import Headerbar from "./../components/headerbar";
-
+import * as R from 'ramda'
 import DropdownQueue from "./../components/Dropdown";
 import Modal from 'react-responsive-modal';
 import swal from 'sweetalert'
@@ -199,13 +199,13 @@ class Appointment extends Component {
     const nextEvents = [...events];
     nextEvents.splice(idx, 1, updatedEvent);
 
-    console.log(events, updatedEvent)
+    console.log(events, updatedEvent,)
     let result = events.filter(data => (data.title == updatedEvent.title
       && data.start.getDate() == updatedEvent.start.getDate()
       && data.start.getMonth() == updatedEvent.start.getMonth()
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
-
+    console.log(result)
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
       && data.Date === updatedEvent.start.getDate())
@@ -235,7 +235,7 @@ class Appointment extends Component {
     //fail
     if (countAppointment[0]) {
       console.log('no data')
-      if (result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
+      if (!R.isEmpty(result) || result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
         //fail
         console.log('cannot')
         swal("Cannot!", `HN: ${event.title} cannot move to  

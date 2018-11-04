@@ -232,9 +232,9 @@ const formManageDepartment = props => {
                 marginTop: "2.5%",
             }}>
                 <Header as='h2' color='teal'>Department Management</Header>
-                <Grid.Row stretched style={{ paddingRight: '3%', paddingLeft: '3%' }}>
+                <Grid.Row stretched style={{ paddingRight: '5%', paddingLeft: '3%' }}>
                     <Grid.Column width={4}
-                        style={{ maxHeight: '250px', minHeight: '150px', height: 450, paddingLeft: '5%' }} >
+                        style={{ maxHeight: '250px', minHeight: '150px', height: 450, }} >
                         <Menu pointing vertical color='teal'>
                             <Menu.Item
                                 name='Add or Delete Department'
@@ -262,10 +262,11 @@ const formManageDepartment = props => {
                             </Menu.Item>
                         </Menu>
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ maxHeight: '400px', minHeight: '400px', overflowY: 'scroll', }}>
+                    <Grid.Column width={6}
+                        style={{ maxHeight: '400px', minHeight: '400px', overflowY: 'scroll', }}>
                         {showContent(props)}
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ height: '60%' }}>
+                    <Grid.Column width={6} style={{ height: '60%', }}>
                         {showContentForm(props)}
                         {showFormRoom(props)}
                     </Grid.Column>

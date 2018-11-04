@@ -7,7 +7,7 @@ import axios from "./../lib/axios";
 import swal from "sweetalert"
 import {
   Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid,Card
+  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid, Card
 } from "semantic-ui-react";
 // import Modal from "react-modal";
 import Modal from 'react-responsive-modal';
@@ -941,6 +941,16 @@ class Adminhome extends Component {
     const data = await this.getAbsent()
     console.log(this.state.currentQueue)
   }
+  cancelQueue = async (i) => {
+    console.log(this.state.listAbsent[i])
+    await axios.delete(`/deletePatientQ/${this.state.listAbsent[i].runningNumber}`)
+    swal({
+      title: "Queue has been delete",
+      text: this.state.listAbsent[i].firstName + ' ' + this.state.listAbsent[i].lastName + 'hass been delete ',
+      icon: "success",
+    })
+    const data = await this.getAbsent()
+  }
 
   showAbsent = () => {
     let data = this.state.listAbsent
@@ -957,6 +967,11 @@ class Adminhome extends Component {
               </Table.Cell>
               <Table.Cell></Table.Cell>
               <Table.Cell textAlign='right' >
+                <Button size='tiny' color='red'
+                  onClick={() => this.cancelQueue(i)}
+                >
+                  Cancel
+              </Button>
                 <Button size='tiny' color='teal'
                   onClick={() => this.callAbsent(i)}>
                   Call
