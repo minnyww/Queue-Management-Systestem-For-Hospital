@@ -11,6 +11,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
 import BigCalendar from "react-big-calendar";
 import Modal from 'react-responsive-modal';
+import * as R from 'ramda'
 
 import axios from "./../lib/axios";
 import swal from 'sweetalert'
@@ -495,10 +496,11 @@ class timetable extends Component {
         const checkStatus = await axios.post("/checkStatusDoctor", {
             doctorId: result[0].doctor,
         })
-        console.log(checkStatus)
+        console.log(checkStatus.data)
 
-        if (result[0].start.getDate() >= new Date().getDate() && checkStatus.data) {
+        if (result[0].start.getDate() >= new Date().getDate() && !R.isEmpty(checkStatus.data)) {
             console.log('เข้า')
+            debugger
             if (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3) {
                 console.log('เข้าใน')
                 swal("Cannot Delete this doctor because has patient in room with this Doctor", {

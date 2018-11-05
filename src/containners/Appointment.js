@@ -375,7 +375,7 @@ class Appointment extends Component {
   }
 
   addToQueue = async (i) => {
-    console.log(this.state.selectEvent, new Date(this.state.Date))
+    console.log(this.state.selectEvent, new Date(this.state.Date),new Date())
     const datas = await axios.post(`/getDataAppointment`, {
       appointmentId: this.state.selectEvent,
     })
@@ -403,7 +403,7 @@ class Appointment extends Component {
       queue.HN === getData[0].HN;
     });
 
-    if (min.length === 0) {
+    if (min.length === 0 && new Date(this.state.Date) === new Date()) {
       var checkHNDepartments = await axios.get(
         `/checkHNatDepartment/${this.state.departmentId}`
       );
@@ -543,8 +543,9 @@ class Appointment extends Component {
       openDetail: true,
       selectEvent: e.id,
       Date: moment(e.start).format('YYYY-MM-DD'),
+      HN : e.title
     })
-    console.log(this.state.Date)
+    console.log(this.state.HN)
   };
 
   showPatientDescription = () => {
@@ -702,12 +703,6 @@ class Appointment extends Component {
     return tmp
   }
   updateAppoinment = async () => {
-    console.log(this.state.HN)
-    console.log(this.state.Date)
-    console.log(this.state.startTime)
-    console.log(this.state.endTime)
-    console.log(this.state.appointmentDepId)
-    console.log(this.state.selectEvent)
 
     var month = new Array(
       "Jan",
@@ -772,6 +767,8 @@ class Appointment extends Component {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
     }
 
+    console.log(sumCount,this.state.doctorWithRemaining.remaining)
+
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
       || this.state.appointmentDepId == 0 || sumCount > this.state.doctorWithRemaining.remaining) {
@@ -782,11 +779,9 @@ class Appointment extends Component {
       })
     }
     else {
-      await this.getEvents()
-      await this.getAppointment()
+      
       swal("Success!", `HN: ${this.state.HN} was update  ${this.state.startTime}`, "success");
       console.log('เข้า up')
-
       const data = await axios.post("/updateAppointment", {
         date: new Date(this.state.Date).getDate(),
         day: day[curr_date],
@@ -798,7 +793,9 @@ class Appointment extends Component {
         doctorId: getDoctor[0],
         HN: this.state.HN
       });
-      console.log(data)
+      await this.getEvents()
+      await this.getAppointment()
+      console.log('data update'+data)
     }
     console.log('out')
   }

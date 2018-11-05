@@ -13,7 +13,7 @@ const showContentForm = props => {
     let tmp = ''
     if (props.activeItem === 'department') {
         tmp = (<div>
-            <Segment attached='bottom' color='teal' >
+            <Segment attached='bottom' color='teal'>
                 <Header>Add Department</Header>
                 <Form>
                     {/* <Form.Group widths='equal'> */}
@@ -208,7 +208,6 @@ const showFormRoom = props => {
                             onChange={(e, { value }) => props.setField("departmentValueId", value)} />
                     </Form.Group>
                 </Form>
-                <br />
                 <center>
                     <Button
                         color='teal'
@@ -229,7 +228,7 @@ const formManageDepartment = props => {
     return (
         <div>
             <Grid centered style={{
-                marginTop: "2.5%",
+                // marginTop: "1.5%",
             }}>
                 <Header as='h2' color='teal'>Department Management</Header>
                 <Grid.Row stretched style={{ paddingRight: '5%', paddingLeft: '3%' }}>

@@ -943,13 +943,23 @@ class Adminhome extends Component {
   }
   cancelQueue = async (i) => {
     console.log(this.state.listAbsent[i])
-    await axios.delete(`/deletePatientQ/${this.state.listAbsent[i].runningNumber}`)
+
     swal({
-      title: "Queue has been delete",
-      text: this.state.listAbsent[i].firstName + ' ' + this.state.listAbsent[i].lastName + 'hass been delete ',
-      icon: "success",
-    })
-    const data = await this.getAbsent()
+      title: "Patient is Absent ? ",
+      text: this.state.listAbsent[i].firstName + ' ' + this.state.listAbsent[i].lastName + 'is Absent',
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await axios.delete(`/deletePatientQ/${this.state.listAbsent[i].runningNumber}`)
+        swal("Queue has been deleted!", {
+          icon: "success",
+        });
+        const data = await this.getAbsent()
+      }
+    });
+    
   }
 
   showAbsent = () => {

@@ -77,6 +77,10 @@ span.rbc-btn-group {
   padding: 8px!important;
 }
 
+i.right.arrow.icon {
+  background-color: white !important;
+  border: 1px solid #00b5ad;
+}
 /* .rbc-event {
   padding: 2px 5px;
   background-color: #0c8a84;
