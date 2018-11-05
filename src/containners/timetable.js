@@ -42,13 +42,16 @@ class timetable extends Component {
         roomId: 0,
         editStatus: false,
         doctorSelect: [{ key: "", text: "", value: "" }],
+        loginName: ''
 
     }
     componentWillMount = async () => {
         const { empId, departmentId } = JSON.parse(localStorage.getItem('userData'))
+        const userData = JSON.parse(localStorage.getItem('userData'))
         this.setState({
             departmentId: departmentId,
-            nurseId: empId
+            nurseId: empId,
+
         })
         const date = this.pharseDate();
         const { data } = await axios.post(`/getTimetable`, {
@@ -96,8 +99,9 @@ class timetable extends Component {
             rooms: roomsOption,
             doctorSelect: doctorsOptionNoAll,
             roomId: doctors.data[0].roomId,
+            loginName: userData
         })
-        console.log(this.state.events)
+        console.log(this.state.loginName)
         // this.getTimetable()getTimetable
     }
 
@@ -724,12 +728,17 @@ class timetable extends Component {
         }
     };
 
-
+    logOut = () => {
+        localStorage.removeItem('userData');
+    }
 
     render() {
         return (
             <div >
-                <Headerbar />
+                <Headerbar
+                    logOut={this.logOut}
+                    loginName={this.state.loginName}
+                />
                 <DropdownQueue
                     doctors={this.state.doctors}
                     // departmentId = {this.state.departmentId}

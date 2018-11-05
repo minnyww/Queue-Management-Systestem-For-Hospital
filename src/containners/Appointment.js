@@ -46,6 +46,7 @@ class Appointment extends Component {
     errorHN: "",
     addSuccess: false,
     editStatus: false,
+    loginName: '',
 
     //check Limit
     sumQueueCountLimit: 0,
@@ -72,6 +73,7 @@ class Appointment extends Component {
 
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
+    const userData = JSON.parse(localStorage.getItem('userData'))
     const date = this.pharseDate(new Date());
 
     this.setState({ loading: true })
@@ -98,7 +100,8 @@ class Appointment extends Component {
       timetable: timeTableData.data,
       nurseId: empId,
       departmentId,
-      userType: type
+      userType: type,
+      loginName: userData
     })
 
     const doctors = await axios.post(`/getListDoctor`, {
@@ -199,7 +202,7 @@ class Appointment extends Component {
     const nextEvents = [...events];
     nextEvents.splice(idx, 1, updatedEvent);
 
-    console.log(events, updatedEvent,)
+    console.log(events, updatedEvent)
     let result = events.filter(data => (data.title == updatedEvent.title
       && data.start.getDate() == updatedEvent.start.getDate()
       && data.start.getMonth() == updatedEvent.start.getMonth()
@@ -375,7 +378,7 @@ class Appointment extends Component {
   }
 
   addToQueue = async (i) => {
-    console.log(this.state.selectEvent, new Date(this.state.Date),new Date())
+    console.log(this.state.selectEvent, new Date(this.state.Date), new Date())
     const datas = await axios.post(`/getDataAppointment`, {
       appointmentId: this.state.selectEvent,
     })
@@ -543,7 +546,7 @@ class Appointment extends Component {
       openDetail: true,
       selectEvent: e.id,
       Date: moment(e.start).format('YYYY-MM-DD'),
-      HN : e.title
+      HN: e.title
     })
     console.log(this.state.HN)
   };
@@ -767,7 +770,7 @@ class Appointment extends Component {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
     }
 
-    console.log(sumCount,this.state.doctorWithRemaining.remaining)
+    console.log(sumCount, this.state.doctorWithRemaining.remaining)
 
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
@@ -779,7 +782,7 @@ class Appointment extends Component {
       })
     }
     else {
-      
+
       swal("Success!", `HN: ${this.state.HN} was update  ${this.state.startTime}`, "success");
       console.log('เข้า up')
       const data = await axios.post("/updateAppointment", {
@@ -795,7 +798,7 @@ class Appointment extends Component {
       });
       await this.getEvents()
       await this.getAppointment()
-      console.log('data update'+data)
+      console.log('data update' + data)
     }
     console.log('out')
   }
@@ -938,10 +941,17 @@ class Appointment extends Component {
   //     return { events: state.events };
   //   });
   // };
+  logOut = () => {
+    localStorage.removeItem('userData');
+  }
+
   render() {
     return (
       <div style={{ width: '100%' }}>
-        <Headerbar />
+        <Headerbar
+          loginName={this.state.loginName}
+          logOut={this.logOut}
+        />
         <DropdownQueue />
         <Modal
           center

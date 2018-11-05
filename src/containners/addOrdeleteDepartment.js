@@ -41,10 +41,11 @@ class addOrdeleteDepartment extends Component {
 
         activeItem: 'department',
         todayItem: 'today',
+        loginName: ''
     }
     componentWillMount = async () => {
         const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
-
+        const userData = JSON.parse(localStorage.getItem('userData'))
         const allDepartment = await axios.get(`/getAllDepartment`);
         const allRoom = await axios.get(`/getAllRoom`);
         const getAllDoctor = await axios.get(`/getDoctors`)
@@ -69,7 +70,9 @@ class addOrdeleteDepartment extends Component {
             listRooms: allRoom.data,
             listDoctors: allDoctors.data,
             listAllDoctors: getAllDoctor.data,
-            allDepartments: departmentOption
+            allDepartments: departmentOption,
+            loginName: userData
+
         })
         console.log(this.state.listDoctors)
 
@@ -395,13 +398,21 @@ class addOrdeleteDepartment extends Component {
         this.setState({ [field]: value });
     };
 
+    logOut = () => {
+        localStorage.removeItem('userData');
+    }
+
+
     render() {
         console.log(this.state.departmentValueId)
         return (
             <div>
                 <Responsive  {...Responsive.onlyComputer}>
                     <div >
-                        <Headerbar />
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
                         <DropdownQueue />
                         <FormManageDepartment
                             //state
@@ -438,7 +449,10 @@ class addOrdeleteDepartment extends Component {
                 </Responsive>
                 <Responsive  {...Responsive.onlyTablet}>
                     <div >
-                        <Headerbar />
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
                         <DropdownQueue />
                         <FormManageDepartment
                             //state

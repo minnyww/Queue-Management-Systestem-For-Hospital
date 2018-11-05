@@ -959,7 +959,7 @@ class Adminhome extends Component {
         const data = await this.getAbsent()
       }
     });
-    
+
   }
 
   showAbsent = () => {
@@ -1374,6 +1374,9 @@ class Adminhome extends Component {
       return tmp
     }
   }
+  logOut = () => {
+    localStorage.removeItem('userData');
+  }
   render() {
     return (
       <div>
@@ -1384,6 +1387,8 @@ class Adminhome extends Component {
           }}>
             <Headerbar
               loginName={this.state.loginName}
+
+              logOut={this.logOut}
             />
             <DropdownQueue
               //state
