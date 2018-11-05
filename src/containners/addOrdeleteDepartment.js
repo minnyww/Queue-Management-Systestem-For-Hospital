@@ -74,7 +74,7 @@ class addOrdeleteDepartment extends Component {
             loginName: userData
 
         })
-        console.log(this.state.listDoctors)
+        // console.log(this.state.listDoctors)
 
     }
 
@@ -141,7 +141,7 @@ class addOrdeleteDepartment extends Component {
         await this.setState({
             listDepartment: allDepartment.data
         })
-        console.log(this.state.listDepartment)
+        // console.log(this.state.listDepartment)
     }
 
     getListRooms = async () => {
@@ -263,7 +263,7 @@ class addOrdeleteDepartment extends Component {
     updateLimit = async (i) => {
         // console.log(this.state.listDoctors[i])
         let timetableId = this.state.listDoctors[i].timetableId
-        console.log(this.state.patientLimit)
+        // console.log(this.state.patientLimit)
         await axios.post("/updateLimit", {
             timetableId: timetableId,
             patientLimit: this.state.patientLimit,
@@ -272,7 +272,6 @@ class addOrdeleteDepartment extends Component {
             icon: "success",
         });
         await this.getDoctors()
-        console.log('Hi')
     }
 
     addDepartment = async () => {
@@ -287,7 +286,6 @@ class addOrdeleteDepartment extends Component {
             typeOfDepartment: ''
         })
         await this.getListDepartment()
-        console.log('suc')
     }
 
     addRooms = async () => {
@@ -306,7 +304,6 @@ class addOrdeleteDepartment extends Component {
             building: ''
         })
         await this.getListRooms()
-        console.log('suc')
     }
 
     deleteDoctors = async (i) => {
@@ -325,8 +322,6 @@ class addOrdeleteDepartment extends Component {
                     icon: "success",
                 });
             }
-
-            console.log('succ del')
         });
     }
 
@@ -347,8 +342,6 @@ class addOrdeleteDepartment extends Component {
                         icon: "success",
                     });
                 }
-
-                console.log('succ del')
             });
     }
 
@@ -369,8 +362,6 @@ class addOrdeleteDepartment extends Component {
                         icon: "success",
                     });
                 }
-
-                console.log('succ del')
             });
 
     }
@@ -391,7 +382,6 @@ class addOrdeleteDepartment extends Component {
             departmentValueId: ''
         })
         await this.getListAllDoctors()
-        console.log('succ')
     }
 
     setField = (field, value) => {
@@ -404,7 +394,6 @@ class addOrdeleteDepartment extends Component {
 
 
     render() {
-        console.log(this.state.departmentValueId)
         return (
             <div>
                 <Responsive  {...Responsive.onlyComputer}>
@@ -426,12 +415,10 @@ class addOrdeleteDepartment extends Component {
                             departmentValueId={this.state.departmentValueId}
                             allDepartments={this.state.allDepartments}
                             listDoctors={this.state.listDoctors}
-
                             patientLimit={this.state.patientLimit}
                             lastnameDoctor={this.state.lastnameDoctor}
                             employeeId={this.state.employeeId}
                             avgTimeDoctor={this.state.avgTimeDoctor}
-
                             todayItem={this.state.todayItem}
 
                             //method
@@ -466,12 +453,10 @@ class addOrdeleteDepartment extends Component {
                             departmentValueId={this.state.departmentValueId}
                             allDepartments={this.state.allDepartments}
                             listDoctors={this.state.listDoctors}
-
                             patientLimit={this.state.patientLimit}
                             lastnameDoctor={this.state.lastnameDoctor}
                             employeeId={this.state.employeeId}
                             avgTimeDoctor={this.state.avgTimeDoctor}
-
                             todayItem={this.state.todayItem}
 
                             //method

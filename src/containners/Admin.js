@@ -34,12 +34,12 @@ class Admin extends Component {
                 Username: this.state.Username,
                 Password: this.state.Password
             })
-            console.log(data.data)
+            // console.log(data.data)
             if (data.data.length === 0) {
                 this.setState({ errorUsername: { status: true, message: '' } })
 
             } else {
-                console.log(data.data[0])
+                // console.log(data.data[0])
                 localStorage.setItem('userData', JSON.stringify(data.data[0]))
                 this.props.history.push({
                     pathname: '/Main'
@@ -60,7 +60,6 @@ class Admin extends Component {
                 <br />
                 <br />
                 <center>
-
                     <Grid.Column style={{ maxWidth: '450px' }}>
                         <Segment color='blue'>
                             <Form onSubmit={this.submit}>
@@ -72,16 +71,13 @@ class Admin extends Component {
                                     error={this.state.errorUsername.status}
                                     value={this.state.Username}
                                     onChange={(e, { value }) => this.setState({ Username: value })} />
-
                                 <Form.Input fluid label='Password'
                                     name="Password"
                                     placeholder='Password'
                                     type="password"
                                     required
-
                                     value={this.state.Password}
                                     onChange={(e, { value }) => this.setState({ Password: value })} />
-
                                 <Message negative hidden={!this.state.errorUsername.status}>
                                     Username or Password does not match
                                 </Message>

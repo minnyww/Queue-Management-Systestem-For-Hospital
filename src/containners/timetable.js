@@ -15,9 +15,13 @@ import * as R from 'ramda'
 
 import axios from "./../lib/axios";
 import swal from 'sweetalert'
-import { Button, Form, List, Label, Dropdown, Header, Icon, Divider } from "semantic-ui-react";
+import {
+    Button, Form, List, Label, Dropdown, Header,
+    Icon, Divider, Responsive, Image, Card
+} from "semantic-ui-react";
 
 import ModalDetailTimetable from "../components/modalDetailTimetable";
+import error from './../img/drug.png'
 
 BigCalendar.momentLocalizer(moment);
 const Calendar = withDragAndDrop(BigCalendar);
@@ -87,7 +91,7 @@ class timetable extends Component {
             text: 'All',
             value: 0
         })
-        console.log(doctorsOption)
+        // console.log(doctorsOption)
         let doctorsOptionNoAll = this.dropdownDoctors(doctors);
 
         const roomsOption = this.dropdownRooms(rooms);
@@ -101,7 +105,7 @@ class timetable extends Component {
             roomId: doctors.data[0].roomId,
             loginName: userData
         })
-        console.log(this.state.loginName)
+        // console.log(this.state.loginName)
         // this.getTimetable()getTimetable
     }
 
@@ -146,7 +150,7 @@ class timetable extends Component {
         this.setState({
             events: appData,
         })
-        console.log(this.state.events)
+        // console.log(this.state.events)
     }
 
     getTimetable = async () => {
@@ -249,13 +253,13 @@ class timetable extends Component {
         var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
         var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
 
-        console.log(this.state.events[idx])
+        // console.log(this.state.events[idx])
         let result = this.state.events
             .filter(event => event.start.getDate() == updatedEvent.start.getDate()
                 && event.start.getMonth() == updatedEvent.start.getMonth()
                 && event.start.getHours() == updatedEvent.start.getHours()
                 && event.doctor === updatedEvent.doctor)
-        console.log("result", result)
+        // console.log("result", result)
         // debugger
         // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
 
@@ -264,11 +268,11 @@ class timetable extends Component {
             // date: checkDate
         })
         debugger
-        console.log(checkStatus.data)
+        // console.log(checkStatus.data)
         if (!checkStatus.data) {
             if (result.length == 0 && (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3)) {
                 // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
-                console.log("UDATE Q")
+                // console.log("UDATE Q")
                 nextEvents.splice(idx, 1, updatedEvent);
                 swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
                 this.setState({
@@ -286,7 +290,7 @@ class timetable extends Component {
             }
         }
         else if (checkStatus.data.length == []) {
-            console.log("UDATE Q")
+            // console.log("UDATE Q")
             nextEvents.splice(idx, 1, updatedEvent);
             swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
             this.setState({
@@ -317,7 +321,7 @@ class timetable extends Component {
             // open: true
         })
         debugger
-        console.log(new Date(this.state.Date).getMonth(), new Date().getMonth())
+        // console.log(new Date(this.state.Date).getMonth(), new Date().getMonth())
         if (new Date(this.state.Date).getDate() >= new Date().getDate()
             || new Date(this.state.Date).getMonth() > new Date().getMonth()
         ) {
@@ -329,13 +333,10 @@ class timetable extends Component {
                 `Cannot add timetable before Today`,
                 "warning");
         }
-        console.log(this.state.Date)
+        // console.log(this.state.Date)
     }
 
     FormAddTimetable = () => {
-        // if(this.state.doctors.length > 2){
-        //     this.state.doctors.pop()
-        // }
         // console.log(this.state.doctors)
         let tmp = ''
         tmp = <center>
@@ -401,7 +402,7 @@ class timetable extends Component {
         const currentDate = new Date(this.state.Date)
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
-        console.log(timeStart)
+        // console.log(timeStart)
 
         if (timeStart === '' || timeEnd === '' || doctorId === '' || roomValue === '') {
             swal("Cannot add Doctor to Timetable", {
@@ -443,7 +444,7 @@ class timetable extends Component {
         }
         await this.getEvents()
         await this.getTimetable()
-        console.log("เข้า DB");
+        // console.log("เข้า DB");
     }
 
     checkTimeFormat = time => {
@@ -469,10 +470,10 @@ class timetable extends Component {
     }
 
     openConfirm = (index) => {
-        console.log('เข้า Confirm')
+        // console.log('เข้า Confirm')
         let id = this.state.selectEvent
-        console.log(id)
-        console.log(this.state.events[index])
+        // console.log(id)
+        // console.log(this.state.events[index])
         let swl = ''
         swl = swal({
             title: "Are you sure?",
@@ -481,7 +482,7 @@ class timetable extends Component {
             dangerMode: true,
         })
             .then(async (willDelete) => {
-                console.log(this.state.events[index])
+                // console.log(this.state.events[index])
                 if (willDelete) {
                     await this.deleteTimetable(index)
                 }
@@ -490,49 +491,49 @@ class timetable extends Component {
     }
 
     deleteTimetable = async (index) => {
-        console.log("เข้า ลบ")
+        // console.log("เข้า ลบ")
         this.setState({
             openDetail: false,
         })
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
-        console.log(result[0])
+        // console.log(result[0])
 
         const checkStatus = await axios.post("/checkStatusDoctor", {
             doctorId: result[0].doctor,
         })
-        console.log(checkStatus.data)
+        // console.log(checkStatus.data)
 
         if (result[0].start.getDate() >= new Date().getDate() && !R.isEmpty(checkStatus.data)) {
-            console.log('เข้า')
+            // console.log('เข้า')
             debugger
             if (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3) {
-                console.log('เข้าใน')
+                // console.log('เข้าใน')
                 swal("Cannot Delete this doctor because has patient in room with this Doctor", {
                     icon: "warning",
                 });
             } else {
                 axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
                     .then(resp => {
-                        console.log('success')
+                        // console.log('success')
                         this.getEvents()
                         swal("Poof! Your imaginary file has been deleted!", {
                             icon: "success",
                         });
                     }).catch(err => {
-                        console.log('error')
+                        // console.log('error')
                     })
             }
         }
         else {
             axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
                 .then(resp => {
-                    console.log('success')
+                    // console.log('success')
                     this.getEvents()
                     swal("Poof! Your imaginary file has been deleted!", {
                         icon: "success",
                     });
                 }).catch(err => {
-                    console.log('error')
+                    // console.log('error')
                 })
         }
     }
@@ -658,10 +659,6 @@ class timetable extends Component {
     }
 
     updateTimetable = async () => {
-        console.log('timtableId ', this.state.selectEvent)
-        console.log('doctorId ', this.state.doctorId)
-        console.log('timeStart : ', this.state.timeStart, 'timeEnd : ', this.state.timeEnd)
-        console.log('Date : ', this.state.Date)
         var month = new Array(
             "Jan",
             "Feb",
@@ -691,7 +688,6 @@ class timetable extends Component {
 
         this.getEvents()
         this.getTimetable()
-        console.log('เข้า up')
         // let getDoctor = this.state.doctorId.split('/')
 
         await axios.post("/updateDoctorTimetable", {
@@ -712,7 +708,6 @@ class timetable extends Component {
     };
 
     chooseDoctor = async value => {
-        console.log(value)
         await this.getEvents()
         if (value === 0) {
             this.setState({
@@ -734,54 +729,120 @@ class timetable extends Component {
 
     render() {
         return (
-            <div >
-                <Headerbar
-                    logOut={this.logOut}
-                    loginName={this.state.loginName}
-                />
-                <DropdownQueue
-                    doctors={this.state.doctors}
-                    // departmentId = {this.state.departmentId}
-                    chooseDoctor={this.chooseDoctor}
-                />
-
-                <Modal
-                    center
-                    styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
-                    open={this.state.open}
-                    onClose={() => this.setField("open", false)}>
-                    {this.FormAddTimetable()}
-                </Modal>
-
-                <Modal
-                    center
-                    styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
-                    open={this.state.openDetail}
-                    onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
-                    <ModalDetailTimetable
-                        showDetailTimetableDescription={this.showDetailTimetableDescription} />
-                </Modal>
-                <center>
-                    {!this.state.loading &&
-                        <Calendar
-                            events={this.state.events}
-                            style={{
-                                height: '90vh',
-                                width: '95%',
-                                marginBottom: "5%",
-                                marginTop: "2%"
-                            }}
-                            selectable
-                            events={this.state.events}
-                            onEventDrop={this.moveEvent}
-                            resizable
-                            onEventResize={this.resizeEvent}
-                            defaultView={BigCalendar.Views.MONTH}
-                            defaultDate={this.state.date}
-                            onSelectEvent={e => this.showDetailTimetable(e)}
-                            onSelectSlot={this.handleSelect}
-                        />}
-                </center>
+            <div>
+                <Responsive  {...Responsive.onlyComputer}>
+                    <div >
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
+                        <DropdownQueue
+                            doctors={this.state.doctors}
+                            // departmentId = {this.state.departmentId}
+                            chooseDoctor={this.chooseDoctor}
+                        />
+                        <Modal
+                            center
+                            styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
+                            open={this.state.open}
+                            onClose={() => this.setField("open", false)}>
+                            {this.FormAddTimetable()}
+                        </Modal>
+                        <Modal
+                            center
+                            styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
+                            open={this.state.openDetail}
+                            onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+                            <ModalDetailTimetable
+                                showDetailTimetableDescription={this.showDetailTimetableDescription} />
+                        </Modal>
+                        <center>
+                            {!this.state.loading &&
+                                <Calendar
+                                    events={this.state.events}
+                                    style={{
+                                        height: '90vh',
+                                        width: '95%',
+                                        marginBottom: "5%",
+                                        marginTop: "2%"
+                                    }}
+                                    selectable
+                                    events={this.state.events}
+                                    onEventDrop={this.moveEvent}
+                                    resizable
+                                    onEventResize={this.resizeEvent}
+                                    defaultView={BigCalendar.Views.MONTH}
+                                    defaultDate={this.state.date}
+                                    onSelectEvent={e => this.showDetailTimetable(e)}
+                                    onSelectSlot={this.handleSelect}
+                                />}
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive  {...Responsive.onlyTablet}>
+                    <div >
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
+                        <DropdownQueue
+                            doctors={this.state.doctors}
+                            // departmentId = {this.state.departmentId}
+                            chooseDoctor={this.chooseDoctor}
+                        />
+                        <Modal
+                            center
+                            styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
+                            open={this.state.open}
+                            onClose={() => this.setField("open", false)}>
+                            {this.FormAddTimetable()}
+                        </Modal>
+                        <Modal
+                            center
+                            styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
+                            open={this.state.openDetail}
+                            onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+                            <ModalDetailTimetable
+                                showDetailTimetableDescription={this.showDetailTimetableDescription} />
+                        </Modal>
+                        <center>
+                            {!this.state.loading &&
+                                <Calendar
+                                    events={this.state.events}
+                                    style={{
+                                        height: '90vh',
+                                        width: '95%',
+                                        marginBottom: "5%",
+                                        marginTop: "2%"
+                                    }}
+                                    selectable
+                                    events={this.state.events}
+                                    onEventDrop={this.moveEvent}
+                                    resizable
+                                    onEventResize={this.resizeEvent}
+                                    defaultView={BigCalendar.Views.MONTH}
+                                    defaultDate={this.state.date}
+                                    onSelectEvent={e => this.showDetailTimetable(e)}
+                                    onSelectSlot={this.handleSelect}
+                                />}
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive {...Responsive.onlyMobile}>
+                    <Headerbar />
+                    <center>
+                        <Card>
+                            <Image src={error} />
+                            <Card.Content>
+                                <Card.Header>Don't Support</Card.Header>
+                                <Card.Meta>Queue Management System</Card.Meta>
+                                <Card.Description>Don't Support on mobile screen</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                            </Card.Content>
+                        </Card>
+                    </center>
+                </Responsive>
             </div>
         );
     }

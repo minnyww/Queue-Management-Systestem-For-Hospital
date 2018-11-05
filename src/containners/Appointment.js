@@ -8,13 +8,14 @@ import Modal from 'react-responsive-modal';
 import swal from 'sweetalert'
 import {
   Grid, Button, Form, List, Label,
-  Dropdown, Menu, Header, Icon, Divider, Message, Segment
+  Dropdown, Menu, Header, Icon, Divider, Message, Segment, Card, Responsive,Image
 } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
 
 import moment from "moment";
 import "./../css/Q.css";
+import error from './../img/drug.png'
 
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -44,9 +45,12 @@ class Appointment extends Component {
     queues: [],
     selectEvent: 0,
     errorHN: "",
+    errorGetName: '',
+    errorAdd: '',
     addSuccess: false,
     editStatus: false,
     loginName: '',
+    allPatient: [],
 
     //check Limit
     sumQueueCountLimit: 0,
@@ -55,6 +59,8 @@ class Appointment extends Component {
     departmentId: 0,
     roomId: 0,
     appointmentDepId: 0,
+    namePatient: '',
+    lastNamePatient: '',
 
     doctors: [{ key: "", text: "", value: "" }],
     //loading
@@ -92,7 +98,7 @@ class Appointment extends Component {
       month: date.month,
       departmentId: departmentId
     });
-
+    var dataPatient = await axios.get(`/getPatient`);
     this.setState({
       loading: false,
       events: appData,
@@ -101,7 +107,8 @@ class Appointment extends Component {
       nurseId: empId,
       departmentId,
       userType: type,
-      loginName: userData
+      loginName: userData,
+      allPatient: dataPatient.data,
     })
 
     const doctors = await axios.post(`/getListDoctor`, {
@@ -202,24 +209,24 @@ class Appointment extends Component {
     const nextEvents = [...events];
     nextEvents.splice(idx, 1, updatedEvent);
 
-    console.log(events, updatedEvent)
+    // console.log(events, updatedEvent)
     let result = events.filter(data => (data.title == updatedEvent.title
       && data.start.getDate() == updatedEvent.start.getDate()
       && data.start.getMonth() == updatedEvent.start.getMonth()
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
-    console.log(result)
+    // console.log(result)
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
       && data.Date === updatedEvent.start.getDate())
-    console.log('timetable count', countAppointment)
+    // console.log('timetable count', countAppointment)
 
     // let getSumQueue = await axios.get(`/getCountQueue/${updatedEvent.doctorId}`)
     let getSumQueue = await axios.post(`/getCountQueue`, {
       doctorId: updatedEvent.doctorId,
       date: new Date(this.state.Date)
     })
-    console.log(getSumQueue)
+    // console.log(getSumQueue)
     let getSumAppointment = await axios.post(`/getCountAppointment`, {
       doctorId: updatedEvent.doctorId,
       date: new Date(this.state.Date).getDate()
@@ -230,17 +237,17 @@ class Appointment extends Component {
     let sumAppointment = getSumAppointment.data[0].countAppointmentId
     //เอา count ของสองตารางมารวมกันเพื่อเช็คกับ limit ที่ตาราง timetable 
     let sumCount = sumQueue + sumAppointment
-    console.log(sumCount)
+    // console.log(sumCount)
 
     await this.checkCount(updatedEvent.doctorId)
-    console.log(this.state.doctorWithRemaining)
+    // console.log(this.state.doctorWithRemaining)
 
     //fail
     if (countAppointment[0]) {
-      console.log('no data')
+      // console.log('no data')
       if (!R.isEmpty(result) || result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
         //fail
-        console.log('cannot')
+        // console.log('cannot')
         swal("Cannot!", `HN: ${event.title} cannot move to  
         ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
@@ -248,7 +255,7 @@ class Appointment extends Component {
       }
       else {
         //success
-        console.log('success1')
+        // console.log('success1')
         swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
         var month = new Array(
           "Jan",
@@ -296,7 +303,7 @@ class Appointment extends Component {
     }
     else {
       //success
-      console.log('success2')
+      // console.log('success2')
       swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
       var month = new Array(
         "Jan",
@@ -378,7 +385,7 @@ class Appointment extends Component {
   }
 
   addToQueue = async (i) => {
-    console.log(this.state.selectEvent, new Date(this.state.Date), new Date())
+    // console.log(this.state.selectEvent, new Date(this.state.Date), new Date())
     const datas = await axios.post(`/getDataAppointment`, {
       appointmentId: this.state.selectEvent,
     })
@@ -392,7 +399,7 @@ class Appointment extends Component {
         HN: item.HN
       }
     })
-    console.log(getData)
+    // console.log(getData)
     const mergeData = await axios.post(`/getDataTimetable`, {
       date: getData[0].date,
       day: getData[0].day.toLowerCase(),
@@ -400,7 +407,7 @@ class Appointment extends Component {
       year: getData[0].year,
       doctorId: getData[0].doctorId
     })
-    console.log(mergeData)
+    // console.log(mergeData)
 
     const min = this.state.queues.filter(queue => {
       queue.HN === getData[0].HN;
@@ -413,7 +420,7 @@ class Appointment extends Component {
       const checks = checkHNDepartments.data.filter(
         check => check.HN === getData[0].HN
       );
-      console.log(checks)
+      // console.log(checks)
       if (checks.length === 0) {
         await axios.post("/addPatientQ", {
           roomId: mergeData.data[0].roomId,
@@ -434,72 +441,90 @@ class Appointment extends Component {
           "warning");
       }
     }
-    console.log('suusususus')
+    // console.log('suusususus')
   }
 
   addAppoinment = async () => {
 
     const date = this.pharseDate(new Date());
     const { events, startTime, endTime, HN, timetable, appointment } = this.state
-    // const currentDate = new Date(this.state.Date)
-    // const getDayDate = currentDate.getDate();
-    let tmp = this.state.appointmentDepId.split("/")
 
-    //check Count Limit 
-    let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
-      && data.Date === new Date(this.state.Date).getDate())
+    // console.log(this.state.appointmentDepId)
+    if (!R.isEmpty(this.state.appointmentDepId) || !this.state.appointmentDepId === 0) {
+      let tmp = this.state.appointmentDepId.split("/")
 
-    //check ว่า ใน วันนั้น มีการแอดเวลาซ้ำกันที่หมอเดียวกันหรือป่าว
-    let check = appointment.filter(data =>
-      // data.doctorId == tmp[0]
-      // && 
-      data.timeStart.substr(0, 5) == startTime
-      && data.date === new Date(this.state.Date).getDate())
-    console.log(check)
+      //check Count Limit 
+      let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
+        && data.Date === new Date(this.state.Date).getDate())
+      //check ว่า ใน วันนั้น มีการแอดเวลาซ้ำกันที่หมอเดียวกันหรือป่าว
+      let check = appointment.filter(data =>
+        // data.doctorId == tmp[0]
+        // && 
+        data.timeStart.substr(0, 5) == startTime
+        && data.date === new Date(this.state.Date).getDate())
+      // console.log(check)
 
-    let getSumQueue = await axios.post(`/getCountQueue`, {
-      doctorId: tmp[0],
-      date: new Date(this.state.Date)
-    })
-    console.log(getSumQueue)
-    let getSumAppointment = await axios.post(`/getCountAppointment`, {
-      doctorId: tmp[0],
-      date: new Date(this.state.Date).getDate()
-    })
-    //เอาค่า couunt ของตาราคิวมา
-    let sumQueue = getSumQueue.data[0].countQueueId
-    //เอาค่า couunt ของตาราง appointment มา 
-    let sumAppointment = getSumAppointment.data[0].countAppointmentId
-    //เอา count ของสองตารางมารวมกันเพื่อเช็คกับ limit ที่ตาราง timetable 
-    let sumCount = sumQueue + sumAppointment
-    console.log(sumCount)
+      let getSumQueue = await axios.post(`/getCountQueue`, {
+        doctorId: tmp[0],
+        date: new Date(this.state.Date)
+      })
+      // console.log(getSumQueue)
+      let getSumAppointment = await axios.post(`/getCountAppointment`, {
+        doctorId: tmp[0],
+        date: new Date(this.state.Date).getDate()
+      })
+      //เอาค่า couunt ของตาราคิวมา
+      let sumQueue = getSumQueue.data[0].countQueueId
+      //เอาค่า couunt ของตาราง appointment มา 
+      let sumAppointment = getSumAppointment.data[0].countAppointmentId
+      //เอา count ของสองตารางมารวมกันเพื่อเช็คกับ limit ที่ตาราง timetable 
+      let sumCount = sumQueue + sumAppointment
+      // console.log(sumCount)
 
+      var checkHNDepartments = await axios.get(
+        `/checkHNatDepartment/${this.state.departmentId}`
+      );
+      const checks = checkHNDepartments.data.filter(
+        check => check.HN === this.state.HN
+      );
 
-    if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
-      swal("Cannot !",
-        `Cannot add Appointment because doctor can't recieve more patient Or Appointment time is duplicate in other doctor`,
-        "warning");
+      if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
+        swal("Cannot !",
+          `Cannot add Appointment because doctor can't recieve more patient Or Appointment time is duplicate in other doctor`,
+          "warning");
+      }
+      else if (checks.length === 0) {
+        const data = await axios.post("/addAppointment", {
+          date: new Date(this.state.Date).getDate(),
+          day: date.day,
+          month: date.month,
+          year: date.year,
+          startTime: startTime,
+          endTime: endTime,
+          doctorId: tmp[0],
+          roomId: tmp[1],
+          HN
+        });
+        await this.setState({
+          open: false,
+          startTime: '',
+          endTime: ' ',
+          HN: '',
+          addSuccess: true,
+          errorAdd: { status: false, message: "" }
+        });
+        // console.log("เข้า DB");
+      }
+      else {
+        this.setState({
+          errorAdd: { status: true, message: "Cannot Add HN To Queue" }
+        });
+      }
     }
     else {
-      const data = await axios.post("/addAppointment", {
-        date: new Date(this.state.Date).getDate(),
-        day: date.day,
-        month: date.month,
-        year: date.year,
-        startTime: startTime,
-        endTime: endTime,
-        doctorId: tmp[0],
-        roomId: tmp[1],
-        HN
-      });
-      await this.setState({
-        open: false,
-        startTime: '',
-        endTime: ' ',
-        HN: '',
-        addSuccess: true,
-      });
-      console.log("เข้า DB");
+      swal("Cannot !",
+        `Cannot add Appointment`,
+        "warning");
     }
     await this.getEvents()
     await this.getAppointment()
@@ -520,7 +545,7 @@ class Appointment extends Component {
         year: date.year,
         departmentId: this.state.departmentId
       });
-      console.log(doctors)
+      // console.log(doctors)
       const doctorsOption = this.dropdownDoctors(doctors);
       this.setState({
         doctors: doctorsOption,
@@ -541,14 +566,14 @@ class Appointment extends Component {
   };
 
   showDetailAppointment = async (e) => {
-    console.log(e)
+    // console.log(e)
     this.setState({
       openDetail: true,
       selectEvent: e.id,
       Date: moment(e.start).format('YYYY-MM-DD'),
       HN: e.title
     })
-    console.log(this.state.HN)
+    // console.log(this.state.HN)
   };
 
   showPatientDescription = () => {
@@ -641,9 +666,7 @@ class Appointment extends Component {
                       onBlur={() => this.validateHN()}
 
                     />
-                    <Message positive hidden={!this.state.errorHN.status}>
-                      {this.state.errorHN.message}
-                    </Message>
+
                     <Form.Input
                       type="date"
                       fluid
@@ -744,7 +767,7 @@ class Appointment extends Component {
       //check couunt ว่าทั้งหมดมีเท่าไหร่ของหมดคนที่เืลือก Dropdown มีค่าเสมอ เอาตัวแปรไป .patientLimit
       let countAppointment = this.state.timetable.filter(data => data.doctorId == getDoctor[0]
         && data.Date === new Date(this.state.Date).getDate())
-      console.log('timetable', countAppointment)
+      // console.log('timetable', countAppointment)
 
       //ดึงค่า count จาก db มาเช็ค 
       let getSumQueue = await axios.post(`/getCountQueue`, {
@@ -762,15 +785,15 @@ class Appointment extends Component {
       sumAppointment = getSumAppointment.data[0].countAppointmentId
       //เอาสองค่ามารวมกัน เพื่อเช็คว่ามีค่ามากกว่า countAppointment.patientLimit ไหม ถ้ามากกว่าจะไม่ให้แอด 
       sumCount = sumQueue + sumAppointment
-      console.log('count ท้้งหมด', sumCount)
+      // console.log('count ท้้งหมด', sumCount)
 
       await this.checkCount(getDoctor[0])
-      console.log(this.state.doctorWithRemaining)
+      // console.log(this.state.doctorWithRemaining)
     } else {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
     }
 
-    console.log(sumCount, this.state.doctorWithRemaining.remaining)
+    // console.log(sumCount, this.state.doctorWithRemaining.remaining)
 
     if (this.state.HN == "" || this.state.startTime == ""
       || this.state.endTime == ""
@@ -784,7 +807,7 @@ class Appointment extends Component {
     else {
 
       swal("Success!", `HN: ${this.state.HN} was update  ${this.state.startTime}`, "success");
-      console.log('เข้า up')
+      // console.log('เข้า up')
       const data = await axios.post("/updateAppointment", {
         date: new Date(this.state.Date).getDate(),
         day: day[curr_date],
@@ -798,13 +821,13 @@ class Appointment extends Component {
       });
       await this.getEvents()
       await this.getAppointment()
-      console.log('data update' + data)
+      // console.log('data update' + data)
     }
-    console.log('out')
+    // console.log('out')
   }
 
   openConfirm = () => {
-    console.log('เข้า Confirm')
+    // console.log('เข้า Confirm')
     let swl = ''
     swl = swal({
       title: "Are you sure?",
@@ -820,7 +843,7 @@ class Appointment extends Component {
     return swl
   }
   getEvents = async () => {
-    console.log('เข้า get Eve')
+    // console.log('เข้า get Eve')
     var { data } = await axios.get(`/getAppointment/${this.state.departmentId}`)
     const appData = data.map(app => {
       return {
@@ -837,31 +860,54 @@ class Appointment extends Component {
   }
 
   deleteAppointment = () => {
-    console.log("เข้า ลบ")
+    // console.log("เข้า ลบ")
     this.setState({
       openDetail: false,
     })
     axios.delete(`/deleteAppointment/${this.state.selectEvent}`)
       .then(resp => {
-        console.log('success')
+        // console.log('success')
         this.getEvents()
         swal("Poof! Your imaginary file has been deleted!", {
           icon: "success",
         });
       }).catch(err => {
-        console.log('error')
+        // console.log('error')
       })
   }
 
 
   validateHN = async () => {
     if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
-      this.setState({
-        errorHN: { status: true, message: "Right" }
-      });
+      this.getName(this.state.HN);
     } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
       this.setState({
-        errorHN: { status: true, message: "HN Does not match" }
+        errorHN: { status: true, message: "HN Does not match" },
+        namePatient: "",
+        lastNamePatient: "",
+        errorGetName: { status: false, message: "" },
+        errorAdd: { status: false, message: "" }
+      });
+    }
+  };
+
+  getName = HN => {
+    const patient = this.state.allPatient.filter(data => data.HN === HN)[0];
+    if (patient) {
+      this.setState({
+        namePatient: patient.firstName + " ",
+        lastNamePatient: patient.lastName,
+        errorHN: { status: false, message: "" },
+        errorGetName: { status: false, message: "" },
+        errorAdd: { status: false, message: "" }
+      });
+    } else {
+      this.setState({
+        namePatient: "",
+        lastNamePatient: "",
+        errorGetName: { status: true, message: "" },
+        errorHN: { status: false, message: "" },
+        errorAdd: { status: false, message: "" }
       });
     }
   };
@@ -871,32 +917,12 @@ class Appointment extends Component {
   listDoctors = () => {
     const { timetable, doctorWithRemaining } = this.state
     let tmp = ''
-    // //count ของ queue
-    // console.log(sumQueueCountLimit)
-    // // if (this.state.addSuccess) {
     let getDoctor = this.state.appointmentDepId.toString().split('/')
-    // console.log(getDoctor)
-    // 
-    // let remaining = timetable.filter(data => data.doctorId == getDoctor[0] && data.Date === new Date(this.state.Date).getDate()).map(data => (data.patientLimit))
-    // console.log(remaining)
-
-    // let sumRemaining = remaining
-    // if (this.state.addSuccess) {
-    //   sumRemaining = remaining - 1
-    //   this.setState({
-    //     addSuccess: false
-    //   })
-    //   console.log(sumRemaining)
-    // }
-
     this.checkCount()
     if (!doctorWithRemaining[0]) {
-
     }
     else {
       tmp =
-        // filter(data => data.Date === new Date(this.state.Date).getDate())
-        // .map((data, index) => (
         <div >
           <Menu.Item>
             {doctorWithRemaining[0].firstname} {doctorWithRemaining[0].lastname}
@@ -908,9 +934,7 @@ class Appointment extends Component {
             </Label>
           </Menu.Item>
         </div>
-      // ))
     }
-    // }
     return tmp
   }
 
@@ -932,8 +956,9 @@ class Appointment extends Component {
         doctorWithRemaining: doctors.data
       })
     }
-    console.log(this.state.doctorWithRemaining)
+    // console.log(this.state.doctorWithRemaining)
   }
+
   // onEventResize = (type, { event, start, end, allDay }) => {
   //   this.setState(state => {
   //     state.events[0].start = start;
@@ -941,74 +966,168 @@ class Appointment extends Component {
   //     return { events: state.events };
   //   });
   // };
+
   logOut = () => {
     localStorage.removeItem('userData');
   }
 
   render() {
     return (
-      <div style={{ width: '100%' }}>
-        <Headerbar
-          loginName={this.state.loginName}
-          logOut={this.logOut}
-        />
-        <DropdownQueue />
-        <Modal
-          center
-          styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
-          open={this.state.open}
-          onClose={() => { this.setField("open", false) }}>
-          <FormAddAppointment
-            //state
-            events={this.state.events}
-            Date={this.state.Date}
-            doctorId={this.state.doctorId}
-            doctors={this.state.doctors}
-            currentDate={this.state.currentDate}
-            startTime={this.state.startTime}
-            endTime={this.state.endTime}
-            HN={this.state.HN}
-            errorHN={this.state.errorHN}
-            //method
-            setField={this.setField}
-            addAppoinment={this.addAppoinment}
-            checkTimeFormat={this.checkTimeFormat}
-            validateHN={this.validateHN}
-            listDoctors={this.listDoctors}
-            // chooseDoctor={this.chooseDoctor}
-            checkCount={this.checkCount}
-          />
+      <div>
+        <div style={{ width: '100%' }}>
+          <Responsive  {...Responsive.onlyComputer}>
+            <Headerbar
+              loginName={this.state.loginName}
+              logOut={this.logOut}
+            />
+            <DropdownQueue />
+            <Modal
+              center
+              styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
+              open={this.state.open}
+              onClose={() => { this.setField("open", false) }}>
+              <FormAddAppointment
+                //state
+                events={this.state.events}
+                Date={this.state.Date}
+                doctorId={this.state.doctorId}
+                doctors={this.state.doctors}
+                currentDate={this.state.currentDate}
+                startTime={this.state.startTime}
+                endTime={this.state.endTime}
+                HN={this.state.HN}
+                errorHN={this.state.errorHN}
+                errorGetName={this.state.errorGetName}
+                errorAdd={this.state.errorAdd}
+                namePatient={this.state.namePatient}
+                lastNamePatient={this.state.lastNamePatient}
+                //method
+                setField={this.setField}
+                addAppoinment={this.addAppoinment}
+                checkTimeFormat={this.checkTimeFormat}
+                validateHN={this.validateHN}
+                listDoctors={this.listDoctors}
+                // chooseDoctor={this.chooseDoctor}
+                checkCount={this.checkCount}
+              />
 
-        </Modal>
-        <Modal
-          center
-          styles={{ modal: { width: this.state.editStatus ? 800 : 400, top: "20%", borderTop: '6px solid #00b5ad' } }}
-          open={this.state.openDetail}
-          onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
-          <ModalDetailAppointment
-            showPatientDescription={this.showPatientDescription} />
-        </Modal>
-        <center>
-          {!this.state.loading &&
-            <DragAndDropCalendar
-              events={this.state.events}
-              style={{
-                height: '90vh',
-                width: '95%',
-                marginBottom: "5%",
-                marginTop: "2%"
-              }}
-              selectable
-              events={this.state.events}
-              onEventDrop={this.moveEvent}
-              resizable
-              onEventResize={this.onEventResize}
-              defaultView={BigCalendar.Views.MONTH}
-              defaultDate={this.state.date}
-              onSelectEvent={e => this.showDetailAppointment(e)}
-              onSelectSlot={this.handleSelect}
-            />}
-        </center>
+            </Modal>
+            <Modal
+              center
+              styles={{ modal: { width: this.state.editStatus ? 800 : 400, top: "20%", borderTop: '6px solid #00b5ad' } }}
+              open={this.state.openDetail}
+              onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+              <ModalDetailAppointment
+                showPatientDescription={this.showPatientDescription} />
+            </Modal>
+            <center>
+              {!this.state.loading &&
+                <DragAndDropCalendar
+                  events={this.state.events}
+                  style={{
+                    height: '90vh',
+                    width: '95%',
+                    marginBottom: "5%",
+                    marginTop: "2%"
+                  }}
+                  selectable
+                  events={this.state.events}
+                  onEventDrop={this.moveEvent}
+                  resizable
+                  onEventResize={this.onEventResize}
+                  defaultView={BigCalendar.Views.MONTH}
+                  defaultDate={this.state.date}
+                  onSelectEvent={e => this.showDetailAppointment(e)}
+                  onSelectSlot={this.handleSelect}
+                />}
+            </center>
+          </Responsive>
+        </div>
+
+        <div style={{ width: '100%' }}>
+          <Responsive  {...Responsive.onlyTablet}>
+            <Headerbar
+              loginName={this.state.loginName}
+              logOut={this.logOut}
+            />
+            <DropdownQueue />
+            <Modal
+              center
+              styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
+              open={this.state.open}
+              onClose={() => { this.setField("open", false) }}>
+              <FormAddAppointment
+                //state
+                events={this.state.events}
+                Date={this.state.Date}
+                doctorId={this.state.doctorId}
+                doctors={this.state.doctors}
+                currentDate={this.state.currentDate}
+                startTime={this.state.startTime}
+                endTime={this.state.endTime}
+                HN={this.state.HN}
+                errorHN={this.state.errorHN}
+                errorGetName={this.state.errorGetName}
+                errorAdd={this.state.errorAdd}
+                namePatient={this.state.namePatient}
+                lastNamePatient={this.state.lastNamePatient}
+                //method
+                setField={this.setField}
+                addAppoinment={this.addAppoinment}
+                checkTimeFormat={this.checkTimeFormat}
+                validateHN={this.validateHN}
+                listDoctors={this.listDoctors}
+                // chooseDoctor={this.chooseDoctor}
+                checkCount={this.checkCount}
+              />
+
+            </Modal>
+            <Modal
+              center
+              styles={{ modal: { width: this.state.editStatus ? 800 : 400, top: "20%", borderTop: '6px solid #00b5ad' } }}
+              open={this.state.openDetail}
+              onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+              <ModalDetailAppointment
+                showPatientDescription={this.showPatientDescription} />
+            </Modal>
+            <center>
+              {!this.state.loading &&
+                <DragAndDropCalendar
+                  events={this.state.events}
+                  style={{
+                    height: '90vh',
+                    width: '95%',
+                    marginBottom: "5%",
+                    marginTop: "2%"
+                  }}
+                  selectable
+                  events={this.state.events}
+                  onEventDrop={this.moveEvent}
+                  resizable
+                  onEventResize={this.onEventResize}
+                  defaultView={BigCalendar.Views.MONTH}
+                  defaultDate={this.state.date}
+                  onSelectEvent={e => this.showDetailAppointment(e)}
+                  onSelectSlot={this.handleSelect}
+                />}
+            </center>
+          </Responsive>
+        </div>
+        <Responsive {...Responsive.onlyMobile}>
+          <Headerbar />
+          <center>
+            <Card>
+              <Image src={error} />
+              <Card.Content>
+                <Card.Header>Don't Support</Card.Header>
+                <Card.Meta>Queue Management System</Card.Meta>
+                <Card.Description>Don't Support on mobile screen</Card.Description>
+              </Card.Content>
+              <Card.Content extra>
+              </Card.Content>
+            </Card>
+          </center>
+        </Responsive>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./../css/Q.css";
 
-import { Grid, Button, Form, Label, Dropdown, Message, Menu, Input } from "semantic-ui-react";
+import { Grid, Button, Form, Label, Dropdown, Message, Menu, Input ,List} from "semantic-ui-react";
 const formAddAppointment = props => {
   return (
     <div>
@@ -34,9 +34,23 @@ const formAddAppointment = props => {
                 onBlur={() => props.validateHN()}
 
               />
-              <Message positive hidden={!props.errorHN.status}>
-                {props.errorHN.message}
+              <Message negative hidden={!props.errorHN.status}>
+                HN Does not match
+                    </Message>
+              <Message negative hidden={!props.errorGetName.status}>
+                Not have in databse
+                    </Message>
+              <Message negative hidden={!props.errorAdd.status}>
+                Cannot add to Queue
               </Message>
+              <List>
+                <List.Item>
+                  <List.Content style={{ fontSize: '16px' }}>
+                    Name: {props.namePatient}
+                    {props.lastNamePatient}
+                  </List.Content>
+                </List.Item>
+              </List>
               <Form.Input
                 type="date"
                 disabled

@@ -6,11 +6,11 @@ const headerbar = (props) => (
   <Segment raised inverted clearing color='blue' style={{ borderRadius: '1px', height: '55px ', width: '100%' }}>
     <Header as='h2' floated='left'>Queue Management System</Header>
     {R.isEmpty(props.loginName) || !props.loginName ? '' :
-      <p style={{ float: 'right', marginTop: '3px' }}>
+      <p style={{ float: 'right', marginTop: '3px', fontWeight: '100' }}>
         Welcome : {props.loginName.firstname} {props.loginName.lastname}<Link to={"/Admin"}><Label
           style={{ marginLeft: '10px' }}
           onClick={() => props.logOut()}
-          basic color='red'>Log out
+          color='teal'>Log out
         </Label>
         </Link>
       </p>

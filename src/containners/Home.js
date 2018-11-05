@@ -85,7 +85,7 @@ class Home extends Component {
       dataPhoneNumber: dataPhone.data[0].phonenumber
     })
 
-    console.log(this.state.allStepQueue)
+    // console.log(this.state.allStepQueue)
     this.cutPhoneNumber();
     this.setState({
       recipient: this.cutPhoneNumber()
@@ -169,21 +169,21 @@ class Home extends Component {
   sendNotification = () => {
     let tmp = "";
     tmp = this.state.queueData.queueId - this.state.queueData.currentQueue
-    console.log(tmp)
+    // console.log(tmp)
     if (tmp === 0) {
-      console.log("ถึงคิว")
+      // console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
       this.setState({ textmessage: "ถึงคิว" })
     } else if (tmp === 1) {
-      console.log("เหลืออีก 1 คิว")
+      // console.log("เหลืออีก 1 คิว")
       NotificationManager.warning('เหลืออีก 1 คิว')
       this.setState({ textmessage: "เหลืออีก 1 คิว" })
     } else if (tmp === 3) {
-      console.log("เหลืออีก 3 คิว")
+      // console.log("เหลืออีก 3 คิว")
       NotificationManager.warning('เหลืออีก 3 คิว')
       this.setState({ textmessage: "เหลืออีก 3 คิว" })
     } else if (tmp === 5) {
-      console.log("เหลืออีก 5 คิว")
+      // console.log("เหลืออีก 5 คิว")
       NotificationManager.warning('เหลืออีก 5 คิว')
       this.setState({ textmessage: "เหลืออีก 5 คิว" })
     }
@@ -197,16 +197,15 @@ class Home extends Component {
         recipient: recipient,
         textmessage: textmessage
       })
-      console.log(resp)
+      // console.log(resp)
     } else {
-      console.log('ไม่มีคิว')
+      // console.log('ไม่มีคิว')
     }
 
   }
 
   render() {
-
-    console.log("state", this.state)
+    // console.log("state", this.state)
     return (
       <div>
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>

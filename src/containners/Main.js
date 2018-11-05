@@ -29,7 +29,6 @@ class Main extends Component {
     }
 
     render() {
-        console.log(this.state.loginName)
         return (
             <div>
                 <Responsive  {...Responsive.onlyComputer}>
