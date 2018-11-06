@@ -1,68 +1,84 @@
 import React, { Component } from "react";
-import { Button, Grid, Icon } from "semantic-ui-react";
+import { Button, Grid, Icon, Card, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import surgeon from './../img/surgeon.png'
+import nurseAppointment from './../img/nurseAppointment.png'
+import medicalHistory from './../img/medical-history.png'
+import flask from './../img/flask.png'
+import "./../css/Q.css";
+
 const mainButton = props => {
     return (
         <div>
             <center>
-                <Grid centered>
-                    <Grid.Row columns={4}>
-                        <Grid.Column>
-                            <Link to={"/Adminhome"}>
-                                <Button
-                                    style={{
-                                        height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '300px',
-                                        marginRight: '5px'
-                                    }}
-                                    size="massive"
-                                    color='blue'
-                                ><Icon className='time' />Queue Management</Button>
+                <Grid>
+                    <Grid.Row style={{ paddingBottom: '0px', paddingTop: '0px' }}>
+                        <Grid.Column width={2}></Grid.Column>
+                        <Grid.Column width={6} >
+                            <Link to={"/Adminhome"} style={{ height: '100px' }}>
+                                <Image src={surgeon} style={{ height: '150px' }} circular />
+                                <Card link >
+                                    <Card.Content>
+                                        <Card.Header>Queue Management </Card.Header>
+                                        <Card.Description>
+                                            <Button basic color='teal'
+                                                content='Queue Management ' icon='right arrow'
+                                                labelPosition='right'>
+                                            </Button></Card.Description>
+                                    </Card.Content>
+                                </Card>
                             </Link>
-                        </Grid.Column>
-                        <Grid.Column>
+                        </Grid.Column >
+                        <Grid.Column width={6}>
                             <Link to={"/Appointment"}>
-                                <Button
-                                    style={{
-                                        height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '300px',
-                                        marginLeft: '5px'
-                                    }}
-
-                                    size="massive"
-                                    color='teal'
-                                ><Icon className='address book' />Appointment</Button>
+                                <Image src={nurseAppointment} style={{ height: '150px' }} circular />
+                                <Card link >
+                                    <Card.Content>
+                                        <Card.Header>Appointment Management</Card.Header>
+                                        <Card.Description>
+                                            <Button basic color='teal'
+                                                content='Appointment Management' icon='right arrow'
+                                                labelPosition='right'>
+                                            </Button></Card.Description>
+                                    </Card.Content>
+                                </Card>
                             </Link>
                         </Grid.Column>
+                        <Grid.Column width={2}></Grid.Column>
                     </Grid.Row>
-                    <Grid.Row columns={4}>
-                        <Grid.Column>
+                    <Grid.Row >
+                        <Grid.Column width={2}></Grid.Column>
+                        <Grid.Column width={6}>
                             <Link to={"/Timetable"}>
-                                <Button
-                                    style={{
-                                        height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '300px',
-                                        marginRight: '5px'
-                                    }}
-                                    size="massive"
-                                    color='green'
-                                ><Icon className='calendar alternate outline' />Timetable Management</Button>
+                                <Image src={medicalHistory} style={{ height: '150px' }} circular />
+                                <Card link >
+                                    <Card.Content>
+                                        <Card.Header>Timetable Management</Card.Header>
+                                        <Card.Description>
+                                            <Button basic color='teal'
+                                                content='Timetable Management' icon='right arrow'
+                                                labelPosition='right'>
+                                            </Button></Card.Description>
+                                    </Card.Content>
+                                </Card>
                             </Link>
                         </Grid.Column>
-                        <Grid.Column>
+                        <Grid.Column width={6}>
                             <Link to={"/AddOrDeleteDepartment"}>
-                                <Button
-                                    disabled
-                                    style={{
-                                        height: '250px', boxShadow: '5px 6px 5px 0px rgba(224,220,224,1)',
-                                        width: '300px',
-                                        marginLeft: '5px'
-                                    }}
-                                    size="massive"
-                                    color='orange'
-                                ><Icon className='edit outline' />Department and Room Management</Button>
+                                <Image src={flask} style={{ height: '150px' }} circular />
+                                <Card link >
+                                    <Card.Content>
+                                        <Card.Header>Admin Management</Card.Header>
+                                        <Card.Description>
+                                            <Button basic color='teal'
+                                                content='Admin Management' icon='right arrow'
+                                                labelPosition='right'>
+                                            </Button></Card.Description>
+                                    </Card.Content>
+                                </Card>
                             </Link>
                         </Grid.Column>
+                        <Grid.Column width={2}></Grid.Column>
                     </Grid.Row>
                 </Grid>
             </center>

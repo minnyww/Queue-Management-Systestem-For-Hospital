@@ -2,7 +2,9 @@
 
 #box {
   overflow-y: scroll;
-  height: 230px;
+  /* height: 30%; */
+  max-height:   300px;
+  min-height:  300px;
   background-color: white;
 }
 #boxshow {
@@ -11,7 +13,9 @@
 /* ของ Labwait.js */
 #boxLab {
   overflow-y: scroll;
-  height: 230px;
+  /* height: 40%; */
+  max-height:   300px;
+  min-height:  300px;
   background-color: white;
 }
 
@@ -47,7 +51,9 @@ span.rbc-btn-group {
 .rbc-month-view {
   background-color: white;
 }
-
+.rbc-event {
+  background-color: #00b5ad !important;
+}
 /* hiiden scrollbar */
 ::-webkit-scrollbar {
   display: none;
@@ -62,6 +68,19 @@ span.rbc-btn-group {
   background: #00a39b !important;
 }
 
+.ui.secondary.menu .active.item {
+  -webkit-box-shadow: none ;
+  box-shadow: none;
+  background: rgb(0, 181, 173)!important;
+  color: rgb(255, 255, 255)!important;
+  border-radius: .28571429rem!important;
+  padding: 8px!important;
+}
+
+i.right.arrow.icon {
+  background-color: white !important;
+  border: 1px solid #00b5ad;
+}
 /* .rbc-event {
   padding: 2px 5px;
   background-color: #0c8a84;

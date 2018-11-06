@@ -13,7 +13,7 @@ const showContentForm = props => {
     let tmp = ''
     if (props.activeItem === 'department') {
         tmp = (<div>
-            <Segment attached='bottom' color='teal' >
+            <Segment attached='bottom' color='teal'>
                 <Header>Add Department</Header>
                 <Form>
                     {/* <Form.Group widths='equal'> */}
@@ -37,7 +37,7 @@ const showContentForm = props => {
                 <br />
                 <center>
                     <Button
-                        color='blue'
+                        color='teal'
                         onClick={() => {
                             props.addDepartment();
                         }}> Add
@@ -52,10 +52,11 @@ const showContentForm = props => {
 
 const showContent = props => {
     let tmp = "";
+    //show  All Department or All Room 
     if (props.activeItem === 'department' || props.activeItem === 'rooms') {
         tmp = (<div>
             <Segment color='blue' style={{ maxHeight: '200%' }}>
-                <Header>List Of Department</Header>
+                <Header>{props.activeItem === 'department' ? 'List Of Departments' : 'List Of Rooms'}</Header>
                 <List animated verticalAlign='middle' divided relaxed='very' >
                     {props.activeItem === 'department' ? props.showAllDepartment() : props.showAllRoom()}
                 </List>
@@ -63,12 +64,29 @@ const showContent = props => {
         </div>
         )
     }
+    //show All Doctor
     else if (props.activeItem === 'doctors') {
         tmp = (<div>
             <Segment color='blue' style={{ maxHeight: '200%' }}>
-                <Header>List Of Department</Header>
+                <Header>List Of Doctors</Header>
                 <List animated verticalAlign='middle' divided relaxed='very' >
-                    {props.showAllDoctorsLimit()}
+                    <Menu secondary>
+                        <Menu.Item
+                            active={props.todayItem === 'today' ? true : false}
+                            onClick={() => {
+                                props.setField('todayItem', 'today');
+                            }}>
+                            Today
+                        </Menu.Item>
+                        <Menu.Item
+                            active={props.todayItem === 'all' ? true : false}
+                            onClick={() => {
+                                props.setField('todayItem', 'all');
+                            }}>
+                            All
+                        </Menu.Item>
+                    </Menu>
+                    {props.todayItem === 'today' ? props.showAllDoctorsLimit() : props.showDoctors()}
                 </List>
             </Segment>
         </div>
@@ -78,35 +96,10 @@ const showContent = props => {
     return tmp;
 };
 
-// const showAllDoctors = props => {
-//     let tmp = ''
-//     if (props.activeItem === 'doctors') {
-//         let tmp = ''
-//         const datas = props.listDoctors
-//         tmp = datas.map((data, i) => (
-//             < List.Item key={i}>
-//                 <List.Content floated='right'>
-//                     <Button color='red' size='mini'
-//                         onClick={() => {
-//                             // this.deleteRoom(i);
-//                         }}> Delete
-//                     </Button>
-//                 </List.Content>
-//                 <Icon name='building' color='blue' />
-//                 <List.Content>
-//                     <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
-//                     <List.Header>Room : {data.roomId}</List.Header>
-//                 </List.Content>
-//             </List.Item >
-//         ))
-//         return tmp
-//     }
-//     return tmp
-// }
-
 const showFormRoom = props => {
     let tmp = "";
     if (props.activeItem === 'rooms') {
+        // Form Add Room
         tmp = (<div>
             <Segment attached='bottom' color='teal' >
                 <Header>Add Room</Header>
@@ -119,6 +112,8 @@ const showFormRoom = props => {
                             label='Room Number'
                             placeholder='Room Number'
                             onChange={(e, { value }) => props.setField("roomNumber", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Input}
@@ -135,6 +130,8 @@ const showFormRoom = props => {
                             label='Floor'
                             placeholder='Floor'
                             onChange={(e, { value }) => props.setField("floor", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Field
                             required
                             control={Select}
@@ -148,7 +145,7 @@ const showFormRoom = props => {
                 <br />
                 <center>
                     <Button
-                        color='blue'
+                        color='teal'
                         onClick={() => {
                             props.addRooms();
                         }}> Add
@@ -156,7 +153,71 @@ const showFormRoom = props => {
                 </center>
             </Segment>
         </div>
-        );
+        )
+        // Form Add Doctor
+    } else if (props.activeItem === 'doctors') {
+        tmp = (<div>
+            <Segment attached='bottom' color='teal' >
+                <Header>Add Doctor</Header>
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.roomNumber}
+                            label='Firstname'
+                            placeholder='Firstname'
+                            onChange={(e, { value }) => props.setField("firstnameDoctor", value)} />
+
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.building}
+                            label='Lastname'
+                            placeholder='Lastname'
+                            onChange={(e, { value }) => props.setField("lastnameDoctor", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.floor}
+                            label='Employee Id'
+                            placeholder='Employee Id'
+                            onChange={(e, { value }) => props.setField("employeeId", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.floor}
+                            label='Average Time'
+                            placeholder='Average Time'
+                            onChange={(e, { value }) => props.setField("avgTimeDoctor", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Select}
+                            // value={props.departmentValueId}
+                            label='Choose Department'
+                            options={props.allDepartments}
+                            placeholder='Choose Department'
+                            onChange={(e, { value }) => props.setField("departmentValueId", value)} />
+                    </Form.Group>
+                </Form>
+                <center>
+                    <Button
+                        color='teal'
+                        onClick={() => {
+                            props.addDoctors();
+                        }}> Add
+                </Button>
+                </center>
+            </Segment>
+        </div>)
     }
     return tmp;
 };
@@ -167,12 +228,13 @@ const formManageDepartment = props => {
     return (
         <div>
             <Grid centered style={{
-                marginTop: "2.5%",
+                // marginTop: "1.5%",
             }}>
                 <Header as='h2' color='teal'>Department Management</Header>
-                <Grid.Row stretched >
-                    <Grid.Column width={3} style={{ maxHeight: '60%', minHeight: '60%', height: 450 }}>
-                        <Menu pointing vertical>
+                <Grid.Row stretched style={{ paddingRight: '5%', paddingLeft: '3%' }}>
+                    <Grid.Column width={4}
+                        style={{ maxHeight: '250px', minHeight: '150px', height: 450, }} >
+                        <Menu pointing vertical color='teal'>
                             <Menu.Item
                                 name='Add or Delete Department'
                                 onClick={() => {
@@ -199,48 +261,13 @@ const formManageDepartment = props => {
                             </Menu.Item>
                         </Menu>
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ maxHeight: '80%', minHeight: '80%', overflowY: 'scroll', }}>
+                    <Grid.Column width={6}
+                        style={{ maxHeight: '400px', minHeight: '400px', overflowY: 'scroll', }}>
                         {showContent(props)}
-                        {/* <Segment color='blue' style={{ maxHeight: '200%' }}>
-                            <Header>List Of Department</Header>
-                            <List animated verticalAlign='middle' divided relaxed='very' >
-                                {props.showAllDepartment()}
-                            </List>
-                        </Segment> */}
                     </Grid.Column>
-                    <Grid.Column width={6} style={{ width: "50%", height: '60%' }}>
+                    <Grid.Column width={6} style={{ height: '60%', }}>
                         {showContentForm(props)}
                         {showFormRoom(props)}
-                        {/* {showAllDoctors(props)} */}
-                        {/* <Segment attached='bottom' color='teal' >
-                            <Header>Add Department</Header>
-                            <Form>
-                                <Form.Field
-                                    required
-                                    control={Input}
-                                    value={props.departmentName}
-                                    label='Department Name'
-                                    placeholder='Department Name'
-                                    onChange={(e, { value }) => props.setField("departmentName", value)} />
-                                <Form.Field
-                                    required
-                                    control={Select}
-                                    value={props.typeOfDepartment}
-                                    label='Choose Department Or Lab type'
-                                    options={departmentOption}
-                                    placeholder='Choose Department Or Lab type'
-                                    onChange={(e, { value }) => props.setField("typeOfDepartment", value)} />
-                            </Form>
-                            <br />
-                            <center>
-                                <Button
-                                    color='blue'
-                                    onClick={() => {
-                                        props.addDepartment();
-                                    }}> Add
-                                </Button>
-                            </center>
-                        </Segment> */}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

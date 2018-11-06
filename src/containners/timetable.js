@@ -11,12 +11,17 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
 import BigCalendar from "react-big-calendar";
 import Modal from 'react-responsive-modal';
+import * as R from 'ramda'
 
 import axios from "./../lib/axios";
 import swal from 'sweetalert'
-import { Button, Form, List, Label, Dropdown, Header, Icon, Divider } from "semantic-ui-react";
+import {
+    Button, Form, List, Label, Dropdown, Header,
+    Icon, Divider, Responsive, Image, Card
+} from "semantic-ui-react";
 
 import ModalDetailTimetable from "../components/modalDetailTimetable";
+import error from './../img/drug.png'
 
 BigCalendar.momentLocalizer(moment);
 const Calendar = withDragAndDrop(BigCalendar);
@@ -41,13 +46,16 @@ class timetable extends Component {
         roomId: 0,
         editStatus: false,
         doctorSelect: [{ key: "", text: "", value: "" }],
+        loginName: ''
 
     }
     componentWillMount = async () => {
         const { empId, departmentId } = JSON.parse(localStorage.getItem('userData'))
+        const userData = JSON.parse(localStorage.getItem('userData'))
         this.setState({
             departmentId: departmentId,
-            nurseId: empId
+            nurseId: empId,
+
         })
         const date = this.pharseDate();
         const { data } = await axios.post(`/getTimetable`, {
@@ -61,7 +69,8 @@ class timetable extends Component {
                 title: app.firstname + ' ' + app.lastname,
                 id: app.timetableId,
                 doctor: app.doctorId,
-                status: app.statusId
+                status: app.statusId,
+                roomId: app.roomId
             }
         })
 
@@ -71,8 +80,6 @@ class timetable extends Component {
             // year: date.year,
             departmentId: this.state.departmentId
         });
-
-
 
         const rooms = await axios.post(`/getListRoom`, {
             departmentId: this.state.departmentId
@@ -84,7 +91,7 @@ class timetable extends Component {
             text: 'All',
             value: 0
         })
-        console.log(doctorsOption)
+        // console.log(doctorsOption)
         let doctorsOptionNoAll = this.dropdownDoctors(doctors);
 
         const roomsOption = this.dropdownRooms(rooms);
@@ -96,9 +103,10 @@ class timetable extends Component {
             rooms: roomsOption,
             doctorSelect: doctorsOptionNoAll,
             roomId: doctors.data[0].roomId,
+            loginName: userData
         })
-        console.log(this.state.doctorSelect)
-        this.getTimetable()
+        // console.log(this.state.loginName)
+        // this.getTimetable()getTimetable
     }
 
     dropdownDoctors = doctors => {
@@ -135,12 +143,14 @@ class timetable extends Component {
                 title: app.firstname + ' ' + app.lastname,
                 id: app.timetableId,
                 doctor: app.doctorId,
-                status: app.statusId
+                status: app.statusId,
+                roomId: app.roomId
             }
         })
         this.setState({
             events: appData,
         })
+        // console.log(this.state.events)
     }
 
     getTimetable = async () => {
@@ -243,18 +253,44 @@ class timetable extends Component {
         var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
         var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
 
-        console.log(updatedEvent)
-        console.log(this.state.events)
+        // console.log(this.state.events[idx])
         let result = this.state.events
             .filter(event => event.start.getDate() == updatedEvent.start.getDate()
                 && event.start.getMonth() == updatedEvent.start.getMonth()
                 && event.start.getHours() == updatedEvent.start.getHours()
                 && event.doctor === updatedEvent.doctor)
-        console.log("result", result)
+        // console.log("result", result)
+        // debugger
+        // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
+
+        const checkStatus = await axios.post("/checkStatusDoctor", {
+            doctorId: updatedEvent.doctor,
+            // date: checkDate
+        })
         debugger
-        if (result.length == 0 && (updatedEvent.status !== 1 || updatedEvent.status !== 3)) {
-            // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
-            console.log("UDATE Q")
+        // console.log(checkStatus.data)
+        if (!checkStatus.data) {
+            if (result.length == 0 && (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3)) {
+                // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
+                // console.log("UDATE Q")
+                nextEvents.splice(idx, 1, updatedEvent);
+                swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
+                this.setState({
+                    events: nextEvents
+                });
+                await axios.post("/updateDoctorTimetable", {
+                    date: updatedEvent.start.getDate(),
+                    day: day[curr_date].toLowerCase(),
+                    month: month[curr_month].toLowerCase(),
+                    year: curr_year,
+                    timeStart: timeStart,
+                    timeEnd: timeEnd,
+                    timetableId: updatedEvent.id
+                });
+            }
+        }
+        else if (checkStatus.data.length == []) {
+            // console.log("UDATE Q")
             nextEvents.splice(idx, 1, updatedEvent);
             swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
             this.setState({
@@ -269,14 +305,11 @@ class timetable extends Component {
                 timeEnd: timeEnd,
                 timetableId: updatedEvent.id
             });
-            // }
-            // console.log('เข้า if ใน')
-            // swal("Cannot !",
-            //     `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
-            //     "warning");
-        } else {
+        }
+        else {
             swal("Cannot !",
-                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)}`,
+                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)} 
+                because doctor cant recieve more patient`,
                 "warning");
         }
     }
@@ -288,7 +321,10 @@ class timetable extends Component {
             // open: true
         })
         debugger
-        if (new Date(this.state.Date).getDate() >= new Date().getDate()) {
+        // console.log(new Date(this.state.Date).getMonth(), new Date().getMonth())
+        if (new Date(this.state.Date).getDate() >= new Date().getDate()
+            || new Date(this.state.Date).getMonth() > new Date().getMonth()
+        ) {
             this.setField("open", true)
         }
         else {
@@ -297,13 +333,10 @@ class timetable extends Component {
                 `Cannot add timetable before Today`,
                 "warning");
         }
-        console.log(this.state.Date)
+        // console.log(this.state.Date)
     }
 
     FormAddTimetable = () => {
-        // if(this.state.doctors.length > 2){
-        //     this.state.doctors.pop()
-        // }
         // console.log(this.state.doctors)
         let tmp = ''
         tmp = <center>
@@ -311,6 +344,7 @@ class timetable extends Component {
             <Form>
                 <Form.Input
                     style={{ width: '65%' }}
+                    disabled
                     type="date"
                     value={this.state.Date}
                     onChange={(e, { value }) => this.setField("Date", value)}
@@ -340,6 +374,14 @@ class timetable extends Component {
                 item
                 onChange={(e, { value }) => this.setField("doctorId", value)}
             />
+            <Dropdown
+                placeholder="Room"
+                options={this.state.rooms}
+                simple
+                selection
+                item
+                onChange={(e, { value }) => this.setField("roomValue", value)}
+            />
             <br />
             <Button
                 color='blue'
@@ -354,50 +396,55 @@ class timetable extends Component {
     }
 
     addTimetable = async () => {
-        const { events, timeStart, timeEnd, doctorId } = this.state
-        let tmp = doctorId.split("/")
+        // roomId: tmp[1],
+        const { events, timeStart, timeEnd, doctorId, roomValue } = this.state
+        // let tmp = doctorId.split("/")
         const currentDate = new Date(this.state.Date)
         const getDayDate = currentDate.getDate();
         const date = this.pharseDate();
-        // console.log(timeStart, this.state.Date)
+        // console.log(timeStart)
 
-        // const getDoctor = this.state.events.map(data => {
-        //     return {
-        //         doctor: data.doctor,
-        //         start: data.start
-        //     }
-        // })
-
-        let result = events.filter(data => data.doctor == tmp[0]
-            && data.start.getDate() === new Date(this.state.Date).getDate()
-            && data.timeStart === timeStart)
-        if (result.length == 0) {
-            const data = await axios.post("/addTimetable", {
-                Date: new Date(this.state.Date).getDate(),
-                day: date.day,
-                month: date.month,
-                Year: date.year,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
-                doctorId: tmp[0],
-                roomId: tmp[1],
-            });
-            await this.setState({
-                open: false,
-                startTime: '',
-                endTime: ' ',
-                HN: '',
-                Date: new Date(this.state.Date)
-            });
-        }
-        else {
-            swal("Cannot add in today", {
+        if (timeStart === '' || timeEnd === '' || doctorId === '' || roomValue === '') {
+            swal("Cannot add Doctor to Timetable", {
                 icon: "warning",
             });
         }
+        else {
+            let result = events.filter(data => data.doctor == doctorId
+                && data.roomId == roomValue
+                && data.start.getDate() === new Date(this.state.Date).getDate()
+                // && data.start.getMonth() === new Date(this.state.Date).getMonth()
+                && moment(data.start, "HH:mm").format("HH:mm") == timeStart
+            )
+            if (result.length == 0) {
+                const data = await axios.post("/addTimetable", {
+                    Date: new Date(this.state.Date).getDate(),
+                    day: date.day,
+                    month: date.month,
+                    Year: date.year,
+                    timeStart: timeStart,
+                    timeEnd: timeEnd,
+                    doctorId: doctorId,
+                    roomId: roomValue,
+                });
+                await this.setState({
+                    open: false,
+                    startTime: '',
+                    endTime: ' ',
+                    HN: '',
+                    Date: new Date(this.state.Date)
+                });
+            }
+
+            else {
+                swal("Cannot add Doctor to Timetable", {
+                    icon: "warning",
+                });
+            }
+        }
         await this.getEvents()
         await this.getTimetable()
-        console.log("เข้า DB");
+        // console.log("เข้า DB");
     }
 
     checkTimeFormat = time => {
@@ -423,10 +470,10 @@ class timetable extends Component {
     }
 
     openConfirm = (index) => {
-        console.log('เข้า Confirm')
+        // console.log('เข้า Confirm')
         let id = this.state.selectEvent
-        console.log(id)
-        console.log(this.state.events[index])
+        // console.log(id)
+        // console.log(this.state.events[index])
         let swl = ''
         swl = swal({
             title: "Are you sure?",
@@ -435,7 +482,7 @@ class timetable extends Component {
             dangerMode: true,
         })
             .then(async (willDelete) => {
-                console.log(this.state.events[index])
+                // console.log(this.state.events[index])
                 if (willDelete) {
                     await this.deleteTimetable(index)
                 }
@@ -443,43 +490,50 @@ class timetable extends Component {
         return swl
     }
 
-    deleteTimetable = (index) => {
-        console.log("เข้า ลบ")
+    deleteTimetable = async (index) => {
+        // console.log("เข้า ลบ")
         this.setState({
             openDetail: false,
         })
         let result = this.state.events.filter(data => data.id == this.state.selectEvent)
-        debugger
-        if (result[0].start.getDate() >= new Date().getDate()) {
-            console.log('เข้า')
-            if (result[0].status === 3 || result[0].status === 1) {
-                console.log('เข้าใน')
+        // console.log(result[0])
+
+        const checkStatus = await axios.post("/checkStatusDoctor", {
+            doctorId: result[0].doctor,
+        })
+        // console.log(checkStatus.data)
+
+        if (result[0].start.getDate() >= new Date().getDate() && !R.isEmpty(checkStatus.data)) {
+            // console.log('เข้า')
+            debugger
+            if (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3) {
+                // console.log('เข้าใน')
                 swal("Cannot Delete this doctor because has patient in room with this Doctor", {
                     icon: "warning",
                 });
             } else {
                 axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
                     .then(resp => {
-                        console.log('success')
+                        // console.log('success')
                         this.getEvents()
                         swal("Poof! Your imaginary file has been deleted!", {
                             icon: "success",
                         });
                     }).catch(err => {
-                        console.log('error')
+                        // console.log('error')
                     })
             }
         }
         else {
             axios.delete(`/deleteTimetable/${this.state.selectEvent}`)
                 .then(resp => {
-                    console.log('success')
+                    // console.log('success')
                     this.getEvents()
                     swal("Poof! Your imaginary file has been deleted!", {
                         icon: "success",
                     });
                 }).catch(err => {
-                    console.log('error')
+                    // console.log('error')
                 })
         }
     }
@@ -605,10 +659,6 @@ class timetable extends Component {
     }
 
     updateTimetable = async () => {
-        console.log('timtableId ', this.state.selectEvent)
-        console.log('doctorId ', this.state.doctorId)
-        console.log('timeStart : ', this.state.timeStart, 'timeEnd : ', this.state.timeEnd)
-        console.log('Date : ', this.state.Date)
         var month = new Array(
             "Jan",
             "Feb",
@@ -638,7 +688,6 @@ class timetable extends Component {
 
         this.getEvents()
         this.getTimetable()
-        console.log('เข้า up')
         // let getDoctor = this.state.doctorId.split('/')
 
         await axios.post("/updateDoctorTimetable", {
@@ -659,7 +708,6 @@ class timetable extends Component {
     };
 
     chooseDoctor = async value => {
-        console.log(value)
         await this.getEvents()
         if (value === 0) {
             this.setState({
@@ -675,55 +723,126 @@ class timetable extends Component {
         }
     };
 
-
+    logOut = () => {
+        localStorage.removeItem('userData');
+    }
 
     render() {
         return (
-            <div >
-                <Headerbar />
-                <DropdownQueue
-                    doctors={this.state.doctors}
-                    // departmentId = {this.state.departmentId}
-                    chooseDoctor={this.chooseDoctor}
-                />
-
-                <Modal
-                    center
-                    styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
-                    open={this.state.open}
-                    onClose={() => this.setField("open", false)}>
-                    {this.FormAddTimetable()}
-                </Modal>
-
-                <Modal
-                    center
-                    styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
-                    open={this.state.openDetail}
-                    onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
-                    <ModalDetailTimetable
-                        showDetailTimetableDescription={this.showDetailTimetableDescription} />
-                </Modal>
-                <center>
-                    {!this.state.loading &&
-                        <Calendar
-                            events={this.state.events}
-                            style={{
-                                height: '90vh',
-                                width: '95%',
-                                marginBottom: "5%",
-                                marginTop: "2%"
-                            }}
-                            selectable
-                            events={this.state.events}
-                            onEventDrop={this.moveEvent}
-                            resizable
-                            onEventResize={this.resizeEvent}
-                            defaultView={BigCalendar.Views.MONTH}
-                            defaultDate={this.state.date}
-                            onSelectEvent={e => this.showDetailTimetable(e)}
-                            onSelectSlot={this.handleSelect}
-                        />}
-                </center>
+            <div>
+                <Responsive  {...Responsive.onlyComputer}>
+                    <div >
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
+                        <DropdownQueue
+                            doctors={this.state.doctors}
+                            // departmentId = {this.state.departmentId}
+                            chooseDoctor={this.chooseDoctor}
+                        />
+                        <Modal
+                            center
+                            styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
+                            open={this.state.open}
+                            onClose={() => this.setField("open", false)}>
+                            {this.FormAddTimetable()}
+                        </Modal>
+                        <Modal
+                            center
+                            styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
+                            open={this.state.openDetail}
+                            onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+                            <ModalDetailTimetable
+                                showDetailTimetableDescription={this.showDetailTimetableDescription} />
+                        </Modal>
+                        <center>
+                            {!this.state.loading &&
+                                <Calendar
+                                    events={this.state.events}
+                                    style={{
+                                        height: '90vh',
+                                        width: '95%',
+                                        marginBottom: "5%",
+                                        marginTop: "2%"
+                                    }}
+                                    selectable
+                                    events={this.state.events}
+                                    onEventDrop={this.moveEvent}
+                                    resizable
+                                    onEventResize={this.resizeEvent}
+                                    defaultView={BigCalendar.Views.MONTH}
+                                    defaultDate={this.state.date}
+                                    onSelectEvent={e => this.showDetailTimetable(e)}
+                                    onSelectSlot={this.handleSelect}
+                                />}
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive  {...Responsive.onlyTablet}>
+                    <div >
+                        <Headerbar
+                            logOut={this.logOut}
+                            loginName={this.state.loginName}
+                        />
+                        <DropdownQueue
+                            doctors={this.state.doctors}
+                            // departmentId = {this.state.departmentId}
+                            chooseDoctor={this.chooseDoctor}
+                        />
+                        <Modal
+                            center
+                            styles={{ modal: { width: 450, top: '10%', borderRadius: '10px' } }}
+                            open={this.state.open}
+                            onClose={() => this.setField("open", false)}>
+                            {this.FormAddTimetable()}
+                        </Modal>
+                        <Modal
+                            center
+                            styles={{ modal: { width: 500, top: "20%", borderTop: '6px solid #00b5ad' } }}
+                            open={this.state.openDetail}
+                            onClose={() => { this.setField("openDetail", false), this.setField('editStatus', false) }}>
+                            <ModalDetailTimetable
+                                showDetailTimetableDescription={this.showDetailTimetableDescription} />
+                        </Modal>
+                        <center>
+                            {!this.state.loading &&
+                                <Calendar
+                                    events={this.state.events}
+                                    style={{
+                                        height: '90vh',
+                                        width: '95%',
+                                        marginBottom: "5%",
+                                        marginTop: "2%"
+                                    }}
+                                    selectable
+                                    events={this.state.events}
+                                    onEventDrop={this.moveEvent}
+                                    resizable
+                                    onEventResize={this.resizeEvent}
+                                    defaultView={BigCalendar.Views.MONTH}
+                                    defaultDate={this.state.date}
+                                    onSelectEvent={e => this.showDetailTimetable(e)}
+                                    onSelectSlot={this.handleSelect}
+                                />}
+                        </center>
+                    </div>
+                </Responsive>
+                <Responsive {...Responsive.onlyMobile}>
+                    <Headerbar />
+                    <center>
+                        <Card>
+                            <Image src={error} />
+                            <Card.Content>
+                                <Card.Header>Don't Support</Card.Header>
+                                <Card.Meta>Queue Management System</Card.Meta>
+                                <Card.Description>Don't Support on mobile screen</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                            </Card.Content>
+                        </Card>
+                    </center>
+                </Responsive>
             </div>
         );
     }

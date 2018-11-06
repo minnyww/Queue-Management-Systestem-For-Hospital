@@ -90,7 +90,7 @@ class Home extends Component {
       avgTime: time
     })
 
-    console.log(this.state.allStepQueue)
+    // console.log(this.state.allStepQueue)
     this.cutPhoneNumber();
     this.setState({
       recipient: this.cutPhoneNumber()
@@ -126,7 +126,7 @@ class Home extends Component {
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
-  
+
   showStepQueue = () => {
     const icon =
       [{ key: '1001', value: 'user doctor', text: 'user doctor' },
@@ -180,7 +180,7 @@ class Home extends Component {
     if(tmp>=0){
       console.log(tmp);
     if (tmp === 0) {
-      console.log("ถึงคิว")
+      // console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
       this.setState({ textmessage: "ถึงคิว" })
       this.sendText()
@@ -217,8 +217,7 @@ class Home extends Component {
   }
 
   render() {
-
-    console.log("state", this.state)
+    // console.log("state", this.state)
     return (
       <div>
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
