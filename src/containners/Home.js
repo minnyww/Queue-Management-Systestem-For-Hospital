@@ -82,7 +82,12 @@ class Home extends Component {
       queueData: tmp,
       allStepQueue: dataAllStepQueue,
       allAppointment: dataAllAppointment.data,
-      dataPhoneNumber: dataPhone.data[0].phonenumber
+      dataPhoneNumber: dataPhone.data[0].phonenumber,
+    })
+    console.log(this.state.queueData.avgtime);
+    const time = await this.state.queueData.avgtime
+    this.setState({
+      avgTime: time
     })
 
     // console.log(this.state.allStepQueue)
@@ -169,39 +174,46 @@ class Home extends Component {
   sendNotification = () => {
     let tmp = "";
     tmp = this.state.queueData.queueId - this.state.queueData.currentQueue
-    // console.log(tmp)
+    const time = this.state.avgTime
+    console.log(tmp)
+    console.log(time);
+    if(tmp>=0){
+      console.log(tmp);
     if (tmp === 0) {
       // console.log("ถึงคิว")
       NotificationManager.info('ถึงคิว')
       this.setState({ textmessage: "ถึงคิว" })
+      this.sendText()
     } else if (tmp === 1) {
-      // console.log("เหลืออีก 1 คิว")
-      NotificationManager.warning('เหลืออีก 1 คิว')
-      this.setState({ textmessage: "เหลืออีก 1 คิว" })
+      console.log("เหลืออีก 1 คิว"+time+' นาที')
+      NotificationManager.warning('เหลืออีก 1 คิว '+time+' นาที')
+      this.setState({ textmessage: "เหลืออีก 1 คิว "+time+' นาที' })
+      this.sendText()
     } else if (tmp === 3) {
-      // console.log("เหลืออีก 3 คิว")
-      NotificationManager.warning('เหลืออีก 3 คิว')
-      this.setState({ textmessage: "เหลืออีก 3 คิว" })
+      console.log("เหลืออีก 3 คิว"+time+' นาที')
+      NotificationManager.warning('เหลืออีก 3 คิว'+time+' นาที')
+      this.setState({ textmessage: "เหลืออีก 3 คิว "+time+' นาที' })
+      this.sendText()
     } else if (tmp === 5) {
-      // console.log("เหลืออีก 5 คิว")
-      NotificationManager.warning('เหลืออีก 5 คิว')
-      this.setState({ textmessage: "เหลืออีก 5 คิว" })
+      console.log("เหลืออีก 5 คิว"+time+' นาที')
+      NotificationManager.warning('เหลืออีก 5 คิว'+time+' นาที')
+      this.setState({ textmessage: "เหลืออีก 5 คิว "+time+' นาที' })
+      this.sendText()
     }
-    this.sendText()
+  }else{
+    console.log("ไม่ได้อยู่ในคิว")
+      NotificationManager.info('ไม่ได้อยู่ในคิว')
+  }
   }
   sendText = async () => {
     const recipient = this.state.recipient
     const textmessage = this.state.textmessage
-    if (textmessage) {
-      const resp = await axios.post('/sendText', {
-        recipient: recipient,
-        textmessage: textmessage
-      })
-      // console.log(resp)
-    } else {
-      // console.log('ไม่มีคิว')
-    }
 
+    const resp = await axios.post('/sendText', {
+      recipient: recipient,
+      textmessage: textmessage
+    })
+    console.log(resp)
   }
 
   render() {
