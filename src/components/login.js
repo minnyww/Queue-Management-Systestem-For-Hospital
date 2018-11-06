@@ -29,6 +29,10 @@ class Login extends Component {
     OTPfield:'',
     requestId:'',
     statusValidate:'',
+    pin1:'',
+    pin2:'',
+    pin3:'',
+    pin4:'',
     //modal
     open: false,
     openOTP: false,
@@ -106,45 +110,13 @@ class Login extends Component {
           }
         });
       }
-
-    // //Check API
-    // if (check === true) {
-    //   var data = await axios.post("/checkHN", {
-    //     HN: this.state.HN,
-    //     phoneNumber: this.state.phoneNumber
-    //   });
-    //   console.log(data.data);
-    //   if (data.data.length === 0) {
-    //     this.setState({
-    //       errorHN: { status: true, message: "HN Does not match" }
-    //     });
-    //   } else {
-    //     console.log(data.data[0]);
-    //     console.log("aaaaaa:", this.props);
-    //     localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
-    //     this.props.history.push({
-    //       pathname: "/Home",
-    //       state: {
-    //         HN: data.data[0].HN,
-    //         phoneNumber: data.data[0].phonenumber
-    //       }
-    //     });
-    //   }
-    // }
   }  
 
 };
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
-  // cutPhoneNumber = () => {
-  //   let phone = "";
-  //   var number = this.state.phoneNumber
-  //   let tmp = "+66"
-  //   phone = number.substr(1, 10)
-  //   let recipient = tmp + phone
-  //   return recipient;
-  // }
+  
   cutForOTP = () => {
     let phone = "";
     var number = this.state.phoneNumber
@@ -200,14 +172,6 @@ class Login extends Component {
     console.log(resp)
   }
   sendOTP = async () => {
-    // var text = "OTP: "
-    // var OTP = this.state.OTP
-    // var textOTP = text + OTP
-    // console.log(OTP)
-    // console.log(this.state.textmessage)
-    // console.log(this.state.recipient)
-    // console.log(textOTP)
-    // return textOTP;
     const recipient = this.state.recipient
     console.log("ส่งOTP");
     const reqOTP = await axios.post('/requestOTP',{
@@ -218,12 +182,13 @@ class Login extends Component {
     })
   }
   onChange = (event) => {
-    let otp = this.state.OTPfield + event.target.value
-    this.setState({OTPfield:otp})
-    if(event.target.value.length === event.target.maxLength){
+    // let otp = this.state.OTPfield + event.target.value
+    this.setState({ ['pin'+event.target.id]  : event.target.value })
+    if(event.target.value.length <= event.target.maxLength){
       if(event.target.id < 4){
         this.input[event.target.id].focus()
       }else if(event.target.id == 4){
+        let otp = this.state.pin1+this.state.pin2+this.state.pin3+event.target.value
         console.log(otp);
         this.validateOTP(otp)
       }
@@ -285,9 +250,10 @@ class Login extends Component {
               open={this.state.openOTP}
               onClose={() => this.setField("openOTP", false)}>
               <Form name='OTP'>
-                  <Form.Group style={{marginLeft:30}}>
+                  <label>Please fill your OTP</label>
+                  <Form.Group style={{marginLeft:30},{marginTop:15}}>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}} >
+                    <Form.Field style={{paddingRight: 15},{marginLeft:30}} >
                       <input className='OTP'
                           width={2}
                           style={{width:40}}
@@ -297,12 +263,12 @@ class Login extends Component {
                           ref={input => this.input["0"] = input}
                           type="text"
                           onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(0)}
+                          value={this.state.pin1}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{paddingRight: 15},{marginLeft:20}}>
                       <input className='OTP'
                           width={2}
                           style={{width:40}}
@@ -311,12 +277,12 @@ class Login extends Component {
                           ref={input => this.input["1"] = input}
                           type="text"
                           onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(1)}
+                          value={this.state.pin2}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{paddingRight: 15},{marginLeft:20}}>
                       <input className='OTP'
                           width={2}
                           style={{width:40}}
@@ -325,12 +291,12 @@ class Login extends Component {
                           ref={input => this.input["2"] = input}
                           type="text"
                           onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(2)}
+                          value={this.state.pin3}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{paddingRight: 15},{marginLeft:20}}>
                       <input className='OTP'
                           width={2}
                           style={{width:40}}
@@ -339,7 +305,7 @@ class Login extends Component {
                           ref={input => this.input["3"] = input}
                           type="text"
                           onChange={this.onChange}
-                          value={this.state.OTPfield.charAt(3)}
+                          value={this.state.pin4}
                       />
                     </Form.Field>
                   </Grid.Column>
