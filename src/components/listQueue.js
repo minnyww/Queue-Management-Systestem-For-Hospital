@@ -29,7 +29,7 @@ const showCurrentQueue = props => {
             <Dimmer active={R.isEmpty(props.currentQueue) ? true : false} inverted>
               <Loader>Loading</Loader>
             </Dimmer> */}
-            {props.getPatientName()}
+          {props.getPatientName()}
           {/* </Dimmer.Dimmable> */}
         </Segment>
       </Segment.Group>
@@ -44,7 +44,7 @@ const listQueue = props => {
     tmp = (
       <Segment.Group id="boxLab">
         <Segment inverted color="teal" >
-          <Header textAlign="center" >
+          <Header  >
             Lab Wait
           </Header>
         </Segment>
@@ -77,7 +77,7 @@ const Queue = props => {
                 <Dimmer active={R.isEmpty(props.queues) ? true : false} inverted>
                   <Loader>Loading</Loader>
                 </Dimmer> */}
-                {props.showPatient()}
+              {props.showPatient()}
               {/* </Dimmer.Dimmable> */}
               {props.renderModal()}
             </Segment.Group>
@@ -91,7 +91,7 @@ const Queue = props => {
             {/* ----------------------- Lab and Absent Box -------------------- */}
             <Segment.Group id="boxLab">
               <Segment color="teal">
-                <Menu secondary divider>
+                <Menu secondary >
                   <Menu.Item
                     active={props.activeBox === 1 ? true : false}
                     onClick={() => {

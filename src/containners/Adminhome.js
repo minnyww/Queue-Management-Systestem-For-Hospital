@@ -107,7 +107,7 @@ class Adminhome extends Component {
     const allDepartmentOption = allDepartment.data.map(department => ({
       key: department.departmentId,
       text: department.department,
-      value: department.departmentId
+      value: department.departmentId + "/" + department.department
     }));
 
     const allLab = await axios.get(`/getLab`);
@@ -229,6 +229,7 @@ class Adminhome extends Component {
         roomDoctor.roomId +
         " ) ",
       value: roomDoctor.doctorId + "/" + roomDoctor.roomId
+        + '-' + roomDoctor.firstname + " " + roomDoctor.lastname
     }));
     return dropdownAndRooms;
   };
@@ -362,7 +363,7 @@ class Adminhome extends Component {
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
-          <Table stackable style={{
+          <Table key={i} stackable style={{
             border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)',
           }}>
             <Table.Body >
@@ -587,7 +588,7 @@ class Adminhome extends Component {
       return (
         <div>
           <Image src={logo} circular style={{ width: '30%', height: '30%', marginTop: '4%' }} />
-          <Item textAlign='center'>
+          <Item >
             <Label color='teal' size='massive'
               style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
               {data.queueId}
@@ -624,7 +625,7 @@ class Adminhome extends Component {
       return (
         <div>
           <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
-          <Item textAlign='center'>
+          <Item >
             <Label color='teal' size='massive'
               style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
               {data.queueId}
@@ -777,7 +778,7 @@ class Adminhome extends Component {
                   }
                 }
                 // console.log("forwardList.data[i].roomId === dep.roomId", +forwardList.data[index].roomId, +dep.roomId)
-               
+
                 if (stepCurrent && dep.step === stepCurrent + 1 && dep.status != 1 && !updateWaitStatus) {
                   // console.log('update status ', stepCurrent, dep)
                   await axios.post("/updateStatus", {
@@ -786,7 +787,6 @@ class Adminhome extends Component {
                   });
                 }
               })
-            console.log(result)
             if (result) {
               await axios.post("/updateStepQ", {
                 runningNumber: result.runningNumber,
@@ -903,7 +903,7 @@ class Adminhome extends Component {
     let tmp = ''
     if (!R.isEmpty(data)) {
       tmp = data.map((queue, i) => (
-        <Table stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -978,7 +978,6 @@ class Adminhome extends Component {
   };
 
   addMoreForward = async () => {
-    // console.log(this.state.forwardDoctorId)
     // console.log('forward forward', this.state.forwardDepartments)
     let getRoomAndDoctors = this.state.forwardDoctorId.split('/')
     let tmp = {
@@ -1052,7 +1051,7 @@ class Adminhome extends Component {
           marginLeft: ' 6%', marginTop: '-15%'
         }} verticalAlign='middle' />
       <TextArea
-        disabled={this.state.forwardDoctorId === "" ? true : false}
+        disabled={this.state.forwardDoctorId.length === 0 || this.state.forwardDoctorId === " " ? true : false}
         style={{
           height: '100px', width: "60%", padding: "10px",
           marginTop: "5%", borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
@@ -1063,7 +1062,7 @@ class Adminhome extends Component {
         }} />
       <center>
         <Button
-          disabled={this.state.forwardDoctorId === "" ? true : false}
+          disabled={this.state.forwardDoctorId.length === 0 || this.state.forwardDoctorId === " " ? true : false}
           color="teal"
           onClick={() => { this.addMoreForward(); }}>
           Add to List
@@ -1077,7 +1076,6 @@ class Adminhome extends Component {
     // console.log('เข้า DELETE')
     let tmp = this.state.forwardDepartments
     if (tmp.length > 0) {
-      console.log(this.state.forwardDepartments[i])
       axios.delete(`/deleteListQueue/${this.state.forwardDepartments[i].runningNumber}`)
       tmp.splice(i, 1)
       this.setState({
@@ -1228,18 +1226,27 @@ class Adminhome extends Component {
   }
   //---------------
   showListDepartment = () => {
-    //(this.state.forwardDepartments)
+    let getDoctor
+    let getNameDoctor
     if (this.state.forwardDepartments.length > 0) {
       let tmp = this.state.forwardDepartments.map((dep, i) => {
-        // let getRoomAndDoctors = dep.doctorId.split('/')
+        debugger
+        if (typeof dep.departmentId === "string") {
+          getDoctor = dep.departmentId.split('/')
+        }
+        if (typeof dep.roomId === "string" || typeof dep.doctorId === "string") {
+          getNameDoctor = dep.roomId.split('-')
+        }
+
         let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type}</Table.Cell>
-            <Table.Cell>{dep.departmentId}</Table.Cell>
-            <Table.Cell >{dep.doctorId} / {dep.roomId}</Table.Cell>
-            <Table.Cell>{dep.message}</Table.Cell>
+            <Table.Cell>{label}{dep.type === 1 ? 'Department' : 'Lab'}</Table.Cell>
+            <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
+            <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstName + ' ' + dep.lastName}
+              / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
+            <Table.Cell>{dep.message || dep.Forward}</Table.Cell>
             <Table.Cell>
               {dep.statusId === 4 || dep.statusId === 3 || dep.statusId === 5 ? '' :
                 <Icon name='pencil' color='orange'
@@ -1252,7 +1259,6 @@ class Adminhome extends Component {
             </Table.Cell>
           </Table.Row>
         }
-
         else {
           return <Table.Row key={i}>
             <Table.Cell>
@@ -1319,7 +1325,7 @@ class Adminhome extends Component {
         <Responsive  {...Responsive.onlyComputer}>
           <div style={{
             backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-            backgroundRepeat: 'repeat',
+            backgroundRepeat: 'repeat', height: '100vh'
           }}>
             <Headerbar
               loginName={this.state.loginName}
@@ -1380,7 +1386,7 @@ class Adminhome extends Component {
         <Responsive  {...Responsive.onlyTablet}>
           <div style={{
             backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-            backgroundRepeat: 'repeat',
+            backgroundRepeat: 'repeat', height: '100vh'
           }}>
             <Headerbar
               loginName={this.state.loginName}

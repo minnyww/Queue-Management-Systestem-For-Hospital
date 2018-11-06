@@ -49,7 +49,8 @@ class Admin extends Component {
     }
     render() {
         return (
-            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)', height: '700px' }}>
+            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)', 
+            height: '100vh' }}>
                 <Headerbar />
                 <br />
                 <br />
