@@ -76,7 +76,7 @@ const showContent = props => {
                             onClick={() => {
                                 props.setField('todayItem', 'today');
                             }}>
-                            Today
+                            Edit Patient Limit (Today)
                         </Menu.Item>
                         <Menu.Item
                             active={props.todayItem === 'all' ? true : false}

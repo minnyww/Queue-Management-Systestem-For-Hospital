@@ -943,7 +943,7 @@ class Adminhome extends Component {
   //show patient at lab queues
   showPatientLabQueue = () => {
     const data = this.state.labQueues
-    // console.log("data", data)
+    console.log("data", data)
     let tmp = "";
     debugger
     if (!R.isEmpty(data)) {
@@ -1244,7 +1244,7 @@ class Adminhome extends Component {
             disabled={dep.statusId === 4 ? true : false}>
             <Table.Cell>{label}{dep.type === 1 ? 'Department' : 'Lab'}</Table.Cell>
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
-            <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstName + ' ' + dep.lastName}
+            <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
             <Table.Cell>{dep.message || dep.Forward}</Table.Cell>
             <Table.Cell>

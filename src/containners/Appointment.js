@@ -8,7 +8,7 @@ import Modal from 'react-responsive-modal';
 import swal from 'sweetalert'
 import {
   Grid, Button, Form, List, Label,
-  Dropdown, Menu, Header, Icon, Divider, Message, Segment, Card, Responsive,Image
+  Dropdown, Menu, Header, Icon, Divider, Message, Segment, Card, Responsive, Image
 } from "semantic-ui-react";
 
 import axios from "./../lib/axios";
@@ -194,6 +194,7 @@ class Appointment extends Component {
 
 
   moveEvent = async ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
+    console.log('Hi')
     const { events } = this.state;
 
     const idx = events.indexOf(event);
@@ -203,33 +204,28 @@ class Appointment extends Component {
       allDay = true;
     } else if (event.allDay && !droppedOnAllDaySlot) {
     }
-
     const updatedEvent = { ...event, start, end, allDay };
 
     const nextEvents = [...events];
     nextEvents.splice(idx, 1, updatedEvent);
 
-    // console.log(events, updatedEvent)
     let result = events.filter(data => (data.title == updatedEvent.title
       && data.start.getDate() == updatedEvent.start.getDate()
       && data.start.getMonth() == updatedEvent.start.getMonth()
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
-    // console.log(result)
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
       && data.Date === updatedEvent.start.getDate())
-    // console.log('timetable count', countAppointment)
 
     // let getSumQueue = await axios.get(`/getCountQueue/${updatedEvent.doctorId}`)
     let getSumQueue = await axios.post(`/getCountQueue`, {
       doctorId: updatedEvent.doctorId,
-      date: new Date(this.state.Date)
+      date: updatedEvent.start
     })
-    // console.log(getSumQueue)
     let getSumAppointment = await axios.post(`/getCountAppointment`, {
       doctorId: updatedEvent.doctorId,
-      date: new Date(this.state.Date).getDate()
+      date: updatedEvent.start.getDate()
     })
     //เอาค่า couunt ของตาราคิวมา
     let sumQueue = getSumQueue.data[0].countQueueId
@@ -237,17 +233,17 @@ class Appointment extends Component {
     let sumAppointment = getSumAppointment.data[0].countAppointmentId
     //เอา count ของสองตารางมารวมกันเพื่อเช็คกับ limit ที่ตาราง timetable 
     let sumCount = sumQueue + sumAppointment
-    // console.log(sumCount)
 
-    await this.checkCount(updatedEvent.doctorId)
-    // console.log(this.state.doctorWithRemaining)
+    let moveAppointment = true
+    const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
+    console.log('End', this.state.doctorWithRemaining)
 
     //fail
     if (countAppointment[0]) {
-      // console.log('no data')
+      console.log('no data')
       if (!R.isEmpty(result) || result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
         //fail
-        // console.log('cannot')
+        console.log('cannot')
         swal("Cannot!", `HN: ${event.title} cannot move to  
         ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
@@ -255,7 +251,7 @@ class Appointment extends Component {
       }
       else {
         //success
-        // console.log('success1')
+        console.log('success1')
         swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
         var month = new Array(
           "Jan",
@@ -299,11 +295,13 @@ class Appointment extends Component {
           timeEnd: timeEnd,
           appointmentId: updatedEvent.id
         });
+
       }
+
     }
     else {
       //success
-      // console.log('success2')
+      console.log('success2')
       swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
       var month = new Array(
         "Jan",
@@ -347,6 +345,7 @@ class Appointment extends Component {
         timeEnd: timeEnd,
         appointmentId: updatedEvent.id
       });
+
     }
   }
 
@@ -449,10 +448,8 @@ class Appointment extends Component {
     const date = this.pharseDate(new Date());
     const { events, startTime, endTime, HN, timetable, appointment } = this.state
 
-    // console.log(this.state.appointmentDepId)
-    if (!R.isEmpty(this.state.appointmentDepId) || !this.state.appointmentDepId === 0) {
+    if (this.state.appointmentDepId ) {
       let tmp = this.state.appointmentDepId.split("/")
-
       //check Count Limit 
       let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
         && data.Date === new Date(this.state.Date).getDate())
@@ -488,9 +485,14 @@ class Appointment extends Component {
         check => check.HN === this.state.HN
       );
 
-      if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining) {
+      debugger
+      if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining
+        // || this.state.HN === "" || this.state.Date === "" || this.state.startTime === ""
+        // || this.state.endTime === ""
+      ) {
         swal("Cannot !",
-          `Cannot add Appointment because doctor can't recieve more patient Or Appointment time is duplicate in other doctor`,
+          `Cannot add Appointment because doctor can't recieve more patient 
+          Or Appointment time is duplicate in other doctor`,
           "warning");
       }
       else if (checks.length === 0) {
@@ -520,6 +522,11 @@ class Appointment extends Component {
           errorAdd: { status: true, message: "Cannot Add HN To Queue" }
         });
       }
+    }
+    else if (!this.state.appointmentDepId === 0) {
+      swal("Cannot !",
+        `Cannot add Appointment`,
+        "warning");
     }
     else {
       swal("Cannot !",
@@ -702,7 +709,7 @@ class Appointment extends Component {
                     item
                     onChange={(e, { value }) => {
                       this.setField("appointmentDepId", value)
-                      this.checkCount(value)
+                      this.checkCount(value, false, undefined)
                     }}
                   />
                   <br />
@@ -787,7 +794,7 @@ class Appointment extends Component {
       sumCount = sumQueue + sumAppointment
       // console.log('count ท้้งหมด', sumCount)
 
-      await this.checkCount(getDoctor[0])
+      await this.checkCount(getDoctor[0], false, undefined)
       // console.log(this.state.doctorWithRemaining)
     } else {
       swal("Cannot!", `Please fill out this form completely or doctor cant recive more patient`, "warning");
@@ -938,9 +945,73 @@ class Appointment extends Component {
     return tmp
   }
 
-  checkCount = async (doctorId) => {
+  checkCount = async (doctorId, statusMove, updatedEvent) => {
+    console.log(updatedEvent)
+    debugger
+    if (updatedEvent !== undefined) {
+      console.log('03012390129')
+      var month = new Array(
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      );
+      var day = new Array(7);
+      day[0] = "Sun";
+      day[1] = "Mon";
+      day[2] = "Tue";
+      day[3] = "Wed";
+      day[4] = "Thu";
+      day[5] = "Fri";
+      day[6] = "Sat";
 
-    if (!doctorId) {
+      var curr_date = updatedEvent.start.getDay();
+      var curr_month = updatedEvent.start.getMonth();
+      var curr_year = updatedEvent.start.getFullYear();
+
+      if (statusMove && doctorId) {
+        console.log('1', updatedEvent.start, day[curr_date], month[curr_month])
+        let getDoctor = doctorId.toString().split('/')
+        const date = this.pharseDate(new Date(this.state.Date))
+        const doctors = await axios.post(`/getRemainingDoctor`, {
+          Date: updatedEvent.start.getDate(),
+          day: day[curr_date].toLowerCase(),
+          month: month[curr_month].toLowerCase(),
+          year: curr_year,
+          departmentId: this.state.departmentId,
+          doctorId: getDoctor[0]
+        });
+        this.setState({
+          doctorWithRemaining: doctors.data
+        })
+        console.log(this.state.doctorWithRemaining)
+      }
+    } else if (!statusMove && doctorId) {
+      console.log('2')
+      let getDoctor = doctorId.toString().split('/')
+      const date = this.pharseDate(new Date(this.state.Date))
+      const doctors = await axios.post(`/getRemainingDoctor`, {
+        Date: new Date(this.state.Date).getDate(),
+        day: date.day,
+        month: date.month,
+        year: date.year,
+        departmentId: this.state.departmentId,
+        doctorId: getDoctor[0]
+      });
+      this.setState({
+        doctorWithRemaining: doctors.data
+      })
+      console.log(this.state.doctorWithRemaining)
+    }
+    else if (!doctorId) {
     } else {
       let getDoctor = doctorId.toString().split('/')
       const date = this.pharseDate(new Date(this.state.Date))
@@ -955,8 +1026,8 @@ class Appointment extends Component {
       this.setState({
         doctorWithRemaining: doctors.data
       })
+      console.log(this.state.doctorWithRemaining)
     }
-    // console.log(this.state.doctorWithRemaining)
   }
 
   // onEventResize = (type, { event, start, end, allDay }) => {

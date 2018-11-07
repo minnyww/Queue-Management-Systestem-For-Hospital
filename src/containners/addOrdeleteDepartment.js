@@ -74,7 +74,7 @@ class addOrdeleteDepartment extends Component {
             loginName: userData
 
         })
-        // console.log(this.state.listDoctors)
+        console.log(this.state.listAllDoctors)
 
     }
 
@@ -254,6 +254,7 @@ class addOrdeleteDepartment extends Component {
                     <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
                     <List.Header>Employee Id : {data.empId}</List.Header>
                     <List.Header>Average Time : {data.avgtime}</List.Header>
+                    <List.Header>Department : {data.department}</List.Header>
                 </List.Content>
             </List.Item >
         ))
@@ -397,7 +398,10 @@ class addOrdeleteDepartment extends Component {
         return (
             <div>
                 <Responsive  {...Responsive.onlyComputer}>
-                    <div >
+                    <div style={{
+                        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                        backgroundRepeat: 'repeat', height: '100vh',
+                    }}>
                         <Headerbar
                             logOut={this.logOut}
                             loginName={this.state.loginName}
@@ -435,7 +439,10 @@ class addOrdeleteDepartment extends Component {
                     </div>
                 </Responsive>
                 <Responsive  {...Responsive.onlyTablet}>
-                    <div >
+                    <div style={{
+                        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                        backgroundRepeat: 'repeat', height: '100vh'
+                    }}>
                         <Headerbar
                             logOut={this.logOut}
                             loginName={this.state.loginName}

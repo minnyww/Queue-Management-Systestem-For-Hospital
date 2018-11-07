@@ -177,6 +177,7 @@ const Queue = props => {
                   {props.currentQueue.firstName === undefined ? 'Call' : 'Call Next'}
                 </Button>
                 <Button.Or />
+
                 <Button positive
                   disabled={props.currentQueue.firstName === undefined ? true : false}
                   onClick={() =>
@@ -184,7 +185,7 @@ const Queue = props => {
                 </Button>
                 <Button.Or />
                 <Button color='orange'
-                  disabled={props.currentQueue.firstName === undefined ? true : false}
+                  disabled={props.currentQueue.firstName === undefined}
                   onClick={() => { props.absent() }}>
                   Absent
                   </Button>
@@ -225,8 +226,9 @@ const Queue = props => {
                 <br />
                 <center>
                   <Divider horizontal>Or</Divider>
+                  {console.log(props.forwardDepartments.filter(data => (data.editStatus) === true).length > 0)}
                   <Button color="blue" onClick={() => props.forward()}
-                    disabled={R.isEmpty(props.forwardDepartments) ? true : false}
+                    // disabled={props.forwardDepartments.filter(data => (data.editStatus) !== true).length > 0 ? true : false}
                   >
                     Forward
                   </Button>
