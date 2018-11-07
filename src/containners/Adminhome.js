@@ -1307,7 +1307,7 @@ class Adminhome extends Component {
               <Icon name='save' color="green"
                 onClick={() => this.editStatus(i, false, dep)} />
               <Icon className="cancel" color='red'
-                onClick={() => this.editStatus(i, false, dep)}
+                onClick={() => this.cancelList(i, true, dep)}
               />
             </Table.Cell>
           </Table.Row>
@@ -1316,9 +1316,27 @@ class Adminhome extends Component {
       return tmp
     }
   }
+
+  cancelList = (i, status, dep) => {
+    console.log(this.state.forwardDepartments)
+    if (dep.roomId !== undefined) {
+      console.log('Hi')
+      this.editStatus(i, false, dep)
+    } else {
+      console.log('Hello')
+      this.state.forwardDepartments.splice(-1, 1)
+      this.editStatus(i, false, dep)
+      console.log(this.state.forwardDepartments)
+    }
+
+   
+  }
+
   logOut = () => {
     localStorage.removeItem('userData');
   }
+
+
   render() {
     return (
       <div>
@@ -1390,6 +1408,7 @@ class Adminhome extends Component {
           }}>
             <Headerbar
               loginName={this.state.loginName}
+              logOut={this.logOut}
             />
             <DropdownQueue
               //state
