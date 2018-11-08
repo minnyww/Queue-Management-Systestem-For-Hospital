@@ -226,8 +226,16 @@ const Queue = props => {
                 <br />
                 <center>
                   <Divider horizontal>Or</Divider>
+                  {console.log(props.forwardDepartments.filter(data => (data.addStatus) === true))}
+                  {console.log(props.forwardDepartments.filter(data => (data.addStatus) === false))}
+                  {console.log(props.forwardDepartments)}
                   <Button color="blue" onClick={() => props.forward()}
-                    disabled={props.forwardDepartments.filter(data => (data.addStatus) === true).length === 1 ? false : true}
+                    disabled={
+                      R.isEmpty(props.forwardDepartments)
+                        || (!R.isEmpty(props.forwardDepartments)
+                          && props.forwardDepartments.filter(data => (data.addStatus) === true).length < 1)
+                        ? true : false
+                    }
                   >
                     Forward
                   </Button>

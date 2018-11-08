@@ -114,7 +114,7 @@ class Adminhome extends Component {
     const allLabOption = allLab.data.map(Lab => ({
       key: Lab.departmentId,
       text: Lab.department,
-      value: Lab.departmentId
+      value: Lab.departmentId + "/" + Lab.department
     }));
 
     const departments = await axios.get(
@@ -672,7 +672,7 @@ class Adminhome extends Component {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
     const date = this.pharseDate();
-    // console.log(this.state.forwardDepartments)
+    console.log(this.state.forwardDepartments)
     let stepCurrent = null;
     let updateWaitStatus = false
     let indexStep = 0;
@@ -683,7 +683,8 @@ class Adminhome extends Component {
         HN: this.state.currentQueue.HN,
         group: this.state.currentQueue.group
       })
-      // console.log('forwardList.data ', forwardList.data)
+      console.log('forwardList.data ', forwardList.data)
+      console.log('forwardDepartment ', this.state.forwardDepartments)
       if (forwardList.data.length > 1) {
         if (forwardList.data.length < this.state.forwardDepartments.length) {
           let tmp = ''
@@ -843,8 +844,15 @@ class Adminhome extends Component {
         showModal: false,
         HN: "",
         forward: "",
-        forwardDepartments: []
+        forwardDepartments: [],
+        message: ''
+
       })
+      console.log(this.state.forwardDepartments)
+    } else {
+      swal("Cannot Forward Queue to Another department", {
+        icon: "warning",
+      });
     }
   }
   callAbsent = async (i) => {
@@ -1146,6 +1154,7 @@ class Adminhome extends Component {
     }
     else if (!this.state.forwardDepartments[i + 1]) {
       //(tmp[i].roomId)
+      console.log(tmp[i])
       if (tmp[i].roomId === undefined) {
         tmp.splice(i, 1)
         this.setState({
@@ -1237,12 +1246,11 @@ class Adminhome extends Component {
         if (typeof dep.roomId === "string" || typeof dep.doctorId === "string") {
           getNameDoctor = dep.roomId.split('-')
         }
-
         let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type === 1 ? 'Department' : 'Lab'}</Table.Cell>
+            <Table.Cell>{label}{dep.type}</Table.Cell>
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
             <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
@@ -1324,12 +1332,10 @@ class Adminhome extends Component {
       this.editStatus(i, false, dep)
     } else {
       console.log('Hello')
-      this.state.forwardDepartments.splice(-1, 1)
-      this.editStatus(i, false, dep)
+      // this.state.forwardDepartments.splice(-1, 1)
       console.log(this.state.forwardDepartments)
+      this.editStatus(i, false, dep)
     }
-
-   
   }
 
   logOut = () => {
