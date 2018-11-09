@@ -1128,15 +1128,19 @@ class Adminhome extends Component {
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
+    console.log("editStatus",tmp[i])
     //('dep', dep)
     if (dep) {
       // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown 
       tmp[i] = dep
     }
-    tmp[i].editStatus = status
-    //('dep !== null')
-    //('tmp[i] true', tmp[i], this.state.forwardDepartments[i].roomId)
 
+    if(!tmp[i].alreadyValue){
+      console.log("ALREADY!!!!")
+      tmp[i].alreadyValue = {...tmp[i]}
+    }
+
+    tmp[i].editStatus = status
     //check แอดล่างสุด แก้ไขล่างสุด ยังซ้ำได้อยุ่
     if (!this.state.forwardDepartments[i + 1] || !this.state.forwardDepartments[i - 1]) {
       //('eDokkk')
@@ -1145,7 +1149,6 @@ class Adminhome extends Component {
       })
     }
 
-    //(!this.state.forwardDepartments[i - 1], this.state.forwardDepartments[i])
     debugger
     if (this.state.forwardDepartments[i + 1]) {
       this.setState({
@@ -1160,7 +1163,6 @@ class Adminhome extends Component {
         this.setState({
           forwardDepartments: tmp
         })
-        //(this.state.forwardDepartments)
         let swl = ''
         swl = swal({
           title: "Cannot add empty dropdown",
@@ -1175,8 +1177,6 @@ class Adminhome extends Component {
           forwardDepartments: tmp
         })
       }
-      // if (tmp[i].roomId == '' || tmp[i].type == '' || tmp[i].doctorId == '') {
-      // if (tmp[i].roomId !== undefined) {
       else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)) {
         let swl = ''
         swl = swal({
@@ -1191,7 +1191,6 @@ class Adminhome extends Component {
         })
       }
     }
-
     //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง
     else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)
       || tmp[i].roomId.toString().includes(this.state.forwardDepartments[i + 1].roomId)) {
@@ -1204,8 +1203,6 @@ class Adminhome extends Component {
         button: "Ok",
         dangerMode: true,
       })
-      //(tmp[i])
-      //(this.state.forwardDepartments.filter(item => item !== tmp[i]))
       this.setState({
         forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
       })
@@ -1217,29 +1214,62 @@ class Adminhome extends Component {
       })
     }
   }
-
   cancelList = (i, status, dep) => {
-    console.log(this.state.forwardDepartments)
     let tmp = this.state.forwardDepartments
-    if (dep) {
-      tmp[i] = dep
-    }
-    if (dep.roomId !== undefined) {
-      console.log('Hi')
-      tmp.splice(i, 1)
+    debugger
+    if (dep.editStatus) {
+      if (!dep.alreadyValue) {
+        // if (!dep.alreadyValue.status) {
+        tmp.splice(i, 1)
+        this.setState({ forwardDepartments: tmp })
+        return
+      } else {
+        tmp[i] = dep.alreadyValue
+      }
+      // }
+      console.log('Hello 00')
+      tmp[i].editStatus = false
       this.setState({
         forwardDepartments: tmp
       })
-    } else {
-      console.log('Hello')
-      tmp.splice(i, 1)
-      this.setState({
-        forwardDepartments: tmp
-      })
-      console.log(this.state.forwardDepartments)
+      // this.editStatus(i, false, dep)
     }
   }
-  
+
+  // cancelList = (i, status, dep) => {
+  //   let tmp = this.state.forwardDepartments
+  //   console.log(dep.editStatus)
+  //   debugger
+  //   if (dep.editStatus && dep.roomId !== undefined) {
+  //     console.log('Hello 00')
+  //     dep.editStatus = false
+  //     tmp[i].editStatus = false
+  //     this.setState({
+  //       forwardDepartments: tmp
+  //     })
+  //     // this.editStatus(i, false, dep)
+  //   }
+  //   else if (!dep.editStatus && dep.roomId !== undefined) {
+  //     console.log('Hello1')
+  //     dep.editStatus = false
+  //     tmp[i].editStatus = false
+  //     tmp[i].splice(i, 1)
+  //     this.setState({
+  //       forwardDepartments: tmp
+  //     })
+  //   }
+  //   else {
+  //     console.log('Hello')
+  //     dep.editStatus = false
+  //     tmp[i].editStatus = false
+  //     tmp.splice(i, 1)
+  //     this.setState({
+  //       forwardDepartments: tmp
+  //     })
+  //     console.log(this.state.forwardDepartments)
+  //   }
+  // }
+
   editForward = (field, value, i) => {
     let tmp = this.state.forwardDepartments;
     tmp[i][field] = value
@@ -1338,7 +1368,7 @@ class Adminhome extends Component {
               <Icon name='save' color="green"
                 onClick={() => this.editStatus(i, false, dep)} />
               <Icon className="cancel" color='red'
-                onClick={() => this.cancelList(i, true, dep)}
+                onClick={() => this.cancelList(i, false, dep)}
               />
             </Table.Cell>
           </Table.Row>
@@ -1356,6 +1386,7 @@ class Adminhome extends Component {
 
 
   render() {
+    console.log(this.state.forwardDepartments)
     return (
       <div>
         <Responsive  {...Responsive.onlyComputer}>
