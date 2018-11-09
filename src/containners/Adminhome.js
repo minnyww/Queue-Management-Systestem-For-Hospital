@@ -1217,6 +1217,29 @@ class Adminhome extends Component {
       })
     }
   }
+
+  cancelList = (i, status, dep) => {
+    console.log(this.state.forwardDepartments)
+    let tmp = this.state.forwardDepartments
+    if (dep) {
+      tmp[i] = dep
+    }
+    if (dep.roomId !== undefined) {
+      console.log('Hi')
+      tmp.splice(i, 1)
+      this.setState({
+        forwardDepartments: tmp
+      })
+    } else {
+      console.log('Hello')
+      tmp.splice(i, 1)
+      this.setState({
+        forwardDepartments: tmp
+      })
+      console.log(this.state.forwardDepartments)
+    }
+  }
+  
   editForward = (field, value, i) => {
     let tmp = this.state.forwardDepartments;
     tmp[i][field] = value
@@ -1325,18 +1348,7 @@ class Adminhome extends Component {
     }
   }
 
-  cancelList = (i, status, dep) => {
-    console.log(this.state.forwardDepartments)
-    if (dep.roomId !== undefined) {
-      console.log('Hi')
-      this.editStatus(i, false, dep)
-    } else {
-      console.log('Hello')
-      // this.state.forwardDepartments.splice(-1, 1)
-      console.log(this.state.forwardDepartments)
-      this.editStatus(i, false, dep)
-    }
-  }
+
 
   logOut = () => {
     localStorage.removeItem('userData');
