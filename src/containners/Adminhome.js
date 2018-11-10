@@ -1303,7 +1303,7 @@ class Adminhome extends Component {
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type}</Table.Cell>
+            <Table.Cell>{label}{dep.type === 1 ? 'Department ' : 'Lab' }</Table.Cell>
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
             <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
