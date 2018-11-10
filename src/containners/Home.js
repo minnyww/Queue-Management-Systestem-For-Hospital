@@ -129,10 +129,9 @@ class Home extends Component {
 
   showStepQueue = () => {
     const icon =
-      [{ key: '1001', value: 'user doctor', text: 'user doctor' },
-      { key: '1002', value: 'user doctor', text: 'user doctor' },
-      { key: '9999', value: 'lab', text: 'lab' }]
-    // console.log(this.state.allStepQueue)
+      [{ key: '1', value: 'user doctor', text: 'user doctor' },
+      { key: '2', value: 'lab', text: 'lab' }]
+    console.log(this.state.allStepQueue)
     let tmp = ''
     let data = this.state.allStepQueue
 
@@ -140,14 +139,19 @@ class Home extends Component {
       <Step completed={data.statusId == 4 ? true : false}
         disabled={data.statusId == 5 ? true : false}
         active={data.statusId == 3 || data.statusId == 1 ? true : false}>
-        <Icon color="blue" className={icon.filter(icon => icon.key == data.roomId).length == 0 ? ""
-          : icon.filter(icon => icon.key == data.roomId)[0].value} />
+        <Icon color="blue" className={icon.filter(icon => icon.key == data.type).length == 0 ? ""
+          : icon.filter(icon => icon.key == data.type)[0].value} />
         <Step.Content>
-          <Step.Title>{data.type == 1 ? "พบแพทย์ :"
+          <Step.Title>{data.type == 1 ? "พบแพทย์ : "
             + data.firstname + ' '
             + data.lastname : "ห้อง Lab/หัตถการ"}
           </Step.Title>
-          <Step.Description>{'ห้อง : ' + data.roomId + 'แผนก : ' + data.department}</Step.Description>
+          <Step.Description>{'แผนก : ' + data.department +
+            ' ตึก : ' + data.building
+          }</Step.Description>
+          <Step.Description>{
+            ' ชั้น : ' + data.floor +
+            ' ห้อง : ' + data.roomId}</Step.Description>
         </Step.Content>
       </Step>
     ));
@@ -177,33 +181,33 @@ class Home extends Component {
     const time = this.state.avgTime
     console.log(tmp)
     console.log(time);
-    if(tmp>=0){
+    if (tmp >= 0) {
       console.log(tmp);
-    if (tmp === 0) {
-      // console.log("ถึงคิว")
-      NotificationManager.info('ถึงคิว')
-      this.setState({ textmessage: "ถึงคิว" })
-      this.sendText()
-    } else if (tmp === 1) {
-      console.log("เหลืออีก 1 คิว"+time+' นาที')
-      NotificationManager.warning('เหลืออีก 1 คิว '+time+' นาที')
-      this.setState({ textmessage: "เหลืออีก 1 คิว "+time+' นาที' })
-      this.sendText()
-    } else if (tmp === 3) {
-      console.log("เหลืออีก 3 คิว"+time+' นาที')
-      NotificationManager.warning('เหลืออีก 3 คิว'+time+' นาที')
-      this.setState({ textmessage: "เหลืออีก 3 คิว "+time+' นาที' })
-      this.sendText()
-    } else if (tmp === 5) {
-      console.log("เหลืออีก 5 คิว"+time+' นาที')
-      NotificationManager.warning('เหลืออีก 5 คิว'+time+' นาที')
-      this.setState({ textmessage: "เหลืออีก 5 คิว "+time+' นาที' })
-      this.sendText()
-    }
-  }else{
-    console.log("ไม่ได้อยู่ในคิว")
+      if (tmp === 0) {
+        // console.log("ถึงคิว")
+        NotificationManager.info('ถึงคิว')
+        this.setState({ textmessage: "ถึงคิว" })
+        this.sendText()
+      } else if (tmp === 1) {
+        console.log("เหลืออีก 1 คิว" + time + ' นาที')
+        NotificationManager.warning('เหลืออีก 1 คิว ' + time + ' นาที')
+        this.setState({ textmessage: "เหลืออีก 1 คิว " + time + ' นาที' })
+        this.sendText()
+      } else if (tmp === 3) {
+        console.log("เหลืออีก 3 คิว" + time + ' นาที')
+        NotificationManager.warning('เหลืออีก 3 คิว' + time + ' นาที')
+        this.setState({ textmessage: "เหลืออีก 3 คิว " + time + ' นาที' })
+        this.sendText()
+      } else if (tmp === 5) {
+        console.log("เหลืออีก 5 คิว" + time + ' นาที')
+        NotificationManager.warning('เหลืออีก 5 คิว' + time + ' นาที')
+        this.setState({ textmessage: "เหลืออีก 5 คิว " + time + ' นาที' })
+        this.sendText()
+      }
+    } else {
+      console.log("ไม่ได้อยู่ในคิว")
       NotificationManager.info('ไม่ได้อยู่ในคิว')
-  }
+    }
   }
   sendText = async () => {
     const recipient = this.state.recipient
@@ -219,7 +223,13 @@ class Home extends Component {
   render() {
     // console.log("state", this.state)
     return (
-      <div>
+      <div style={{
+        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png) ',
+        backgroundRepeat: 'repeat',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover'
+      }}>
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
         <Headerbaruser />
         <NotificationContainer />
