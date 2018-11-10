@@ -31,7 +31,7 @@ class Adminhome extends Component {
     showModal: false,
     modalIsOpen: false,
     modalOpen: false,
-    dropdownValue : '',
+    dropdownValue: '',
 
     errorHN: "",
     errorGetName: "",
@@ -1129,16 +1129,16 @@ class Adminhome extends Component {
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
-    console.log("editStatus",tmp[i])
+    console.log("editStatus", tmp[i])
     //('dep', dep)
     if (dep) {
       // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown 
       tmp[i] = dep
     }
 
-    if(!tmp[i].alreadyValue){
+    if (!tmp[i].alreadyValue) {
       console.log("ALREADY!!!!")
-      tmp[i].alreadyValue = {...tmp[i]}
+      tmp[i].alreadyValue = { ...tmp[i] }
     }
 
     tmp[i].editStatus = status
@@ -1304,7 +1304,7 @@ class Adminhome extends Component {
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type === 1 ? 'Department ' : 'Lab' }</Table.Cell>
+            <Table.Cell>{label}{dep.type === 1 ? 'Department ' : 'Lab'}</Table.Cell>
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
             <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
@@ -1387,13 +1387,15 @@ class Adminhome extends Component {
 
 
   render() {
-    console.log(this.state.forwardDepartments)
     return (
       <div>
         <Responsive  {...Responsive.onlyComputer}>
           <div style={{
-            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-            backgroundRepeat: 'repeat', height: '100vh'
+            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png) ',
+            backgroundRepeat: 'repeat',
+            backgroundAttachment: 'fixed',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover'
           }}>
             <Headerbar
               loginName={this.state.loginName}
@@ -1456,7 +1458,10 @@ class Adminhome extends Component {
         <Responsive  {...Responsive.onlyTablet}>
           <div style={{
             backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-            backgroundRepeat: 'repeat', height: '100vh'
+            backgroundRepeat: 'repeat',
+            backgroundAttachment: 'fixed',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover'
           }}>
             <Headerbar
               loginName={this.state.loginName}
@@ -1531,7 +1536,7 @@ class Adminhome extends Component {
             </Card>
           </center>
         </Responsive>
-      </div>
+      </div >
     );
   }
 }

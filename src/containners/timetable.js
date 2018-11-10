@@ -542,9 +542,12 @@ class timetable extends Component {
     showDetailTimetableDescription = () => {
         const { timetable, selectEvent } = this.state
         const getTimetable = this.state.events.filter(data => (data.id === this.state.selectEvent))
-        const getValueDate = moment(getTimetable[0].start).format('YYYY-MM-DD')
-        console.log(getTimetable[0].title)
-        console.log(getValueDate)
+        console.log(getTimetable)
+        let getValueDate;
+        if (getTimetable.length > 0) {
+            console.log('Hi')
+            getValueDate = moment(getTimetable[0].start).format('YYYY-MM-DD')
+        }
 
         let tmp = ""
         tmp = timetable.filter(data => data.timetableId === selectEvent)

@@ -45,7 +45,7 @@ const listQueue = props => {
       <Segment.Group id="boxLab">
         <Segment inverted color="teal" >
           <Header  >
-            Lab Wait
+            Waiting List
           </Header>
         </Segment>
         {props.showPatientLabQueue()}
@@ -97,7 +97,7 @@ const Queue = props => {
                     onClick={() => {
                       props.setField('activeBox', 1);
                     }}>
-                    Lab Wait
+                    Waiting List
                 </Menu.Item>
                   <Menu.Item
                     active={props.activeBox === 2 ? true : false}
