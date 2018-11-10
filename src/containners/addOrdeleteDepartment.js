@@ -41,7 +41,8 @@ class addOrdeleteDepartment extends Component {
 
         activeItem: 'department',
         todayItem: 'today',
-        loginName: ''
+        loginName: '',
+        dropdownValue: ''
     }
     componentWillMount = async () => {
         const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
@@ -406,7 +407,11 @@ class addOrdeleteDepartment extends Component {
                             logOut={this.logOut}
                             loginName={this.state.loginName}
                         />
-                        <DropdownQueue />
+                        <DropdownQueue
+                            // departmentId={this.state.departmentId}
+                            dropdownValue={this.state.dropdownValue}
+
+                            setField={this.setField} />
                         <FormManageDepartment
                             //state
                             departmentName={this.state.departmentName}
@@ -447,7 +452,12 @@ class addOrdeleteDepartment extends Component {
                             logOut={this.logOut}
                             loginName={this.state.loginName}
                         />
-                        <DropdownQueue />
+                        <DropdownQueue
+                            // departmentId={this.state.departmentId}
+                            dropdownValue={this.state.dropdownValue}
+
+                            setField={this.setField}
+                        />
                         <FormManageDepartment
                             //state
                             departmentName={this.state.departmentName}

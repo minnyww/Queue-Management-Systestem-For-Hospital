@@ -51,6 +51,7 @@ class Appointment extends Component {
     editStatus: false,
     loginName: '',
     allPatient: [],
+    dropdownValue: '',
 
     //check Limit
     sumQueueCountLimit: 0,
@@ -448,7 +449,7 @@ class Appointment extends Component {
     const date = this.pharseDate(new Date());
     const { events, startTime, endTime, HN, timetable, appointment } = this.state
 
-    if (this.state.appointmentDepId ) {
+    if (this.state.appointmentDepId) {
       let tmp = this.state.appointmentDepId.split("/")
       //check Count Limit 
       let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
@@ -677,7 +678,7 @@ class Appointment extends Component {
                     <Form.Input
                       type="date"
                       fluid
-                      value={this.state.Date}
+                      defaultValue={this.state.Date}
                       onChange={(e, { value }) => this.setField("Date", value)}
                     />
                     <Form.Group widths='equal' style={{ width: '67%' }}>
@@ -1043,6 +1044,7 @@ class Appointment extends Component {
   }
 
   render() {
+    console.log(this.state.dropdownValue)
     return (
       <div>
         <div style={{ width: '100%' }}>
@@ -1051,7 +1053,10 @@ class Appointment extends Component {
               loginName={this.state.loginName}
               logOut={this.logOut}
             />
-            <DropdownQueue />
+            <DropdownQueue
+              // departmentId={this.state.departmentId}
+              dropdownValue={this.state.dropdownValue}
+              setField={this.setField} />
             <Modal
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
@@ -1121,7 +1126,10 @@ class Appointment extends Component {
               loginName={this.state.loginName}
               logOut={this.logOut}
             />
-            <DropdownQueue />
+            <DropdownQueue
+              // departmentId={this.state.departmentId}
+              dropdownValue={this.state.dropdownValue}
+              setField={this.setField} />
             <Modal
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}

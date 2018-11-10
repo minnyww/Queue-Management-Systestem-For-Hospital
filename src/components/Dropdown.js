@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Dropdown, Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
+
 const DropdownQueue = props => {
+  console.log(props.dropdownValue)
   return (
     <div>
       <Menu compact style={{ marginLeft: "3%" }}>
@@ -12,8 +14,11 @@ const DropdownQueue = props => {
             options={type}
             simple
             item
-            value={props.type} />
+            // value={props.dropdownValue}
+            // onChange={(e, { value }) => props.setField("dropdownValue", value)}
+          />
           <Dropdown
+            // disabled={props.type.value !== 'Queue' ? true : false}
             placeholder="Department"
             options={props.departments}
             simple
@@ -21,6 +26,7 @@ const DropdownQueue = props => {
             value={props.departmentId}
             disabled />
           <Dropdown
+            // disabled={props.type.value !== 'Queue' ? true : false}
             placeholder="Doctor"
             options={props.doctors}
             simple

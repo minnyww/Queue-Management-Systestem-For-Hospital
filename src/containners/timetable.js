@@ -46,7 +46,8 @@ class timetable extends Component {
         roomId: 0,
         editStatus: false,
         doctorSelect: [{ key: "", text: "", value: "" }],
-        loginName: ''
+        loginName: '',
+        dropdownValue: '',
 
     }
     componentWillMount = async () => {
@@ -462,11 +463,11 @@ class timetable extends Component {
     };
 
     showDetailTimetable = (e) => {
-        // console.log(e.id)
         this.setState({
             openDetail: true,
             selectEvent: e.id,
         })
+        console.log(this.state.selectEvent)
     }
 
     openConfirm = (index) => {
@@ -540,6 +541,11 @@ class timetable extends Component {
 
     showDetailTimetableDescription = () => {
         const { timetable, selectEvent } = this.state
+        const getTimetable = this.state.events.filter(data => (data.id === this.state.selectEvent))
+        const getValueDate = moment(getTimetable[0].start).format('YYYY-MM-DD')
+        console.log(getTimetable[0].title)
+        console.log(getValueDate)
+
         let tmp = ""
         tmp = timetable.filter(data => data.timetableId === selectEvent)
             .map((data, index) => {
@@ -603,7 +609,7 @@ class timetable extends Component {
                             <Form.Input
                                 style={{ width: '65%' }}
                                 type="date"
-                                value={this.state.Date}
+                                defaultValue={getValueDate}
                                 onChange={(e, { value }) => this.setField("Date", value)}
                             />
                             <Form.Group widths='equal' style={{ width: '67%' }}>
@@ -738,8 +744,10 @@ class timetable extends Component {
                         />
                         <DropdownQueue
                             doctors={this.state.doctors}
-                            // departmentId = {this.state.departmentId}
+                            // departmentId={this.state.departmentId}
+                            dropdownValue={this.state.dropdownValue}
                             chooseDoctor={this.chooseDoctor}
+                            setField={this.setField}
                         />
                         <Modal
                             center
@@ -787,8 +795,11 @@ class timetable extends Component {
                         />
                         <DropdownQueue
                             doctors={this.state.doctors}
+                            // departmentId={this.state.departmentId}
+                            dropdownValue={this.state.dropdownValue}
                             // departmentId = {this.state.departmentId}
                             chooseDoctor={this.chooseDoctor}
+                            setField={this.setField}
                         />
                         <Modal
                             center

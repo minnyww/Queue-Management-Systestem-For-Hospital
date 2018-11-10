@@ -31,6 +31,7 @@ class Adminhome extends Component {
     showModal: false,
     modalIsOpen: false,
     modalOpen: false,
+    dropdownValue : '',
 
     errorHN: "",
     errorGetName: "",
@@ -1406,8 +1407,10 @@ class Adminhome extends Component {
               doctors={this.state.doctors}
               errorAdd={this.state.errorAdd}
               type={this.state.type}
+              dropdownValue={this.state.dropdownValue}
               //Method
               chooseDoctor={this.chooseDoctor}
+              setField={this.setField}
             />
             <br />
             <ListQueue
@@ -1469,6 +1472,7 @@ class Adminhome extends Component {
               type={this.state.type}
               //Method
               chooseDoctor={this.chooseDoctor}
+              setField={this.setField}
             />
             <br />
             <ListQueue
