@@ -223,13 +223,7 @@ class Home extends Component {
   render() {
     // console.log("state", this.state)
     return (
-      <div style={{
-        backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png) ',
-        backgroundRepeat: 'repeat',
-        backgroundAttachment: 'fixed',
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover'
-      }}>
+      <div >
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
         <Headerbaruser />
         <NotificationContainer />
