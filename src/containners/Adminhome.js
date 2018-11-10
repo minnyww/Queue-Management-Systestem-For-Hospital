@@ -911,31 +911,33 @@ class Adminhome extends Component {
     let data = this.state.listAbsent
     let tmp = ''
     if (!R.isEmpty(data)) {
-      tmp = data.map((queue, i) => (
-        <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
-              <Table.Cell style={{ fontSize: "16px" }} >
-                Name : {queue.firstName} {queue.lastName}<br />
-                HN: {queue.HN}
-              </Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell textAlign='right' >
-                <Button size='tiny' color='red'
-                  onClick={() => this.cancelQueue(i)}
-                >
-                  Cancel
+      tmp = data
+        .filter(queue => queue.roomId === this.state.roomId)
+        .map((queue, i) => (
+          <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }} >
+                  Name : {queue.firstName} {queue.lastName}<br />
+                  HN: {queue.HN}
+                </Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell textAlign='right' >
+                  <Button size='tiny' color='red'
+                    onClick={() => this.cancelQueue(i)}
+                  >
+                    Cancel
               </Button>
-                <Button size='tiny' color='teal'
-                  onClick={() => this.callAbsent(i)}>
-                  Call
+                  <Button size='tiny' color='teal'
+                    onClick={() => this.callAbsent(i)}>
+                    Call
               </Button>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
-      ))
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+        ))
     } else {
       tmp = <center>
         <Image
