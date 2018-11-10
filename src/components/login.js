@@ -238,9 +238,9 @@ class Login extends Component {
 
               </Form>
               {/* <Button style={{ marginTop: "2.5%", float: 'right' }} color="teal" size='tiny'> */}
-              <Label color='teal' size='tiny' attached='bottom right' style={{ marginTop: "2.5%" }}>
+              {/* <Label color='teal' size='tiny' attached='bottom right' style={{ marginTop: "2.5%" }}>
                 <Link to={"/Admin"}>Admin</Link>
-              </Label>
+              </Label> */}
               {/* </Button> */}
             </Segment>
 
@@ -313,16 +313,6 @@ class Login extends Component {
                     </Form.Field>
                   </Grid.Column>
                 </Form.Group>
-                {/* <Form.Input
-                fluid
-                name='OTP'
-                placeholder="Enter OTP"
-                value={this.OTPfield}
-                onChange={(e, { value }) => this.setField("OTPfield", value)}
-              />
-              <Message negative hidden={!this.state.errorOTP.status}>
-                {this.state.errorOTP.message}
-              </Message> */}
                 <center>
                   <Button style={{ marginTop: "2.5%" }} color="blue" type="submit" onClick={this.validateOTP} >
                     Verify OTP
