@@ -39,7 +39,8 @@ class Admin extends Component {
                 this.setState({ errorUsername: { status: true, message: '' } })
 
             } else {
-                // console.log(data.data[0])
+                const datas = data.data[0]
+                delete datas.password
                 localStorage.setItem('userData', JSON.stringify(data.data[0]))
                 this.props.history.push({
                     pathname: '/Main'
@@ -49,8 +50,10 @@ class Admin extends Component {
     }
     render() {
         return (
-            <div style={{ backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)', 
-            height: '100vh' }}>
+            <div style={{
+                backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                height: '100vh'
+            }}>
                 <Headerbar />
                 <br />
                 <br />

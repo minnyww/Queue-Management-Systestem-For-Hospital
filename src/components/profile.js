@@ -3,7 +3,7 @@ import React, { Component } from "react";
 // import ReactDOM from "react-dom";
 import Modal from "react-responsive-modal";
 import "./../css/Q.css";
-import { Card, Button, Table, Statistic, } from "semantic-ui-react";
+import { Card, Button, Table, Statistic, Image } from "semantic-ui-react";
 
 const profile = props => {
   const { setField } = props;
@@ -12,6 +12,7 @@ const profile = props => {
       <center>
         <Card style={{ height: "30%", width: '90%' }} color='blue'>
           <Card.Content>
+          
             <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
               <Button color="blue"

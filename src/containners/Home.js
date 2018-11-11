@@ -7,9 +7,12 @@ import "./../css/App.css";
 import Headerbaruser from "./../components/headerbaruser";
 import Modal from "react-modal";
 import axios from "./../lib/axios";
-import { Header, Step, Icon, Table } from "semantic-ui-react";
+import { Header, Step, Icon, Table, Image } from "semantic-ui-react";
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
+
+import girl from './../img/girl.png'
+import boy from './../img/boy.png'
 
 class Home extends Component {
   state = {
@@ -27,6 +30,8 @@ class Home extends Component {
     textmessage: '',
     dataPhoneNumber: '',
     avgTime: 0,
+
+    patientInfo: {}
   };
 
   componentWillMount = async () => {
@@ -64,11 +69,6 @@ class Home extends Component {
       }
     }
 
-    // var dataAllStepQueue = await axios.post(`/getAllStepQueue`, {
-    //   HN: this.state.HN,
-    //   group: tmp.group
-    // })
-
     var dataAllAppointment = await axios.post(`/getAllAppointment`, {
       HN: this.state.HN,
     })
@@ -77,20 +77,19 @@ class Home extends Component {
       HN: this.state.HN,
     })
 
+    const getData = this.state.patientData.filter(data => (data.HN === this.state.HN))
 
     this.setState({
       queueData: tmp,
       allStepQueue: dataAllStepQueue,
       allAppointment: dataAllAppointment.data,
       dataPhoneNumber: dataPhone.data[0].phonenumber,
+      patientInfo: getData
     })
-    console.log(this.state.queueData.avgtime);
     const time = await this.state.queueData.avgtime
     this.setState({
       avgTime: time
     })
-
-    // console.log(this.state.allStepQueue)
     this.cutPhoneNumber();
     this.setState({
       recipient: this.cutPhoneNumber()
@@ -113,13 +112,19 @@ class Home extends Component {
   getPatientData = () => {
     const datas = this.state.patientData;
     let tmp = "";
-    tmp = datas.filter(data => data.HN === this.state.HN).map(data => (
-      <Header>
-        {data.firstName} {data.lastName} <br />
-        <span>HN : {data.HN}</span>
-      </Header>
-    ));
-
+    if (this.state.patientInfo[0]) {
+      tmp = datas.filter(data => data.HN === this.state.HN).map((data, i) => (
+        <div>
+          {this.state.patientInfo[0].gender === "male"
+            ? <Image src={boy} style={{ width: '30%' }} />
+            : <Image src={girl} style={{ width: '30%' }} />}
+          <Header key={i}>
+            {data.firstName} {data.lastName} <br />
+            <span>HN : {data.HN}</span>
+          </Header>
+        </div>
+      ));
+    }
     return tmp;
   };
 
@@ -131,12 +136,12 @@ class Home extends Component {
     const icon =
       [{ key: '1', value: 'user doctor', text: 'user doctor' },
       { key: '2', value: 'lab', text: 'lab' }]
-    console.log(this.state.allStepQueue)
     let tmp = ''
     let data = this.state.allStepQueue
 
-    tmp = data.map(data => (
-      <Step completed={data.statusId == 4 ? true : false}
+    tmp = data.map((data, i) => (
+      <Step key={i}
+        completed={data.statusId == 4 ? true : false}
         disabled={data.statusId == 5 ? true : false}
         active={data.statusId == 3 || data.statusId == 1 ? true : false}>
         <Icon color="blue" className={icon.filter(icon => icon.key == data.type).length == 0 ? ""
@@ -163,7 +168,7 @@ class Home extends Component {
     let tmp = ''
     let data = this.state.allAppointment
     tmp = data.map((data, i) => (
-      <Table.Body>
+      <Table.Body key={i}>
         <Table.Row>
           <Table.Cell>{1 + i}</Table.Cell>
           <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' ' + data.timeStart + ' - ' + data.timeEnd}</Table.Cell>
@@ -179,33 +184,26 @@ class Home extends Component {
     let tmp = "";
     tmp = this.state.queueData.queueId - this.state.queueData.currentQueue
     const time = this.state.avgTime
-    console.log(tmp)
-    console.log(time);
     if (tmp >= 0) {
-      console.log(tmp);
       if (tmp === 0) {
         // console.log("ถึงคิว")
         NotificationManager.info('ถึงคิว')
         this.setState({ textmessage: "ถึงคิว" })
         this.sendText()
       } else if (tmp === 1) {
-        console.log("เหลืออีก 1 คิว" + time + ' นาที')
         NotificationManager.warning('เหลืออีก 1 คิว ' + time + ' นาที')
         this.setState({ textmessage: "เหลืออีก 1 คิว " + time + ' นาที' })
         this.sendText()
       } else if (tmp === 3) {
-        console.log("เหลืออีก 3 คิว" + time + ' นาที')
         NotificationManager.warning('เหลืออีก 3 คิว' + time + ' นาที')
         this.setState({ textmessage: "เหลืออีก 3 คิว " + time + ' นาที' })
         this.sendText()
       } else if (tmp === 5) {
-        console.log("เหลืออีก 5 คิว" + time + ' นาที')
         NotificationManager.warning('เหลืออีก 5 คิว' + time + ' นาที')
         this.setState({ textmessage: "เหลืออีก 5 คิว " + time + ' นาที' })
         this.sendText()
       }
     } else {
-      console.log("ไม่ได้อยู่ในคิว")
       NotificationManager.info('ไม่ได้อยู่ในคิว')
     }
   }
@@ -217,7 +215,6 @@ class Home extends Component {
       recipient: recipient,
       textmessage: textmessage
     })
-    console.log(resp)
   }
 
   render() {
@@ -233,7 +230,10 @@ class Home extends Component {
           // firstNamePatient={this.state.firstNamePatient}
           // lastNamePatient={this.state.lastNamePatient}
           queueData={this.state.queueData}
+          patientData={this.state.patientData}
+          HN={this.state.HN}
           allAppointment={this.state.allAppointment}
+          patientInfo={this.state.patientInfo}
           //method
           setField={this.setField}
           getPatientData={this.getPatientData}

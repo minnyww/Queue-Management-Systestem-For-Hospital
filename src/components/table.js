@@ -3,8 +3,6 @@ import "./../css/Q.css";
 import { Header, Grid, Step, Icon, Message } from "semantic-ui-react";
 
 const tablepatient = props => {
-  console.log("props", props);
-
   return (
 
     <div>
