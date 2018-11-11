@@ -673,7 +673,6 @@ class Adminhome extends Component {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
     const date = this.pharseDate();
-    console.log(this.state.forwardDepartments)
     let stepCurrent = null;
     let updateWaitStatus = false
     let indexStep = 0;
@@ -684,8 +683,6 @@ class Adminhome extends Component {
         HN: this.state.currentQueue.HN,
         group: this.state.currentQueue.group
       })
-      console.log('forwardList.data ', forwardList.data)
-      console.log('forwardDepartment ', this.state.forwardDepartments)
       if (forwardList.data.length > 1) {
         if (forwardList.data.length < this.state.forwardDepartments.length) {
           let tmp = ''
@@ -849,7 +846,6 @@ class Adminhome extends Component {
         message: ''
 
       })
-      console.log(this.state.forwardDepartments)
     } else {
       swal("Cannot Forward Queue to Another department", {
         icon: "warning",
@@ -954,7 +950,6 @@ class Adminhome extends Component {
   //show patient at lab queues
   showPatientLabQueue = () => {
     const data = this.state.labQueues
-    console.log("data", data)
     let tmp = "";
     debugger
     if (!R.isEmpty(data)) {
@@ -1131,7 +1126,6 @@ class Adminhome extends Component {
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
-    console.log("editStatus", tmp[i])
     //('dep', dep)
     if (dep) {
       // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown 
@@ -1139,7 +1133,6 @@ class Adminhome extends Component {
     }
 
     if (!tmp[i].alreadyValue) {
-      console.log("ALREADY!!!!")
       tmp[i].alreadyValue = { ...tmp[i] }
     }
 
@@ -1160,7 +1153,6 @@ class Adminhome extends Component {
     }
     else if (!this.state.forwardDepartments[i + 1]) {
       //(tmp[i].roomId)
-      console.log(tmp[i])
       if (tmp[i].roomId === undefined) {
         tmp.splice(i, 1)
         this.setState({
@@ -1230,7 +1222,6 @@ class Adminhome extends Component {
         tmp[i] = dep.alreadyValue
       }
       // }
-      console.log('Hello 00')
       tmp[i].editStatus = false
       this.setState({
         forwardDepartments: tmp

@@ -467,7 +467,6 @@ class timetable extends Component {
             openDetail: true,
             selectEvent: e.id,
         })
-        console.log(this.state.selectEvent)
     }
 
     openConfirm = (index) => {
@@ -542,10 +541,8 @@ class timetable extends Component {
     showDetailTimetableDescription = () => {
         const { timetable, selectEvent } = this.state
         const getTimetable = this.state.events.filter(data => (data.id === this.state.selectEvent))
-        console.log(getTimetable)
         let getValueDate;
         if (getTimetable.length > 0) {
-            console.log('Hi')
             getValueDate = moment(getTimetable[0].start).format('YYYY-MM-DD')
         }
 

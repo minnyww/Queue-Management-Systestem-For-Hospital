@@ -75,8 +75,6 @@ class addOrdeleteDepartment extends Component {
             loginName: userData
 
         })
-        console.log(this.state.listAllDoctors)
-
     }
 
     getListAllDoctors = async () => {

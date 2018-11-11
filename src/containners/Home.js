@@ -114,11 +114,11 @@ class Home extends Component {
     let tmp = "";
     if (this.state.patientInfo[0]) {
       tmp = datas.filter(data => data.HN === this.state.HN).map((data, i) => (
-        <div>
+        <div key={i}>
           {this.state.patientInfo[0].gender === "male"
             ? <Image src={boy} style={{ width: '30%' }} />
             : <Image src={girl} style={{ width: '30%' }} />}
-          <Header key={i}>
+          <Header>
             {data.firstName} {data.lastName} <br />
             <span>HN : {data.HN}</span>
           </Header>
@@ -186,7 +186,6 @@ class Home extends Component {
     const time = this.state.avgTime
     if (tmp >= 0) {
       if (tmp === 0) {
-        // console.log("ถึงคิว")
         NotificationManager.info('ถึงคิว')
         this.setState({ textmessage: "ถึงคิว" })
         this.sendText()
@@ -218,7 +217,6 @@ class Home extends Component {
   }
 
   render() {
-    // console.log("state", this.state)
     return (
       <div >
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>

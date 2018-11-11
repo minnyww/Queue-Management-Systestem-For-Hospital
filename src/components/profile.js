@@ -7,13 +7,11 @@ import { Card, Button, Table, Statistic, Image } from "semantic-ui-react";
 
 const profile = props => {
   const { setField } = props;
-  console.log(props.queueData.currentQueue)
   return (
     <div>
       <center>
         <Card style={{ height: "30%", width: '90%' }} color='blue'>
           <Card.Content>
-
             <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
               <Button color="blue"

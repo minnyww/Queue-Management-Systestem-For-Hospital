@@ -178,7 +178,6 @@ class Appointment extends Component {
 
 
   dropdownDoctors = doctors => {
-    console.log(doctors)
     const roomAndDoctorOption = doctors.data.map(roomDoctor => ({
       key: roomDoctor.doctorId,
       text:
@@ -195,7 +194,6 @@ class Appointment extends Component {
 
 
   moveEvent = async ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
-    console.log('Hi')
     const { events } = this.state;
 
     const idx = events.indexOf(event);
@@ -237,14 +235,11 @@ class Appointment extends Component {
 
     let moveAppointment = true
     const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
-    console.log('End', this.state.doctorWithRemaining)
 
     //fail
     if (countAppointment[0]) {
-      console.log('no data')
       if (!R.isEmpty(result) || result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
         //fail
-        console.log('cannot')
         swal("Cannot!", `HN: ${event.title} cannot move to  
         ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
@@ -252,7 +247,6 @@ class Appointment extends Component {
       }
       else {
         //success
-        console.log('success1')
         swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
         var month = new Array(
           "Jan",
@@ -302,7 +296,6 @@ class Appointment extends Component {
     }
     else {
       //success
-      console.log('success2')
       swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
       var month = new Array(
         "Jan",
@@ -947,10 +940,8 @@ class Appointment extends Component {
   }
 
   checkCount = async (doctorId, statusMove, updatedEvent) => {
-    console.log(updatedEvent)
     debugger
     if (updatedEvent !== undefined) {
-      console.log('03012390129')
       var month = new Array(
         "Jan",
         "Feb",
@@ -979,7 +970,6 @@ class Appointment extends Component {
       var curr_year = updatedEvent.start.getFullYear();
 
       if (statusMove && doctorId) {
-        console.log('1', updatedEvent.start, day[curr_date], month[curr_month])
         let getDoctor = doctorId.toString().split('/')
         const date = this.pharseDate(new Date(this.state.Date))
         const doctors = await axios.post(`/getRemainingDoctor`, {
@@ -993,10 +983,8 @@ class Appointment extends Component {
         this.setState({
           doctorWithRemaining: doctors.data
         })
-        console.log(this.state.doctorWithRemaining)
       }
     } else if (!statusMove && doctorId) {
-      console.log('2')
       let getDoctor = doctorId.toString().split('/')
       const date = this.pharseDate(new Date(this.state.Date))
       const doctors = await axios.post(`/getRemainingDoctor`, {
@@ -1010,7 +998,6 @@ class Appointment extends Component {
       this.setState({
         doctorWithRemaining: doctors.data
       })
-      console.log(this.state.doctorWithRemaining)
     }
     else if (!doctorId) {
     } else {
@@ -1027,7 +1014,6 @@ class Appointment extends Component {
       this.setState({
         doctorWithRemaining: doctors.data
       })
-      console.log(this.state.doctorWithRemaining)
     }
   }
 
@@ -1044,7 +1030,6 @@ class Appointment extends Component {
   }
 
   render() {
-    console.log(this.state.dropdownValue)
     return (
       <div>
         <div style={{ width: '100%' }}>

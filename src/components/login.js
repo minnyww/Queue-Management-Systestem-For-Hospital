@@ -65,14 +65,11 @@ class Login extends Component {
     var phoneNumber = await this.state.phoneNumber;
     var check = false;
     var checkHNform = false;
-    console.log(phoneNumber);
-    console.log(HN);
 
     if (checkHNform === false) {
       if (this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({ errorHN: { status: false, message: "" } });
         checkHNform = true;
-        console.log(checkHNform);
 
       } else if (!this.state.HN.match(/[0-9]{4,10}[/]{1}[0-9]{2}/)) {
         this.setState({
@@ -124,31 +121,22 @@ class Login extends Component {
     return phone;
   }
   validateOTP = async (otp) => {
-    console.log(otp);
-    console.log("เข้าvalidateOTP");
     const check = await axios.post('/validateOTP', {
       requestId: this.state.requestId,
       code: otp
     })
-    console.log(check.data.message);
     if (check.data.message.status === '0') {
-      console.log("เข้าstatusValidate");
-
       //Check API
-
       var data = await axios.post("/checkHN", {
         HN: this.state.HN,
         phoneNumber: this.state.phoneNumber
       });
-      console.log(data.data);
       if (data.data.length === 0) {
         this.setState({
           errorHN: { status: true, message: "HN Does not match" }
         });
       } else {
-        console.log(data.data[0]);
         // let dataEmp = splice(fruits.length-1)
-        console.log("aaaaaa:", this.props);
         localStorage.setItem('getUserData', JSON.stringify(data.data[0]))
         this.props.history.push({
           pathname: "/Home",
@@ -169,11 +157,9 @@ class Login extends Component {
       recipient: recipient,
       textmessage: textmessage
     })
-    console.log(resp)
   }
   sendOTP = async () => {
     const recipient = this.state.recipient
-    console.log("ส่งOTP");
     const reqOTP = await axios.post('/requestOTP', {
       recipient: recipient
     })
@@ -189,7 +175,6 @@ class Login extends Component {
         this.input[event.target.id].focus()
       }else if(event.target.id == 4){
         let otp = this.state.pin1+this.state.pin2+this.state.pin3+event.target.value
-        console.log(otp);
         this.validateOTP(otp)
       }
     }
