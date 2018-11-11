@@ -13,7 +13,8 @@ import {
   Header,
   Grid,
   Message,
-  Label
+  Label,
+  Input
 } from "semantic-ui-react";
 import axios from "./../lib/axios";
 import { Link } from "react-router-dom";
@@ -25,14 +26,14 @@ class Login extends Component {
     phoneNumber: "",
     recipient: '',
     textmessage: '',
-    OTP:'',
-    OTPfield:'',
-    requestId:'',
-    statusValidate:'',
-    pin1:'',
-    pin2:'',
-    pin3:'',
-    pin4:'',
+    OTP: '',
+    OTPfield: '',
+    requestId: '',
+    statusValidate: '',
+    pin1: '',
+    pin2: '',
+    pin3: '',
+    pin4: '',
     //modal
     open: false,
     openOTP: false,
@@ -107,13 +108,13 @@ class Login extends Component {
           }
         });
       }
-  }  
+    }
 
   };
   setField = (field, value) => {
     this.setState({ [field]: value });
   };
-  
+
   cutForOTP = () => {
     let phone = "";
     var number = this.state.phoneNumber
@@ -169,12 +170,12 @@ class Login extends Component {
   }
   onChange = (event) => {
     // let otp = this.state.OTPfield + event.target.value
-    this.setState({ ['pin'+event.target.id]  : event.target.value })
-    if(event.target.value.length <= event.target.maxLength){
-      if(event.target.id < 4){
+    this.setState({ ['pin' + event.target.id]: event.target.value })
+    if (event.target.value.length <= event.target.maxLength) {
+      if (event.target.id < 4) {
         this.input[event.target.id].focus()
-      }else if(event.target.id == 4){
-        let otp = this.state.pin1+this.state.pin2+this.state.pin3+event.target.value
+      } else if (event.target.id == 4) {
+        let otp = this.state.pin1 + this.state.pin2 + this.state.pin3 + event.target.value
         this.validateOTP(otp)
       }
     }
@@ -185,14 +186,16 @@ class Login extends Component {
       <div >
         <center>
           <Grid.Column style={{ maxWidth: "450px" }}>
-            <Segment color="blue">
+            <Segment color="teal" style={{ marginLeft: '5%', marginRight: '5%' }}>
               <Form onSubmit={this.submit}>
-                <Form.Input
+                <Input
+                  action={{ color: 'teal', icon: 'user', }}
+                  actionPosition='left'
                   fluid
-                  label="HN"
+                  // label="HN"
                   name="HN"
                   placeholder="HN"
-                  type="text"
+                  // type="text"
                   required
                   value={this.state.HN}
                   onChange={(e, { value }) => this.setState({ HN: value })}
@@ -201,10 +204,12 @@ class Login extends Component {
                 <Message negative hidden={!this.state.errorHN.status}>
                   {this.state.errorHN.message}
                 </Message>
-
-                <Form.Input
+                <br />
+                <Input
+                  action={{ color: 'teal', icon: 'phone', }}
+                  actionPosition='left'
                   fluid
-                  label="Phone number"
+                  // label="Phone number"
                   name="Phone number"
                   placeholder="Phone number"
                   type="number"
@@ -217,16 +222,12 @@ class Login extends Component {
                 <Message negative hidden={!this.state.errorPhoneNumber.status}>
                   {this.state.errorPhoneNumber.message}
                 </Message>
-                <Button color="blue" type="submit">
+                <br />
+                <Button color="teal" type="submit" style={{ width: '100%' }}>
                   Sign in
                 </Button>
 
               </Form>
-              {/* <Button style={{ marginTop: "2.5%", float: 'right' }} color="teal" size='tiny'> */}
-              {/* <Label color='teal' size='tiny' attached='bottom right' style={{ marginTop: "2.5%" }}>
-                <Link to={"/Admin"}>Admin</Link>
-              </Label> */}
-              {/* </Button> */}
             </Segment>
 
             <Modal
@@ -238,62 +239,62 @@ class Login extends Component {
                 this.setField("OTPfield", '')
               }}>
               <Form name='OTP'>
-                  <label>Please fill your OTP</label>
-                  <Form.Group style={{marginLeft:30}}>
+                <label>Please fill your OTP</label>
+                <Form.Group style={{ marginLeft: 30 }}>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}} >
+                    <Form.Field style={{ paddingRight: 15 }} >
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="1"
-                          autoFocus
-                          ref={input => this.input["0"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.pin1}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="1"
+                        autoFocus
+                        ref={input => this.input["0"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.pin1}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="2"
-                          ref={input => this.input["1"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.pin2}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="2"
+                        ref={input => this.input["1"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.pin2}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="3"
-                          ref={input => this.input["2"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.pin3}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="3"
+                        ref={input => this.input["2"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.pin3}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Field style={{paddingRight: 15}}>
+                    <Form.Field style={{ paddingRight: 15 }}>
                       <input className='OTP'
-                          width={2}
-                          style={{width:40}}
-                          maxLength={1}
-                          id="4"
-                          ref={input => this.input["3"] = input}
-                          type="text"
-                          onChange={this.onChange}
-                          value={this.state.pin4}
+                        width={2}
+                        style={{ width: 40 }}
+                        maxLength={1}
+                        id="4"
+                        ref={input => this.input["3"] = input}
+                        type="text"
+                        onChange={this.onChange}
+                        value={this.state.pin4}
                       />
                     </Form.Field>
                   </Grid.Column>

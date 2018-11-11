@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './../css/Q.css';
 import Login from './../components/login';
-import { Card, Icon, Image, Button, Form, Segment, Header, Grid, Message, Label } from 'semantic-ui-react'
+import { Card, Icon, Image, Button, Form, Segment, Header, Grid, Message, Label, Input } from 'semantic-ui-react'
 import Headerbar from './../components/headerbar';
 import logo1 from './../img/logo1.png';
 import axios from './../lib/axios'
@@ -51,7 +51,8 @@ class Admin extends Component {
     render() {
         return (
             <div style={{
-                backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                // backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
+                backgroundColor: 'white',
                 height: '100vh'
             }}>
                 <Headerbar />
@@ -65,9 +66,13 @@ class Admin extends Component {
                 <br />
                 <center>
                     <Grid.Column style={{ maxWidth: '450px' }}>
-                        <Segment color='blue'>
+                        <Segment color='teal'>
                             <Form onSubmit={this.submit}>
-                                <Form.Input fluid label='Username'
+                                <Input
+                                    action={{ color: 'teal', icon: 'user', }}
+                                    actionPosition='left'
+                                    fluid
+                                    // label='Username'
                                     name="Username"
                                     placeholder='Username'
                                     type="text"
@@ -75,7 +80,12 @@ class Admin extends Component {
                                     error={this.state.errorUsername.status}
                                     value={this.state.Username}
                                     onChange={(e, { value }) => this.setState({ Username: value })} />
-                                <Form.Input fluid label='Password'
+                                <br />
+                                <Form.Input
+                                    action={{ color: 'teal', icon: 'lock', }}
+                                    actionPosition='left'
+                                    fluid
+                                    // label='Password'
                                     name="Password"
                                     placeholder='Password'
                                     type="password"
@@ -85,7 +95,7 @@ class Admin extends Component {
                                 <Message negative hidden={!this.state.errorUsername.status}>
                                     Username or Password does not match
                                 </Message>
-                                <Button color='blue' type='submit' >Sign in</Button>
+                                <Button color='teal' type='submit' style={{ width: '100%' }}>Sign in</Button>
                             </Form>
                         </Segment>
                     </Grid.Column>
