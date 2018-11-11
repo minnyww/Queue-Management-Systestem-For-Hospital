@@ -7,12 +7,13 @@ import { Card, Button, Table, Statistic, Image } from "semantic-ui-react";
 
 const profile = props => {
   const { setField } = props;
+  console.log(props.queueData.currentQueue)
   return (
     <div>
       <center>
         <Card style={{ height: "30%", width: '90%' }} color='blue'>
           <Card.Content>
-          
+
             <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
               <Button color="blue"
@@ -52,7 +53,10 @@ const profile = props => {
               <Card.Header>คิวปัจจุบัน</Card.Header>
               <Card.Description>
                 <Statistic size="huge" color='blue'>
-                  <Statistic.Value>{props.queueData.currentQueue}</Statistic.Value>
+                  <Statistic.Value>{props.queueData.currentQueue !== undefined
+                    ? props.queueData.currentQueue
+                    : '-'}
+                  </Statistic.Value>
                 </Statistic>
               </Card.Description>
             </Card.Content>
@@ -63,8 +67,6 @@ const profile = props => {
                   {isNaN(props.queueData.queueId - props.queueData.currentQueue) === true
                     ? '0'
                     : props.queueData.queueId - props.queueData.currentQueue}
-
-                  {/* {props.queueData.queueId - props.queueData.currentQueue <= 0 ? '0' : props.queueData.queueId - props.queueData.currentQueue} */}
                 </Statistic.Value>
                 <Statistic.Value>
                   Queues
@@ -77,7 +79,9 @@ const profile = props => {
               <Card.Header>คิวของท่าน</Card.Header>
               <Card.Description>
                 <Statistic size="huge" color='teal'>
-                  <Statistic.Value>{props.queueData.queueId}</Statistic.Value>
+                  <Statistic.Value>{props.queueData.queueId !== undefined
+                    ? props.queueData.queueId
+                    : '-'}</Statistic.Value>
                 </Statistic>
               </Card.Description>
             </Card.Content>
@@ -85,8 +89,6 @@ const profile = props => {
               <Card.Header>เวลาที่รอ</Card.Header>
               <Statistic size='mini'>
                 <Statistic.Value>
-                  {/* {props.queueData.statusId !== 4 ? parseInt(props.queueData.avgtime).toFixed(0) + '' : '' } */}
-
                   {parseInt(props.queueData.avgtime).toFixed(0) === 'NaN' ? '0' : parseInt(props.queueData.avgtime).toFixed(0)
                   }
                 </Statistic.Value>
