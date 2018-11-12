@@ -984,7 +984,6 @@ class Adminhome extends Component {
   };
 
   addMoreForward = async () => {
-    // console.log('forward forward', this.state.forwardDepartments)
     let getRoomAndDoctors = this.state.forwardDoctorId.split('/')
     let tmp = {
       type: this.state.forwardType,
@@ -1007,7 +1006,7 @@ class Adminhome extends Component {
       forwardRoomAndDoctors: [],
       // addForwardNew:true
     })
-    // console.log(this.state.forwardDepartments)
+    console.log(this.state.forwardDepartments)
   }
   //------------------------------------------------------
   showDropdownDepartment = () => {

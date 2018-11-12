@@ -141,7 +141,7 @@ const Queue = props => {
                     HN Does not match
                   </Message>
                   <Message negative hidden={!props.errorGetName.status}>
-                    Not have in databse
+                    Don't Have Hospital Number
                   </Message>
                   <Message negative hidden={!props.errorAdd.status}>
                     Cannot add to Queue
