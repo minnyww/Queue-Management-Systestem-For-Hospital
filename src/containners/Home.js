@@ -39,7 +39,7 @@ class Home extends Component {
     this.setState({
       HN: getUserData.HN
     })
-    // setInterval('window.location.reload()', 10000);
+    setInterval('window.location.reload()', 15000);
     var dataPatient = await axios.get(`/getPatient`);
     this.setState({
       patientData: dataPatient.data,
@@ -162,13 +162,15 @@ class Home extends Component {
   }
 
   showAppointment = () => {
+    console.log(this.state.allAppointment)
     let tmp = ''
     let data = this.state.allAppointment
     tmp = data.map((data, i) => (
       <Table.Body key={i}>
         <Table.Row>
           <Table.Cell>{1 + i}</Table.Cell>
-          <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' ' + data.timeStart + ' - ' + data.timeEnd}</Table.Cell>
+          <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' '
+            + data.timeStart.substr(0,8) + ' - ' + data.timeEnd.substr(0,8)}</Table.Cell>
           <Table.Cell>{data.firstname} {data.lastname}</Table.Cell>
           <Table.Cell>{data.department} </Table.Cell>
         </Table.Row>

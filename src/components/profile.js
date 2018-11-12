@@ -26,7 +26,7 @@ const profile = props => {
                 styles={{ modal: { width: 800 } }}
                 open={props.showIsModal} style={style}
                 onClose={() => setField("showIsModal", false)}>
-                <Table celled style={{ width: "40", marginTop: '10%' }} color='teal'>
+                <Table celled style={{ width: "40", marginTop: '5%' }} color='teal'>
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell colSpan='4'>Appointment Table</Table.HeaderCell>

@@ -544,8 +544,10 @@ class Appointment extends Component {
       // open: true
     })
     const date = this.pharseDate(new Date(this.state.Date))
+    console.log(new Date(this.state.Date))
+    console.log(new Date())
 
-    if (new Date(this.state.Date).getDate() >= new Date().getDate() && new Date(this.state.Date).getMonth() == new Date().getMonth()) {
+    if (new Date(this.state.Date) > new Date()) {
       const doctors = await axios.post(`/getListDoctor`, {
         Date: new Date(this.state.Date).getDate(),
         day: date.day,
@@ -564,7 +566,6 @@ class Appointment extends Component {
       this.setState({ open: true })
       // console.log(this.state.doctorWithRemaining)
     }
-
     else {
       this.setField("open", false)
       swal("Cannot !",
