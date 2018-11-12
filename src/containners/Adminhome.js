@@ -127,7 +127,6 @@ class Adminhome extends Component {
       value: department.departmentId
     }));
 
-
     const date = this.pharseDate();
     const doctors = await axios.post(`/getListDoctor`, {
       Date: this.state.Date.getDate(),
@@ -143,7 +142,6 @@ class Adminhome extends Component {
     var datasLab = await axios.get(`/getLabQueue/${doctors.data[0].roomId}`);
     var dataLabQueue = await axios.get(`/getListLabQueue`);
     const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${doctorsOption[0].value}`);
-
 
     this.setState({
       currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0],
@@ -170,12 +168,10 @@ class Adminhome extends Component {
   };
   //สิ้นสุด Willmount
   forwardList = async (currentQueue) => {
-    // console.log('currentQueue ', currentQueue)
     const forwardList = await axios.post('/getAllStepQueue', {
       HN: currentQueue.length === 0 ? '' : currentQueue.HN,
       group: currentQueue.length === 0 ? '' : currentQueue.group
     })
-    // console.log('forwardList ', forwardList.data)
     this.setState({
       forwardDepartments: forwardList.data.length <= 1 ? [] : forwardList.data,
       addForwardNew: this.state.forwardDepartments.length > 0 ? true : false
@@ -235,7 +231,6 @@ class Adminhome extends Component {
     return dropdownAndRooms;
   };
 
-
   //แก้ เพิ่ม Date เข้าไป
   doctorInDepartment = async value => {
     const roomAndDoctors = await axios.post(`/getRoomAndDoctor`, {
@@ -245,9 +240,7 @@ class Adminhome extends Component {
       year: this.state.currentDate.year,
       forwardDepartmentId: value
     });
-
     return this.dropdownRooms(roomAndDoctors);
-
   };
 
   pharseDate = () => {
@@ -325,8 +318,7 @@ class Adminhome extends Component {
           lastNamePatient: "",
           errorGetName: { status: false, message: "" },
           errorHN: { status: false, message: "" },
-          HN : '',
-
+          HN: '',
         });
       } else {
         this.setState({
@@ -1066,6 +1058,7 @@ class Adminhome extends Component {
           height: '100px', width: "60%", padding: "10px",
           marginTop: "5%", borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
         }}
+        value={this.state.forwardMessage}
         placeholder="Tell us more , Leave Message to Doctor"
         onChange={async (e, { value }) => {
           this.setField("forwardMessage", value);
