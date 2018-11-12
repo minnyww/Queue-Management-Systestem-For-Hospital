@@ -115,7 +115,16 @@ const Queue = props => {
             <center>
               <Modal
                 open={props.modalIsOpen}
-                onClose={() => setField("modalIsOpen", false)}
+                onClose={() => {
+                  setField("modalIsOpen", false)
+                  setField("namePatient", '')
+                  setField("lastNamePatient", '')
+                  setField("errorGetName", { status: false, message: "" })
+                  setField("errorHN", { status: false, message: "" })
+                  setField("errorAdd", { status: false, message: "" })
+                  setField("HN", '')
+                }
+                }
                 styles={{ modal: { width: 400, top: "30%", borderRadius: '5px' } }}
               >
                 <Form onSubmit={e => { props.addQueue(e); }}>

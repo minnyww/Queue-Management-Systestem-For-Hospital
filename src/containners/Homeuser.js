@@ -16,6 +16,7 @@ class Homeuser extends Component {
                 <br />
                 <br />
                 <Image src={hospital}  
+                style={{ marginTop : '4%' }}
                 className="ui small centered image" />
                 <br />
                 <br />

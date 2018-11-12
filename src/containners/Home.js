@@ -97,9 +97,6 @@ class Home extends Component {
     this.sendNotification();
   }
 
-
-
-
   cutPhoneNumber = () => {
     let phone = "";
     var number = this.state.dataPhoneNumber
@@ -118,7 +115,7 @@ class Home extends Component {
           {this.state.patientInfo[0].gender === "male"
             ? <Image src={boy} style={{ width: '30%' }} />
             : <Image src={girl} style={{ width: '30%' }} />}
-          <Header>
+          <Header style={{ fontWeight: '100' }}>
             {data.firstName} {data.lastName} <br />
             <span>HN : {data.HN}</span>
           </Header>

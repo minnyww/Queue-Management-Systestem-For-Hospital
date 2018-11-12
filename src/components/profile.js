@@ -4,17 +4,20 @@ import React, { Component } from "react";
 import Modal from "react-responsive-modal";
 import "./../css/Q.css";
 import { Card, Button, Table, Statistic, Image } from "semantic-ui-react";
+import girl from './../img/girl.png'
+import boy from './../img/boy.png'
+
 
 const profile = props => {
   const { setField } = props;
   return (
     <div>
       <center>
-        <Card style={{ height: "30%", width: '90%' }} color='blue'>
+        <Card style={{ height: "30%", width: '90%' }} color='teal'>
           <Card.Content>
             <Card.Meta>{props.getPatientData()}</Card.Meta>
             <Card.Description>
-              <Button color="blue"
+              <Button basic color="teal"
                 onClick={() => setField("showIsModal", true)}>
                 ดูบัตรนัด
               </Button>

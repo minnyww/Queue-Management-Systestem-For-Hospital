@@ -59,14 +59,14 @@ class Admin extends Component {
                 <br />
                 <br />
                 <center>
-                    <Header color='teal'>Login To Your Account</Header>
+                    <Header as='h2' color='teal'>Login To Your Account</Header>
                     <img src={logo1} className="ui small centered image" />
                 </center>
                 <br />
                 <br />
                 <center>
                     <Grid.Column style={{ maxWidth: '450px' }}>
-                        <Segment color='teal'>
+                        <Segment color='teal' color="teal" style={{ marginLeft: '5%', marginRight: '5%' }}>
                             <Form onSubmit={this.submit}>
                                 <Input
                                     action={{ color: 'teal', icon: 'user', }}
