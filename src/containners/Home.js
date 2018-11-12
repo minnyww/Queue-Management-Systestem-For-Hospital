@@ -39,7 +39,7 @@ class Home extends Component {
     this.setState({
       HN: getUserData.HN
     })
-    setInterval('window.location.reload()', 15000);
+    // setInterval('window.location.reload()', 15000);
     var dataPatient = await axios.get(`/getPatient`);
     this.setState({
       patientData: dataPatient.data,
