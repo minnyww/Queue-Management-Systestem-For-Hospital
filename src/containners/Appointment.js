@@ -213,6 +213,10 @@ class Appointment extends Component {
       && data.start.getMonth() == updatedEvent.start.getMonth()
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
+
+    console.log(updatedEvent)
+    console.log(this.state.events[idx])
+    console.log(updatedEvent.start < this.state.events[idx].start)
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
       && data.Date === updatedEvent.start.getDate())
@@ -238,11 +242,18 @@ class Appointment extends Component {
 
     //fail
     if (countAppointment[0]) {
-      if (!R.isEmpty(result) || result.length > 0 || sumCount >= this.state.doctorWithRemaining.remaining) {
+      if (!R.isEmpty(result) || result.length > 0
+        || sumCount >= this.state.doctorWithRemaining.remaining
+      ) {
         //fail
         swal("Cannot!", `HN: ${event.title} cannot move to  
         ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
+        `, "warning");
+      }
+      else if (updatedEvent.start < this.state.events[idx].start) {
+        swal("Cannot!", `HN: ${event.title} cannot move to  
+        ${updatedEvent.start.toString().substr(0, 24)} 
         `, "warning");
       }
       else {

@@ -162,7 +162,6 @@ class Adminhome extends Component {
       userType: type,
     })
     this.getAbsent()
-    this.updateAvgTime()
     this.forwardList(currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0])
   };
   //สิ้นสุด Willmount
@@ -572,7 +571,9 @@ class Adminhome extends Component {
     // console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
   };
   updateAvgTime = async () => {
+    console.log('alllllupdate')
     await axios.get(`/updateAllPerDay`);
+    console.log('alllllupdate')
   }
   getListLabQueue = async () => {
     const datas = await axios.get(`/getListLabQueue`);
