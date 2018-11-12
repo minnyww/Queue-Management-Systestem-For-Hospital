@@ -9,7 +9,7 @@ import "./../css/Q.css";
 
 const mainButton = props => {
     return (
-        <div>
+        <div style={{ marginTop: '3%' }}>
             <center>
                 <Grid>
                     <Grid.Row style={{ paddingBottom: '0px', paddingTop: '0px' }}>

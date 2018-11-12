@@ -34,7 +34,8 @@ class Main extends Component {
                 <Responsive  {...Responsive.onlyComputer}>
                     <div style={{
                         backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-                        backgroundRepeat: 'repeat',height: '100vh',
+                        backgroundRepeat: 'repeat',
+                        height: '100vh',
                     }}>
                         <Headerbar />
                         <center>
@@ -51,7 +52,7 @@ class Main extends Component {
                 <Responsive  {...Responsive.onlyTablet}>
                     <div style={{
                         backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-                        backgroundRepeat: 'repeat',height: '100vh',
+                        backgroundRepeat: 'repeat', height: '100vh',
                     }}>
                         <Headerbar />
                         <center>
@@ -81,7 +82,7 @@ class Main extends Component {
                         </Card>
                     </center>
                 </Responsive>
-            </div>
+            </div >
         );
     }
 }
