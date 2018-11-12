@@ -320,7 +320,13 @@ class Adminhome extends Component {
         });
         this.setState({
           modalIsOpen: false,
-          errorAdd: { status: false, message: "" }
+          errorAdd: { status: false, message: "" },
+          namePatient: "",
+          lastNamePatient: "",
+          errorGetName: { status: false, message: "" },
+          errorHN: { status: false, message: "" },
+          HN : '',
+
         });
       } else {
         this.setState({
