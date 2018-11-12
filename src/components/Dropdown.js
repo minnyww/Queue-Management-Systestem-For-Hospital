@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 
 const DropdownQueue = props => {
-  console.log(props.dropdownValue)
   return (
     <div>
       <Menu compact style={{ marginLeft: "3%" }}>

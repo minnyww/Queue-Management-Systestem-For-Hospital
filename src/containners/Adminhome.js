@@ -1001,12 +1001,11 @@ class Adminhome extends Component {
       forwardType: "",
       forwardDepartmentId: "",
       forwardDoctorId: " ",
-      forwardMessage: "",
-      // forwardComeback: null,
+      forwardMessage: '',
       forwardRoomAndDoctors: [],
+      // forwardComeback: null,
       // addForwardNew:true
     })
-    console.log(this.state.forwardDepartments)
   }
   //------------------------------------------------------
   showDropdownDepartment = () => {
@@ -1300,7 +1299,7 @@ class Adminhome extends Component {
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
             <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
-            <Table.Cell>{dep.message || dep.Forward}</Table.Cell>
+            <Table.Cell style={{ width: '100%', wordBreak: 'break-word' }} >{dep.message || dep.Forward}</Table.Cell>
             <Table.Cell>
               {dep.statusId === 4 || dep.statusId === 3 || dep.statusId === 5 ? '' :
                 <Icon name='pencil' color='orange'

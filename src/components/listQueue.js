@@ -221,7 +221,7 @@ const Queue = props => {
                       <Table.HeaderCell>Lab Or Department</Table.HeaderCell>
                       <Table.HeaderCell>Department</Table.HeaderCell>
                       <Table.HeaderCell>Doctor / Room</Table.HeaderCell>
-                      <Table.HeaderCell>Message</Table.HeaderCell>
+                      <Table.HeaderCell >Message</Table.HeaderCell>
                       <Table.HeaderCell>Edit Or Delete</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
