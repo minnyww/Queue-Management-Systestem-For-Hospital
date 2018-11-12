@@ -91,6 +91,16 @@ const showContent = props => {
             </Segment>
         </div>
         )
+    } else if (props.activeItem === 'patients') {
+        tmp = (<div>
+            <Segment color='blue' style={{ maxHeight: '200%' }}>
+                <Header>List Of Patients</Header>
+                <List animated verticalAlign='middle' divided relaxed='very' >
+                    {props.showPatient()}
+                </List>
+            </Segment>
+        </div>
+        )
     }
 
     return tmp;
@@ -219,8 +229,94 @@ const showFormRoom = props => {
             </Segment>
         </div>)
     }
+    else if (props.activeItem === 'patients') {
+        tmp = (<div>
+            <Segment attached='bottom' color='teal' >
+                <Header>Add Patients</Header>
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.roomNumber}
+                            label='Firstname'
+                            placeholder='Firstname'
+                            onChange={(e, { value }) => props.setField("firstnamePatient", value)} />
+
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.building}
+                            label='Lastname'
+                            placeholder='Lastname'
+                            onChange={(e, { value }) => props.setField("lastnamePatient", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            required
+                            control={Input}
+                            // value={props.floor}
+                            label='Hospital Number'
+                            placeholder='Hospital Number'
+                            onChange={(e, { value }) => props.setField("HNPatient", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Input
+                            required
+                            type='date'
+                            // control={CustomCalendar}
+                            // value={props.floor}
+                            label='Date of birth'
+                            placeholder='Date of birth'
+                            onChange={(e, { value }) => props.setField("dob", value)} />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
+                        <Form.Input
+                            required
+                            control={Input}
+                            // value={props.departmentValueId}
+                            label='Phone Number'
+                            placeholder='Phone Number'
+                            onChange={(e, { value }) => props.setField("phonenumber", value)} />
+                        <Form.Input
+                            required
+                            control={Select}
+                            // value={props.departmentValueId}
+                            label='Gender'
+                            options={gender}
+                            placeholder='Gender'
+                            onChange={(e, { value }) => props.setField("gender", value)} />
+                    </Form.Group>
+                </Form>
+                <center>
+                    <Button
+                        color='teal'
+                        onClick={() => {
+                            props.addPatient();
+                        }}> Add
+                </Button>
+                </center>
+            </Segment>
+        </div>)
+    }
     return tmp;
 };
+
+const gender = [
+    {
+      key: 1,
+      text: "Male",
+      value: "Male"
+    },
+    {
+      key: 2,
+      text: "Female",
+      value: "Female"
+    },
+  ];
+
 
 const formManageDepartment = props => {
     console.log("props", props);
@@ -258,6 +354,14 @@ const formManageDepartment = props => {
                                 }}
                                 active={props.activeItem === 'doctors' ? true : false}
                             >Doctors
+                            </Menu.Item>
+                            <Menu.Item
+                                name='Doctors'
+                                onClick={() => {
+                                    props.setField('activeItem', 'patients');
+                                }}
+                                active={props.activeItem === 'patients' ? true : false}
+                            >Patients
                             </Menu.Item>
                         </Menu>
                     </Grid.Column>

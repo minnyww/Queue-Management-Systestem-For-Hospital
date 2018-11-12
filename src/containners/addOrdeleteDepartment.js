@@ -20,6 +20,7 @@ class addOrdeleteDepartment extends Component {
         listRooms: [],
         listDoctors: [],
         listAllDoctors: [],
+        listPatient: [],
 
         departmentName: '',
         typeOfDepartment: '',
@@ -42,7 +43,13 @@ class addOrdeleteDepartment extends Component {
         activeItem: 'department',
         todayItem: 'today',
         loginName: '',
-        dropdownValue: ''
+        dropdownValue: '',
+
+        firstnamePatient: '',
+        lastnamePatient: '',
+        HNPatient: '',
+        dob: '',
+        gender: ''
     }
     componentWillMount = async () => {
         const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
@@ -50,6 +57,7 @@ class addOrdeleteDepartment extends Component {
         const allDepartment = await axios.get(`/getAllDepartment`);
         const allRoom = await axios.get(`/getAllRoom`);
         const getAllDoctor = await axios.get(`/getDoctors`)
+        const allPatient = await axios.get(`/getPatient`)
 
         const date = this.pharseDate()
         let allDoctors = await axios.post(`/getAllDoctors`, {
@@ -72,9 +80,11 @@ class addOrdeleteDepartment extends Component {
             listDoctors: allDoctors.data,
             listAllDoctors: getAllDoctor.data,
             allDepartments: departmentOption,
-            loginName: userData
+            loginName: userData,
+            listPatient: allPatient.data
 
         })
+
     }
 
     getListAllDoctors = async () => {
@@ -143,6 +153,13 @@ class addOrdeleteDepartment extends Component {
         // console.log(this.state.listDepartment)
     }
 
+    getListPatient = async () => {
+        const allPatient = await axios.get(`/getPatient`)
+        await this.setState({
+            listPatient: allPatient.data
+        })
+    }
+
     getListRooms = async () => {
         const allRoom = await axios.get(`/getAllRoom`);
         await this.setState({
@@ -203,6 +220,32 @@ class addOrdeleteDepartment extends Component {
         ))
         return tmp
     }
+
+    showPatient = () => {
+        let tmp = ''
+        const datas = this.state.listPatient
+        tmp = datas.map((data, i) => (
+            <List.Item key={i}>
+                <List.Content floated='right'>
+                    <Button color='red' size='mini'
+                        onClick={() => {
+                            this.deletePatient(i);
+                        }}> Delete
+                    </Button>
+                </List.Content>
+                <Icon name='user' color='blue' />
+                <List.Content>
+                    <List.Header>Name : {data.firstName} {data.lastName}</List.Header>
+                    <List.Header>HN : {data.HN}</List.Header>
+                    <List.Header>Date of bird : {data.dob}</List.Header>
+                    <List.Header>Gender: {data.gender}</List.Header>
+                    <List.Header>Phone Number: {data.phonenumber}</List.Header>
+                </List.Content>
+            </List.Item >
+        ))
+        return tmp
+    }
+
 
     showAllDoctorsLimit = () => {
         let tmp = ''
@@ -274,6 +317,29 @@ class addOrdeleteDepartment extends Component {
         await this.getDoctors()
     }
 
+    addPatient = async () => {
+        //addPatient
+
+        await axios.post("/addPatient", {
+            firstName: this.state.firstnamePatient,
+            lastName: this.state.lastnamePatient,
+            HN: this.state.HNPatient,
+            dob: this.state.dob,
+            gender: this.state.gender,
+            phonenumber: this.state.phonenumber
+        })
+        this.setState({
+            firstnamePatient: '',
+            lastnamePatient: '',
+            HNPatient: '',
+            dob: '',
+            gender: '',
+            phonenumber: ''
+        })
+        swal("Success!", `Add Successful`, "success");
+        await this.getListPatient()
+    }
+
     addDepartment = async () => {
         //addDepartment
         await axios.post("/addDepartment", {
@@ -319,6 +385,25 @@ class addOrdeleteDepartment extends Component {
                 await axios.delete(`/deleteDoctors/${empId}`)
                 await this.getListAllDoctors()
                 swal("Poof! Your Department has been deleted!", {
+                    icon: "success",
+                });
+            }
+        });
+    }
+
+    deletePatient = async (i) => {
+        let firstname = this.state.listPatient[i].firstName
+        console.log(firstname)
+        swal({
+            title: "Are you sure?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then(async (willDelete) => {
+            if (willDelete) {
+                await axios.delete(`/deletePatient/${firstname}`)
+                await this.getListPatient()
+                swal("Poof! Your Patient has been deleted!", {
                     icon: "success",
                 });
             }
@@ -428,6 +513,12 @@ class addOrdeleteDepartment extends Component {
                             avgTimeDoctor={this.state.avgTimeDoctor}
                             todayItem={this.state.todayItem}
 
+                            firstnamePatient={this.state.firstnamePatient}
+                            lastnamePatient={this.state.lastnamePatient}
+                            HNPatient={this.state.HNPatient}
+                            dob={this.state.dob}
+                            gender={this.state.gender}
+
                             //method
                             setField={this.setField}
                             addDepartment={this.addDepartment}
@@ -437,6 +528,8 @@ class addOrdeleteDepartment extends Component {
                             showAllDoctorsLimit={this.showAllDoctorsLimit}
                             addDoctors={this.addDoctors}
                             showDoctors={this.showDoctors}
+                            showPatient={this.showPatient}
+                            addPatient={this.addPatient}
 
                         />
                     </div>
@@ -474,6 +567,12 @@ class addOrdeleteDepartment extends Component {
                             avgTimeDoctor={this.state.avgTimeDoctor}
                             todayItem={this.state.todayItem}
 
+                            firstnamePatient={this.state.firstnamePatient}
+                            lastnamePatient={this.state.lastnamePatient}
+                            HNPatient={this.state.HNPatient}
+                            dob={this.state.dob}
+                            gender={this.state.gender}
+
                             //method
                             setField={this.setField}
                             addDepartment={this.addDepartment}
@@ -483,6 +582,8 @@ class addOrdeleteDepartment extends Component {
                             showAllDoctorsLimit={this.showAllDoctorsLimit}
                             addDoctors={this.addDoctors}
                             showDoctors={this.showDoctors}
+                            showPatient={this.showPatient}
+                            addPatient={this.addPatient}
 
                         />
                     </div>

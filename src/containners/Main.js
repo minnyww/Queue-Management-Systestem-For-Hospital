@@ -7,13 +7,15 @@ import logo from './../img/drug.png'
 
 class Main extends Component {
     state = {
-        loginName: ''
+        loginName: '',
+        nurseData: []
     }
     componentWillMount = () => {
         const userData = JSON.parse(localStorage.getItem('userData'))
 
         this.setState({
-            loginName: userData.firstname + ' ' + userData.lastname
+            loginName: userData.firstname + ' ' + userData.lastname,
+            nurseData: userData
         })
     }
 
@@ -45,7 +47,9 @@ class Main extends Component {
                                 >Logout
                         </Label>
                             </Link>
-                            <MainButton />
+                            <MainButton
+                                nurseData={this.state.nurseData}
+                            />
                         </center>
                     </div>
                 </Responsive>
@@ -62,7 +66,9 @@ class Main extends Component {
                                 >Logout
                         </Label>
                             </Link>
-                            <MainButton />
+                            <MainButton
+                                nurseData={this.state.nurseData}
+                            />
                         </center>
                     </div>
                 </Responsive>

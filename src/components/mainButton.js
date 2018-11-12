@@ -8,6 +8,7 @@ import flask from './../img/flask.png'
 import "./../css/Q.css";
 
 const mainButton = props => {
+    console.log(props.nurseData)
     return (
         <div style={{ marginTop: '3%' }}>
             <center>
@@ -64,19 +65,22 @@ const mainButton = props => {
                             </Link>
                         </Grid.Column>
                         <Grid.Column width={6}>
-                            <Link to={"/AddOrDeleteDepartment"}>
-                                <Image src={flask} style={{ height: '150px' }} circular />
-                                <Card link >
-                                    <Card.Content>
-                                        <Card.Header>Admin Management</Card.Header>
-                                        <Card.Description>
-                                            <Button basic color='teal'
-                                                content='Admin Management' icon='right arrow'
-                                                labelPosition='right'>
-                                            </Button></Card.Description>
-                                    </Card.Content>
-                                </Card>
-                            </Link>
+                            {props.nurseData.type === 3 ?
+                                <Link to={"/AddOrDeleteDepartment"}>
+                                    <Image src={flask} style={{ height: '150px' }} circular />
+                                    <Card link  >
+                                        <Card.Content>
+                                            <Card.Header>Admin Management</Card.Header>
+                                            <Card.Description>
+                                                <Button basic color='teal'
+                                                    content='Admin Management' icon='right arrow'
+                                                    labelPosition='right'>
+                                                </Button></Card.Description>
+                                        </Card.Content>
+                                    </Card>
+                                </Link>
+                                : ''
+                            }
                         </Grid.Column>
                         <Grid.Column width={2}></Grid.Column>
                     </Grid.Row>

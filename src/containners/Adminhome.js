@@ -93,14 +93,12 @@ class Adminhome extends Component {
   componentWillMount = async () => {
     const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
     const userData = JSON.parse(localStorage.getItem('userData'))
-    // console.log(empId, departmentId, type, userData)
     this.setState({
       nurseId: empId,
       departmentId,
       userType: type,
       loginName: userData
     });
-
     var dataPatient = await axios.get(`/getPatient`);
     // Modal.setAppElement("body");
 
@@ -161,6 +159,7 @@ class Adminhome extends Component {
         month: date.month,
         year: date.year
       },
+      userType: type,
     })
     this.getAbsent()
     this.updateAvgTime()
@@ -621,6 +620,43 @@ class Adminhome extends Component {
 
       );
     } else if (this.state.userType === 2 && !R.isEmpty(data)) {
+      return (
+        <div>
+          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
+          <Item >
+            <Label color='teal' size='massive'
+              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+              {data.queueId}
+            </Label>
+            <Label basic color='teal'
+              size='massive'
+              style={{
+                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
+                border: 'none', borderLeft: '1px solid green'
+              }}>
+              {data.firstName} {data.lastName}
+            </Label>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic
+                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+                Hospital Number : {data.HN}
+              </Label>
+            </Item.Content>
+            <Item.Content style={{ marginTop: '2.5%' }}>
+              <Label basic size='massive'
+                style={{ fontSize: '20px', border: 'none' }}>
+                Room : {data.roomId}
+              </Label>
+              <Label basic
+                size='massive' style={{ fontSize: '20px', border: 'none' }}>
+                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              </Label>
+            </Item.Content>
+          </Item>
+        </div>
+      )
+    }
+    else if (this.state.userType === 3 && !R.isEmpty(data)) {
       return (
         <div>
           <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
