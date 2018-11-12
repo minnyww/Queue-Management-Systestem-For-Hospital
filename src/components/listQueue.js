@@ -125,14 +125,13 @@ const Queue = props => {
                   setField("HN", '')
                 }
                 }
-                styles={{ modal: { width: 400, top: "30%", borderRadius: '5px' } }}
+                styles={{ modal: { width: 550, top: "30%", borderRadius: '5px' } }}
               >
-                <Form onSubmit={e => { props.addQueue(e); }}>
+                <Form onSubmit={e => { props.addQueue(e); }} style={{ marginTop: '5%' }}>
                   <br />
                   <Form.Input onBlur={() => props.validateHN()}
                     icon="search"
                     fluid
-                    label="HN"
                     name="HN"
                     placeholder="ex. 1234/61"
                     value={props.HN}
