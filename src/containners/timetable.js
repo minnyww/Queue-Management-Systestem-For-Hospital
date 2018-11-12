@@ -271,11 +271,13 @@ class timetable extends Component {
         debugger
         // console.log(checkStatus.data)
         if (!checkStatus.data) {
-            if (result.length == 0 && (checkStatus.data[0].statusId !== 1 || checkStatus.data[0].statusId !== 3)) {
+            if (result.length == 0 && (checkStatus.data[0].statusId !== 1
+                || checkStatus.data[0].statusId !== 3)) {
                 // if (updatedEvent.status !== 1 && updatedEvent.status !== 3) {
                 // console.log("UDATE Q")
                 nextEvents.splice(idx, 1, updatedEvent);
-                swal("Success!", `Doctor: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
+                swal("Success!", `Doctor: ${event.title} 
+                was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
                 this.setState({
                     events: nextEvents
                 });
@@ -309,8 +311,9 @@ class timetable extends Component {
         }
         else {
             swal("Cannot !",
-                `Doctor: ${event.title} cannot move to ${updatedEvent.start.toString().substr(0, 24)} 
-                because doctor cant recieve more patient`,
+                `Doctor: ${event.title} cannot move to 
+                ${updatedEvent.start.toString().substr(0, 24)} 
+                because doctor have patient in room`,
                 "warning");
         }
     }

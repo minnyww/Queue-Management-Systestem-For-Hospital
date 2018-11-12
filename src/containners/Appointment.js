@@ -236,7 +236,7 @@ class Appointment extends Component {
 
     let moveAppointment = true
     const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
-
+    console.log(checkCounts)
     //fail
     if (countAppointment[0]) {
       if (!R.isEmpty(result) || result.length > 0
