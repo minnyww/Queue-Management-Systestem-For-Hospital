@@ -214,9 +214,6 @@ class Appointment extends Component {
       && data.start.getHours() == updatedEvent.start.getHours()
     ))
 
-    console.log(updatedEvent)
-    console.log(this.state.events[idx])
-    console.log(updatedEvent.start < this.state.events[idx].start)
     //check Count Limit 
     let countAppointment = this.state.timetable.filter(data => data.doctorId == updatedEvent.doctorId
       && data.Date === updatedEvent.start.getDate())
