@@ -170,7 +170,7 @@ class Home extends Component {
         <Table.Row>
           <Table.Cell>{1 + i}</Table.Cell>
           <Table.Cell>{data.date + ' ' + data.month + ' ' + data.year + ' '
-            + data.timeStart.substr(0,8) + ' - ' + data.timeEnd.substr(0,8)}</Table.Cell>
+            + data.timeStart.substr(0, 8) + ' - ' + data.timeEnd.substr(0, 8)}</Table.Cell>
           <Table.Cell>{data.firstname} {data.lastname}</Table.Cell>
           <Table.Cell>{data.department} </Table.Cell>
         </Table.Row>
@@ -189,16 +189,28 @@ class Home extends Component {
         this.setState({ textmessage: "ถึงคิว" })
         this.sendText()
       } else if (tmp === 1) {
-        NotificationManager.warning('เหลืออีก 1 คิว ' + time + ' นาที')
-        this.setState({ textmessage: "เหลืออีก 1 คิว " + time + ' นาที' })
+        NotificationManager.warning('เหลืออีก 1 คิว ' + ' อีก ' + time + ' นาที ' + ' แผนก: '
+          + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId)
+        this.setState({
+          textmessage: "เหลืออีก 1 คิว " + ' อีก ' + time + ' นาที ' + ' แผนก: '
+            + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId
+        })
         this.sendText()
       } else if (tmp === 3) {
-        NotificationManager.warning('เหลืออีก 3 คิว' + time + ' นาที')
-        this.setState({ textmessage: "เหลืออีก 3 คิว " + time + ' นาที' })
+        NotificationManager.warning('เหลืออีก 3 คิว' + ' อีก ' + time + ' นาที ' + ' แผนก: '
+          + this.state.queueData.department + ' ห้อง : ' +  this.state.queueData.roomId)
+        this.setState({
+          textmessage: "เหลืออีก 3 คิว " + ' อีก ' + time + ' นาที ' + ' แผนก: '
+            + this.state.queueData.department + ' ห้อง : ' +  this.state.queueData.roomId
+        })
         this.sendText()
       } else if (tmp === 5) {
-        NotificationManager.warning('เหลืออีก 5 คิว' + time + ' นาที')
-        this.setState({ textmessage: "เหลืออีก 5 คิว " + time + ' นาที' })
+        NotificationManager.warning('เหลืออีก 5 คิว' + ' อีก ' + time + ' นาที ' + ' แผนก: '
+          + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId)
+        this.setState({
+          textmessage: "เหลืออีก 5 คิว " + ' อีก ' + time + ' นาที ' + ' แผนก: '
+            + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId
+        })
         this.sendText()
       }
     } else {
@@ -216,6 +228,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.state.queueData)
     return (
       <div >
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
