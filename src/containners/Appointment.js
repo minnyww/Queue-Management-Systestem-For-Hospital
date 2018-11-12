@@ -234,9 +234,8 @@ class Appointment extends Component {
     //เอา count ของสองตารางมารวมกันเพื่อเช็คกับ limit ที่ตาราง timetable 
     let sumCount = sumQueue + sumAppointment
 
-    let moveAppointment = true
-    const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
-    console.log(checkCounts)
+    // let moveAppointment = true
+    // const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
     //fail
     if (countAppointment[0]) {
       if (!R.isEmpty(result) || result.length > 0

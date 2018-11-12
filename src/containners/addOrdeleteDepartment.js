@@ -237,7 +237,7 @@ class addOrdeleteDepartment extends Component {
                 <List.Content>
                     <List.Header>Name : {data.firstName} {data.lastName}</List.Header>
                     <List.Header>HN : {data.HN}</List.Header>
-                    <List.Header>Date of bird : {data.dob}</List.Header>
+                    <List.Header>Date of birth : {data.dob.substr(0, 10)}</List.Header>
                     <List.Header>Gender: {data.gender}</List.Header>
                     <List.Header>Phone Number: {data.phonenumber}</List.Header>
                 </List.Content>
