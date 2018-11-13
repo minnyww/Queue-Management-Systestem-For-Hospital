@@ -4,7 +4,6 @@ import { Header, Grid, Step, Icon, Message } from "semantic-ui-react";
 
 const tablepatient = props => {
   return (
-
     <div>
       <center>
         <Header size="medium">สถานะ</Header>

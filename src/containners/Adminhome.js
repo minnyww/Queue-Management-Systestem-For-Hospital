@@ -571,9 +571,9 @@ class Adminhome extends Component {
     // console.log("สรุปมีคิวปัจจุบันไหม ", tmp);
   };
   updateAvgTime = async () => {
-    console.log('alllllupdate')
+    // console.log('alllllupdate')
     await axios.get(`/updateAllPerDay`);
-    console.log('alllllupdate')
+    // console.log('alllllupdate')
   }
   getListLabQueue = async () => {
     const datas = await axios.get(`/getListLabQueue`);
@@ -1439,6 +1439,7 @@ class Adminhome extends Component {
               errorAdd={this.state.errorAdd}
               type={this.state.type}
               dropdownValue={this.state.dropdownValue}
+              userType={this.state.userType}
               //Method
               chooseDoctor={this.chooseDoctor}
               setField={this.setField}
@@ -1504,6 +1505,7 @@ class Adminhome extends Component {
               doctors={this.state.doctors}
               errorAdd={this.state.errorAdd}
               type={this.state.type}
+              userType={this.state.userType}
               //Method
               chooseDoctor={this.chooseDoctor}
               setField={this.setField}

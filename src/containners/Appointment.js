@@ -237,15 +237,22 @@ class Appointment extends Component {
     // let moveAppointment = true
     // const checkCounts = await this.checkCount(updatedEvent.doctorId, moveAppointment, updatedEvent)
     //fail
+    debugger
     if (countAppointment[0]) {
-      if (!R.isEmpty(result) || result.length > 0
-        || sumCount >= this.state.doctorWithRemaining.remaining
+      if (sumCount >= this.state.doctorWithRemaining.remaining
       ) {
         //fail
         swal("Cannot!", `HN: ${event.title} cannot move to  
         ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
         `, "warning");
+      }
+      else if (!R.isEmpty(result) || result.length > 0) {
+        swal("Cannot!", `HN: ${event.title} cannot move to  
+        ${updatedEvent.start.toString().substr(0, 24)} 
+        because duplicate time
+        `, "warning");
+
       }
       else if (updatedEvent.start < this.state.events[idx].start) {
         swal("Cannot!", `HN: ${event.title} cannot move to  
@@ -302,51 +309,53 @@ class Appointment extends Component {
 
     }
     else {
+      swal("Cannot!", `HN: ${event.title} cannot move to  
+        ${updatedEvent.start.toString().substr(0, 24)} 
+        `, "warning");
       //success
-      swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
-      var month = new Array(
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      );
-      var day = new Array(7);
-      day[0] = "Sun";
-      day[1] = "Mon";
-      day[2] = "Tue";
-      day[3] = "Wed";
-      day[4] = "Thu";
-      day[5] = "Fri";
-      day[6] = "Sat";
+    //   swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
+    //   var month = new Array(
+    //     "Jan",
+    //     "Feb",
+    //     "Mar",
+    //     "Apr",
+    //     "May",
+    //     "Jun",
+    //     "Jul",
+    //     "Aug",
+    //     "Sep",
+    //     "Oct",
+    //     "Nov",
+    //     "Dec"
+    //   );
+    //   var day = new Array(7);
+    //   day[0] = "Sun";
+    //   day[1] = "Mon";
+    //   day[2] = "Tue";
+    //   day[3] = "Wed";
+    //   day[4] = "Thu";
+    //   day[5] = "Fri";
+    //   day[6] = "Sat";
 
-      var curr_date = updatedEvent.start.getDay();
-      var curr_month = updatedEvent.start.getMonth();
-      var curr_year = updatedEvent.start.getFullYear();
-      var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
-      var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
+    //   var curr_date = updatedEvent.start.getDay();
+    //   var curr_month = updatedEvent.start.getMonth();
+    //   var curr_year = updatedEvent.start.getFullYear();
+    //   var timeStart = moment(updatedEvent.start, "HH:mm").format("HH:mm");
+    //   var timeEnd = moment(updatedEvent.end, "HH:mm").format("HH:mm");
 
-      this.setState({
-        events: nextEvents
-      });
+    //   this.setState({
+    //     events: nextEvents
+    //   });
 
-      await axios.post("/updateAppointment", {
-        date: updatedEvent.start.getDate(),
-        day: day[curr_date],
-        month: month[curr_month],
-        year: curr_year,
-        timeStart: timeStart,
-        timeEnd: timeEnd,
-        appointmentId: updatedEvent.id
-      });
-
+    //   await axios.post("/updateAppointment", {
+    //     date: updatedEvent.start.getDate(),
+    //     day: day[curr_date],
+    //     month: month[curr_month],
+    //     year: curr_year,
+    //     timeStart: timeStart,
+    //     timeEnd: timeEnd,
+    //     appointmentId: updatedEvent.id
+    //   });
     }
   }
 

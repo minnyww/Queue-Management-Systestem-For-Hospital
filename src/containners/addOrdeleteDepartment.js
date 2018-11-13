@@ -393,7 +393,6 @@ class addOrdeleteDepartment extends Component {
 
     deletePatient = async (i) => {
         let firstname = this.state.listPatient[i].firstName
-        console.log(firstname)
         swal({
             title: "Are you sure?",
             icon: "warning",

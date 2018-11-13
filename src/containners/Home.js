@@ -34,22 +34,52 @@ class Home extends Component {
     patientInfo: {}
   };
 
-  componentWillMount = async () => {
+  initialData = async () => {
     const getUserData = JSON.parse(localStorage.getItem('getUserData'))
     this.setState({
       HN: getUserData.HN
     })
-    // setInterval('window.location.reload()', 15000);
     var dataPatient = await axios.get(`/getPatient`);
     this.setState({
       patientData: dataPatient.data,
+    })
+    var dataAllAppointment = await axios.post(`/getAllAppointment`, {
+      HN: this.state.HN,
+    })
+    const getData = this.state.patientData.filter(data => (data.HN === this.state.HN))
 
+    this.setState({
+      allAppointment: dataAllAppointment.data,
+      patientInfo: getData,
     })
 
-    var dataQueue = await axios.post(`/getQueueData`, {
-      HN: this.state.HN
-    });
+    setInterval(async () => {
+      var dataQueue = await axios.post(`/getQueueData`, {
+        HN: this.state.HN
+      });
 
+      const { dataAllStepQueue, tmp } = await this.getQueue(dataQueue)
+      var dataPhone = await axios.post(`/getPhoneNumber`, {
+        HN: this.state.HN,
+      })
+
+      if (this.state.queueData.currentQueue !== tmp.currentQueue) {
+        this.setState({
+          queueData: tmp,
+          allStepQueue: dataAllStepQueue,
+          dataPhoneNumber: dataPhone.data[0].phonenumber,
+          avgTime: tmp.avgtime,
+        })
+        this.cutPhoneNumber()
+        this.setState({
+          recipient: this.cutPhoneNumber()
+        })
+        this.sendNotification();
+      }
+    }, 1000)
+  }
+
+  getQueue = async (dataQueue) => {
     let tmp = {};
     let dataAllStepQueue = []
     if (dataQueue.data.length !== 0) {
@@ -68,33 +98,11 @@ class Home extends Component {
         dataAllStepQueue = data.data
       }
     }
+    return { dataAllStepQueue, tmp }
+  }
 
-    var dataAllAppointment = await axios.post(`/getAllAppointment`, {
-      HN: this.state.HN,
-    })
-
-    var dataPhone = await axios.post(`/getPhoneNumber`, {
-      HN: this.state.HN,
-    })
-
-    const getData = this.state.patientData.filter(data => (data.HN === this.state.HN))
-
-    this.setState({
-      queueData: tmp,
-      allStepQueue: dataAllStepQueue,
-      allAppointment: dataAllAppointment.data,
-      dataPhoneNumber: dataPhone.data[0].phonenumber,
-      patientInfo: getData
-    })
-    const time = await this.state.queueData.avgtime
-    this.setState({
-      avgTime: time
-    })
-    this.cutPhoneNumber();
-    this.setState({
-      recipient: this.cutPhoneNumber()
-    })
-    this.sendNotification();
+  componentWillMount = async () => {
+    await this.initialData()
   }
 
   cutPhoneNumber = () => {
@@ -162,7 +170,6 @@ class Home extends Component {
   }
 
   showAppointment = () => {
-    console.log(this.state.allAppointment)
     let tmp = ''
     let data = this.state.allAppointment
     tmp = data.map((data, i) => (
@@ -198,10 +205,10 @@ class Home extends Component {
         this.sendText()
       } else if (tmp === 3) {
         NotificationManager.warning('เหลืออีก 3 คิว' + ' อีก ' + time + ' นาที ' + ' แผนก: '
-          + this.state.queueData.department + ' ห้อง : ' +  this.state.queueData.roomId)
+          + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId)
         this.setState({
           textmessage: "เหลืออีก 3 คิว " + ' อีก ' + time + ' นาที ' + ' แผนก: '
-            + this.state.queueData.department + ' ห้อง : ' +  this.state.queueData.roomId
+            + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId
         })
         this.sendText()
       } else if (tmp === 5) {
@@ -228,7 +235,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.queueData)
     return (
       <div >
         <script src="path/to/react-notifications/dist/react-notifications.js"></script>
