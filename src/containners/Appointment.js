@@ -243,21 +243,22 @@ class Appointment extends Component {
       ) {
         //fail
         swal("Cannot!", `HN: ${event.title} cannot move to  
-        ${updatedEvent.start.toString().substr(0, 24)} 
+        Date : ${updatedEvent.start.toString().substr(0, 24)} 
         because doctor cant recieve more patient
         `, "warning");
       }
       else if (!R.isEmpty(result) || result.length > 0) {
         swal("Cannot!", `HN: ${event.title} cannot move to  
-        ${updatedEvent.start.toString().substr(0, 24)} 
+        Date : ${updatedEvent.start.toString().substr(0, 24)} 
         because duplicate time
         `, "warning");
 
       }
       else if (updatedEvent.start < this.state.events[idx].start) {
-        swal("Cannot!", `HN: ${event.title} cannot move to  
-        ${updatedEvent.start.toString().substr(0, 24)} 
-        `, "warning");
+        swal("Cannot!", `HN: ${event.title} cannot move to 
+        Date : ${updatedEvent.start.toString().substr(0, 24) }
+        
+        `, "warning"); 
       }
       else {
         //success
@@ -310,7 +311,7 @@ class Appointment extends Component {
     }
     else {
       swal("Cannot!", `HN: ${event.title} cannot move to  
-        ${updatedEvent.start.toString().substr(0, 24)} 
+        Date : ${updatedEvent.start.toString().substr(0, 24)} 
         `, "warning");
       //success
     //   swal("Success!", `HN: ${event.title} was dropped onto ${updatedEvent.start.toString().substr(0, 24)}`, "success");
@@ -446,7 +447,7 @@ class Appointment extends Component {
           "success")
       } else {
         swal("Cannot !",
-          `Cannot add to queue`,
+          `Cannot add to Queue`,
           "warning");
       }
     }
@@ -457,8 +458,8 @@ class Appointment extends Component {
 
     const date = this.pharseDate(new Date());
     const { events, startTime, endTime, HN, timetable, appointment } = this.state
-
-    if (this.state.appointmentDepId) {
+    debugger
+    if (this.state.appointmentDepId && startTime && endTime && HN) {
       let tmp = this.state.appointmentDepId.split("/")
       //check Count Limit 
       let countAppointment = timetable.filter(data => data.doctorId == tmp[0]
@@ -495,14 +496,13 @@ class Appointment extends Component {
         check => check.HN === this.state.HN
       );
 
-      debugger
       if (check.length > 0 || sumCount > this.state.doctorWithRemaining.remaining
         // || this.state.HN === "" || this.state.Date === "" || this.state.startTime === ""
         // || this.state.endTime === ""
       ) {
         swal("Cannot !",
           `Cannot add Appointment because doctor can't recieve more patient 
-          Or Appointment time is duplicate in other doctor`,
+          Or Appointment time is duplicate`,
           "warning");
       }
       else if (checks.length === 0) {
@@ -533,14 +533,14 @@ class Appointment extends Component {
         });
       }
     }
-    else if (!this.state.appointmentDepId === 0) {
-      swal("Cannot !",
-        `Cannot add Appointment`,
+    else if (this.state.appointmentDepId === 0) {
+      swal("Cannot Add !",
+        `Please fill out this form completely`,
         "warning");
     }
     else {
       swal("Cannot !",
-        `Cannot add Appointment`,
+        `Please fill out this form completely`,
         "warning");
     }
     await this.getEvents()
@@ -553,8 +553,6 @@ class Appointment extends Component {
       // open: true
     })
     const date = this.pharseDate(new Date(this.state.Date))
-    console.log(new Date(this.state.Date))
-    console.log(new Date())
 
     if (new Date(this.state.Date) > new Date()) {
       const doctors = await axios.post(`/getListDoctor`, {
@@ -673,6 +671,7 @@ class Appointment extends Component {
                   </Menu>
                 </Grid.Column>
                 <Grid.Column>
+                  
                   <Form style={{ width: "100%" }}>
                     <Form.Input
                       fluid
@@ -682,8 +681,24 @@ class Appointment extends Component {
                       value={this.state.HN}
                       onChange={(e, { value }) => this.setField("HN", value)}
                       onBlur={() => this.validateHN()}
-
                     />
+                     <Message negative hidden={!this.state.errorHN.status}>
+                        HN Does not match
+                    </Message>
+                    <Message negative hidden={!this.state.errorGetName.status}>
+                        Don't have hospital number
+                    </Message>
+                    <Message negative hidden={!this.state.errorAdd.status}>
+                        Cannot add to Queue
+                    </Message>
+                    <List>
+                      <List.Item>
+                        <List.Content style={{ fontSize: '16px' }}>
+                          Name: {this.state.namePatient}
+                          {this.state.lastNamePatient}
+                      </List.Content>
+                      </List.Item>
+                    </List>
 
                     <Form.Input
                       type="date"
@@ -1063,7 +1078,18 @@ class Appointment extends Component {
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
               open={this.state.open}
-              onClose={() => { this.setField("open", false) }}>
+              onClose={() => { 
+                this.setField("open", false) 
+                this.setField("HN", '')
+                this.setField("startTime", '')
+                this.setField("endTime", '')
+                this.setField("appointmentDepId", '')
+                this.setField("namePatient", '')
+                this.setField("lastNamePatient", '')
+                this.setField("errorGetName", { status: false, message: "" })
+                this.setField("errorHN", { status: false, message: "" })
+                this.setField("errorAdd", { status: false, message: "" })
+                }}>
               <FormAddAppointment
                 //state
                 events={this.state.events}
@@ -1136,7 +1162,18 @@ class Appointment extends Component {
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
               open={this.state.open}
-              onClose={() => { this.setField("open", false) }}>
+              onClose={() => { 
+                this.setField("open", false) 
+                this.setField("HN", '')
+                this.setField("startTime", '')
+                this.setField("endTime", '')
+                this.setField("appointmentDepId", '')
+                this.setField("namePatient", '')
+                this.setField("lastNamePatient", '')
+                this.setField("errorGetName", { status: false, message: "" })
+                this.setField("errorHN", { status: false, message: "" })
+                this.setField("errorAdd", { status: false, message: "" })
+                }}>
               <FormAddAppointment
                 //state
                 events={this.state.events}

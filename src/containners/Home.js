@@ -62,18 +62,22 @@ class Home extends Component {
       var dataPhone = await axios.post(`/getPhoneNumber`, {
         HN: this.state.HN,
       })
-
+      this.setState({
+        avgTime: tmp.avgtime,
+        dataPhoneNumber: dataPhone.data[0].phonenumber,
+      })
       if (this.state.queueData.currentQueue !== tmp.currentQueue) {
         this.setState({
           queueData: tmp,
           allStepQueue: dataAllStepQueue,
-          dataPhoneNumber: dataPhone.data[0].phonenumber,
-          avgTime: tmp.avgtime,
+          // dataPhoneNumber: dataPhone.data[0].phonenumber,
+          // avgTime: tmp.avgtime,
         })
         this.cutPhoneNumber()
         this.setState({
           recipient: this.cutPhoneNumber()
         })
+        // console.log(this.state.queueData)
         this.sendNotification();
       }
     }, 1000)
@@ -98,7 +102,8 @@ class Home extends Component {
         dataAllStepQueue = data.data
       }
     }
-    return { dataAllStepQueue, tmp }
+    
+    return { dataAllStepQueue,tmp }
   }
 
   componentWillMount = async () => {
@@ -223,6 +228,9 @@ class Home extends Component {
     } else {
       NotificationManager.info('ไม่ได้อยู่ในคิว')
     }
+    this.setState({
+      textmessage : ''
+    })
   }
   sendText = async () => {
     const recipient = this.state.recipient

@@ -32,13 +32,12 @@ const formAddAppointment = props => {
                 value={props.HN}
                 onChange={(e, { value }) => props.setField("HN", value)}
                 onBlur={() => props.validateHN()}
-
               />
               <Message negative hidden={!props.errorHN.status}>
                 HN Does not match
                     </Message>
               <Message negative hidden={!props.errorGetName.status}>
-                Not have in databse
+                Don't have hospital number
                     </Message>
               <Message negative hidden={!props.errorAdd.status}>
                 Cannot add to Queue
