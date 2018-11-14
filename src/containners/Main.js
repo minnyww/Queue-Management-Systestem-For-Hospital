@@ -8,14 +8,16 @@ import logo from './../img/drug.png'
 class Main extends Component {
     state = {
         loginName: '',
-        nurseData: []
+        nurseData: [],
+        userType : 0
     }
     componentWillMount = () => {
         const userData = JSON.parse(localStorage.getItem('userData'))
+        const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
 
         this.setState({
             loginName: userData.firstname + ' ' + userData.lastname,
-            nurseData: userData
+            nurseData: userData,
         })
     }
 

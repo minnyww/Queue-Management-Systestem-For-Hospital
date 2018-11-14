@@ -138,9 +138,6 @@ class Appointment extends Component {
     this.showPatientDescription()
   }
 
-
-
-
   pharseDate = (newDate) => {
     var months = new Array(
       "jan",
@@ -305,9 +302,7 @@ class Appointment extends Component {
           timeEnd: timeEnd,
           appointmentId: updatedEvent.id
         });
-
       }
-
     }
     else {
       swal("Cannot!", `HN: ${event.title} cannot move to  
@@ -671,7 +666,7 @@ class Appointment extends Component {
                   </Menu>
                 </Grid.Column>
                 <Grid.Column>
-                  
+
                   <Form style={{ width: "100%" }}>
                     <Form.Input
                       fluid
@@ -1073,7 +1068,10 @@ class Appointment extends Component {
             <DropdownQueue
               // departmentId={this.state.departmentId}
               dropdownValue={this.state.dropdownValue}
-              setField={this.setField} />
+              setField={this.setField} 
+              userType={this.state.userType}
+              />
+              
             <Modal
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}
@@ -1157,7 +1155,10 @@ class Appointment extends Component {
             <DropdownQueue
               // departmentId={this.state.departmentId}
               dropdownValue={this.state.dropdownValue}
-              setField={this.setField} />
+              setField={this.setField} 
+              userType={this.state.userType}
+              />
+              
             <Modal
               center
               styles={{ modal: { width: 800, top: '10%', borderRadius: '10px' } }}

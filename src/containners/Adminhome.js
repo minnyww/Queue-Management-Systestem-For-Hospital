@@ -447,10 +447,10 @@ class Adminhome extends Component {
     // //เอากรุปของ currentQ ไป select มา เรียงจากน้อยไปมาก
     // //select group ทั้งหมด ของ currentq where status4 , roomId
     //check ว่ามีห้องที่ต้องกลับไหมถ้ามี ให้เอา col แรก status = 1 
-    debugger
     // console.log(this.state.currentQueue)
     if (this.state.currentQueue.firstName !== undefined) {
-      if (this.state.currentQueue.roomBack !== null) {
+      if (this.state.currentQueue.roomBack == 1) {
+
         var checkGroup = await axios.post("/checkGroupRoomback", {
           group: this.state.currentQueue.group,
           // roomId: this.state.roomId
@@ -461,7 +461,8 @@ class Adminhome extends Component {
           date: this.state.Date,
           HN: checkGroup.data[0].HN,
           runningNumber: checkGroup.data[0].runningNumber,
-          queueId: checkGroup.data[0].queueId
+          queueId: checkGroup.data[0].queueId,
+          roomBack : null
         });
         // console.log('เข้า !== null')
       }
@@ -479,7 +480,8 @@ class Adminhome extends Component {
           date: this.state.Date,
           HN: this.state.currentQueue.HN,
           runningNumber: this.state.currentQueue.runningNumber,
-          queueId: this.state.currentQueue.queueId
+          queueId: this.state.currentQueue.queueId,
+          // roomBack : 0
         });
       }
       else {
@@ -488,7 +490,8 @@ class Adminhome extends Component {
           date: this.state.Date,
           HN: checkGroup.data[0].HN,
           runningNumber: checkGroup.data[0].runningNumber,
-          queueId: checkGroup.data[0].queueId
+          queueId: checkGroup.data[0].queueId,
+          roomBack : checkGroup.data[0].roomBack === 1 ? null : checkGroup.data[0].roomBack
         });
       }
     }
@@ -520,7 +523,8 @@ class Adminhome extends Component {
           HN: tmp.HN,
           statusId: 3,
           runningNumber: tmp.runningNumber,
-          queueId: tmp.queueId
+          queueId: tmp.queueId,
+          // roomBack : 0
         });
         this.setState({
           currentQueue: tmp
@@ -707,12 +711,15 @@ class Adminhome extends Component {
   forward = async () => {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
+
     const date = this.pharseDate();
     let stepCurrent = null;
     let updateWaitStatus = false
     let indexStep = 0;
     let insertList = []
     let insertIndex = null;
+    let checkRoomBack = false
+
     if (this.state.forwardDepartments.length > 0) {
       const forwardList = await axios.post('/getAllStepQueue', {
         HN: this.state.currentQueue.HN,
@@ -743,7 +750,7 @@ class Adminhome extends Component {
                     departmentId: dep.departmentId,
                     queueDefault: 'forwardType',
                     groupId: this.state.currentQueue.group,
-                    roomBack: null,
+                    roomBack: dep.roomId === this.state.roomId ? 1 : 0,
                     // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
                     step: i + 1
                   }
@@ -768,7 +775,6 @@ class Adminhome extends Component {
         for (let index = 0; index < forwardList.data.length; index++) {
           // console.log('เข้า For', index, forwardList.data.length)
           let result = null;
-
           if (+forwardList.data[index].roomId !== +this.state.forwardDepartments[index].roomId) {
             // console.log('เข้า if', +forwardList.data[index].roomId, this.state.forwardDepartments[index].roomId)
             this.state.forwardDepartments
@@ -798,10 +804,9 @@ class Adminhome extends Component {
                       departmentId: dep.departmentId,
                       queueDefault: 'forwardType',
                       groupId: this.state.currentQueue.group,
-                      roomBack: null,
+                      roomBack: dep.roomId === this.state.roomId ? 1 : 0,
                       step: i + 1
                     }
-                    debugger;
                     // console.log("tmp ที่ inert,", tmp)
                     if (!insertList) {
                       insertList.push(tmp)
@@ -834,6 +839,7 @@ class Adminhome extends Component {
         // console.log('this.state.forwardDepartments ', this.state.forwardDepartments)
         this.state.forwardDepartments
           .map((dep, i) => {
+            checkRoomBack = dep.roomId.split('-')[0] == this.state.roomId ? 1 : null
             let tmp = {
               roomId: dep.roomId,
               day: date.day,
@@ -847,15 +853,15 @@ class Adminhome extends Component {
               departmentId: dep.departmentId,
               queueDefault: 'forwardType',
               groupId: this.state.currentQueue.group,
-              roomBack: null,
+              roomBack: checkRoomBack,
               // roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
               step: i + 2
             }
-            // console.log("for  ward", dep, tmp)
             insertList.push(tmp)
           })
       }
-      // console.log("insertList", insertList)
+      console.log("insertList", insertList)
+      console.log(checkRoomBack)
       if (insertList.length > 0) {
         insertList.map(async list => {
           // console.log("List", list)
@@ -867,6 +873,7 @@ class Adminhome extends Component {
         date: this.state.Date,
         HN: this.state.currentQueue.HN,
         statusId: 4,
+        // roomBack : checkRoomBack,
         queueId: this.state.currentQueue.queueId,
         runningNumber: this.state.currentQueue.runningNumber
       });
@@ -986,11 +993,11 @@ class Adminhome extends Component {
   showPatientLabQueue = () => {
     const data = this.state.labQueues
     let tmp = "";
-    debugger
     if (!R.isEmpty(data)) {
       tmp = data
-        .map(queue => (
-          <Table stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        // .filter(data => (data.HN != this.state.queues.HN))
+        .map((queue,i) => (
+          <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
             <Table.Body>
               <Table.Row>
                 <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
@@ -1031,6 +1038,7 @@ class Adminhome extends Component {
       doctorOption: this.state.forwardRoomAndDoctors,
       addStatus: true
     }
+    
     await this.setState({
       forwardDepartments: [...this.state.forwardDepartments, tmp],
       forwardType: "",
@@ -1179,7 +1187,6 @@ class Adminhome extends Component {
       })
     }
 
-    debugger
     if (this.state.forwardDepartments[i + 1]) {
       this.setState({
         forwardDepartments: tmp
@@ -1245,7 +1252,6 @@ class Adminhome extends Component {
   }
   cancelList = (i, status, dep) => {
     let tmp = this.state.forwardDepartments
-    debugger
     if (dep.editStatus) {
       if (!dep.alreadyValue) {
         // if (!dep.alreadyValue.status) {
@@ -1267,7 +1273,6 @@ class Adminhome extends Component {
   // cancelList = (i, status, dep) => {
   //   let tmp = this.state.forwardDepartments
   //   console.log(dep.editStatus)
-  //   debugger
   //   if (dep.editStatus && dep.roomId !== undefined) {
   //     console.log('Hello 00')
   //     dep.editStatus = false
@@ -1307,6 +1312,7 @@ class Adminhome extends Component {
   }
   //-----------------------------------------
   addList = (i) => {
+    console.log(this.state.forwardDepartments)
     this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
     this.setState({
       forwardDepartments: this.state.forwardDepartments,
@@ -1320,7 +1326,6 @@ class Adminhome extends Component {
     let getNameDoctor
     if (this.state.forwardDepartments.length > 0) {
       let tmp = this.state.forwardDepartments.map((dep, i) => {
-        debugger
         if (typeof dep.departmentId === "string") {
           getDoctor = dep.departmentId.split('/')
         }
@@ -1328,10 +1333,11 @@ class Adminhome extends Component {
           getNameDoctor = dep.roomId.split('-')
         }
         let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
+        console.log(dep)
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type === 1 ? 'Department ' : 'Lab'}</Table.Cell>
+            <Table.Cell>{label}{dep.type === 1 || dep.type==='Department' ? 'Department ' : 'Lab'}</Table.Cell>
             <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
             <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
               / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
@@ -1407,8 +1413,6 @@ class Adminhome extends Component {
       return tmp
     }
   }
-
-
 
   logOut = () => {
     localStorage.removeItem('userData');

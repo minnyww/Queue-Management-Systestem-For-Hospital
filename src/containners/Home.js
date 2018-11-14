@@ -31,7 +31,8 @@ class Home extends Component {
     dataPhoneNumber: '',
     avgTime: 0,
 
-    patientInfo: {}
+    patientInfo: {},
+    
   };
 
   initialData = async () => {

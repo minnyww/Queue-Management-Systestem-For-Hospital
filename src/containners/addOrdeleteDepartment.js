@@ -14,7 +14,7 @@ class addOrdeleteDepartment extends Component {
     state = {
         nurseId: 0,
         departmentId: 0,
-        userType: '',
+        userType: 0,
 
         listDepartment: [],
         listRooms: [],
@@ -492,6 +492,7 @@ class addOrdeleteDepartment extends Component {
                         <DropdownQueue
                             // departmentId={this.state.departmentId}
                             dropdownValue={this.state.dropdownValue}
+                            userType={this.state.userType}
 
                             setField={this.setField} />
                         <FormManageDepartment
@@ -545,6 +546,7 @@ class addOrdeleteDepartment extends Component {
                         <DropdownQueue
                             // departmentId={this.state.departmentId}
                             dropdownValue={this.state.dropdownValue}
+                            userType={this.state.userType}
 
                             setField={this.setField}
                         />

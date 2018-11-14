@@ -48,14 +48,17 @@ class timetable extends Component {
         doctorSelect: [{ key: "", text: "", value: "" }],
         loginName: '',
         dropdownValue: '',
+        userType: 0,
+ 
 
     }
     componentWillMount = async () => {
-        const { empId, departmentId } = JSON.parse(localStorage.getItem('userData'))
+        const { empId, departmentId,type } = JSON.parse(localStorage.getItem('userData'))
         const userData = JSON.parse(localStorage.getItem('userData'))
         this.setState({
             departmentId: departmentId,
             nurseId: empId,
+            userType: type,
 
         })
         const date = this.pharseDate();
@@ -751,6 +754,7 @@ class timetable extends Component {
                             dropdownValue={this.state.dropdownValue}
                             chooseDoctor={this.chooseDoctor}
                             setField={this.setField}
+                            userType={this.state.userType}
                         />
                         <Modal
                             center
@@ -803,6 +807,7 @@ class timetable extends Component {
                             // departmentId = {this.state.departmentId}
                             chooseDoctor={this.chooseDoctor}
                             setField={this.setField}
+                            userType={this.state.userType}
                         />
                         <Modal
                             center
