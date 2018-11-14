@@ -265,14 +265,13 @@ class timetable extends Component {
                 && event.doctor === updatedEvent.doctor)
         // console.log("result", result)
         // debugger
-        // const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() + ' '
-
+        
+        const checkDate = curr_year + '-' + (+curr_month + 1) + '-' + this.state.events[idx].start.getDate() 
+        + ' '
         const checkStatus = await axios.post("/checkStatusDoctor", {
             doctorId: updatedEvent.doctor,
-            // date: checkDate
+            date: checkDate
         })
-        debugger
-        // console.log(checkStatus.data)
         if (!checkStatus.data) {
             if (result.length == 0 && (checkStatus.data[0].statusId !== 1
                 || checkStatus.data[0].statusId !== 3)) {
