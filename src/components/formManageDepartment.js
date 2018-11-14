@@ -319,8 +319,7 @@ const gender = [
 
 
 const formManageDepartment = props => {
-    console.log("props", props);
-
+    
     return (
         <div>
             <Grid centered style={{

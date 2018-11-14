@@ -33,7 +33,7 @@ class addOrdeleteDepartment extends Component {
         allDepartments: [{ key: "", text: "", value: "" }],
         departmentValueId: 0,
 
-        patientLimit: 0,
+        patientLimit: '',
 
         firstnameDoctor: '',
         lastnameDoctor: '',
@@ -82,9 +82,7 @@ class addOrdeleteDepartment extends Component {
             allDepartments: departmentOption,
             loginName: userData,
             listPatient: allPatient.data
-
         })
-
     }
 
     getListAllDoctors = async () => {
@@ -188,7 +186,7 @@ class addOrdeleteDepartment extends Component {
                         }}> Delete
                     </Button>
                 </List.Content>
-                <Icon name='building' color='blue' />
+                <Icon className='building' color='blue' />
                 <List.Content>
                     <List.Header>Department : {data.department}</List.Header>
                     <List.Header>Type : {data.type === 1 ? 'Department' : 'Lab'}</List.Header>
@@ -210,7 +208,7 @@ class addOrdeleteDepartment extends Component {
                         }}> Delete
                     </Button>
                 </List.Content>
-                <Icon name='building' color='blue' />
+                <Icon className='building' color='blue' />
                 <List.Content>
                     <List.Header>Room Number : {data.roomId}</List.Header>
                     <List.Header>Department : {data.department}</List.Header>
@@ -233,7 +231,7 @@ class addOrdeleteDepartment extends Component {
                         }}> Delete
                     </Button>
                 </List.Content>
-                <Icon name='user' color='blue' />
+                <Icon className='user' color='blue' />
                 <List.Content>
                     <List.Header>Name : {data.firstName} {data.lastName}</List.Header>
                     <List.Header>HN : {data.HN}</List.Header>
@@ -265,10 +263,12 @@ class addOrdeleteDepartment extends Component {
                         style={{ width: '70px' }}
                         control={Input}
                         placeholder={data.patientLimit}
+                        type='number'
+                        // value={data.patientLimit}
                         onChange={(e, { value }) => this.setField("patientLimit", value)}
                     />
                 </List.Content>
-                <Icon name='building' color='blue' />
+                <Icon className='building' color='blue' />
                 <List.Content>
                     <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
                     <List.Header>Room : {data.roomId}</List.Header>
@@ -291,7 +291,7 @@ class addOrdeleteDepartment extends Component {
                         }}> Delete
                     </Button>
                 </List.Content>
-                <Icon name='user md' color='blue' />
+                <Icon className='user md' color='blue' />
                 <List.Content>
                     <List.Header>Name : {data.firstname} {data.lastname}</List.Header>
                     <List.Header>Employee Id : {data.empId}</List.Header>
@@ -304,16 +304,24 @@ class addOrdeleteDepartment extends Component {
     }
 
     updateLimit = async (i) => {
-        // console.log(this.state.listDoctors[i])
         let timetableId = this.state.listDoctors[i].timetableId
         // console.log(this.state.patientLimit)
+        if(this.state.patientLimit !== ''){
         await axios.post("/updateLimit", {
             timetableId: timetableId,
             patientLimit: this.state.patientLimit,
         })
-        swal("Poof! Your Department has been deleted!", {
+        swal("Poof! Doctor Limit has been update", {
             icon: "success",
         });
+        }else { 
+                swal("Please fill Limit of doctor", {
+                    icon: "warning",
+            });
+        }
+        this.setState({
+            patientLimit : ''
+        })
         await this.getDoctors()
     }
 
@@ -342,6 +350,7 @@ class addOrdeleteDepartment extends Component {
 
     addDepartment = async () => {
         //addDepartment
+        if(this.state.departmentName !== '' && this.state.typeOfDepartment !== ''){
         await axios.post("/addDepartment", {
             Department: this.state.departmentName,
             type: this.state.typeOfDepartment === 'Lab' ? 2 : 1
@@ -351,10 +360,20 @@ class addOrdeleteDepartment extends Component {
             departmentName: '',
             typeOfDepartment: ''
         })
+        }else { 
+            swal("Cannot!", `Please fill out this form completely `, "warning");
+            this.setState({
+                departmentName: '',
+                typeOfDepartment: ''
+            })
+        }
         await this.getListDepartment()
     }
 
     addRooms = async () => {
+        if((this.state.roomNumber !== 0 || this.state.roomNumber !== '') 
+        && this.state.building !== '' && this.state.floor !== '' && this.state.departmentValueId !== ''
+        ){
         //addDepartment
         await axios.post("/addRoom", {
             roomId: this.state.roomNumber,
@@ -369,6 +388,9 @@ class addOrdeleteDepartment extends Component {
             departmentId: '',
             building: ''
         })
+    }else { 
+        swal("Cannot!", `Please fill out this form completely`, "warning");
+    }
         await this.getListRooms()
     }
 
@@ -451,6 +473,9 @@ class addOrdeleteDepartment extends Component {
     }
 
     addDoctors = async () => {
+        if(this.state.firstnameDoctor !== '' && this.state.lastnameDoctor !== ''
+        && this.state.avgTimeDoctor !== '' && this.state.employeeId  !== ''
+        && this.state.departmentValueId !== ''){
         await axios.post("/addDoctors", {
             firstname: this.state.firstnameDoctor,
             lastname: this.state.lastnameDoctor,
@@ -459,6 +484,9 @@ class addOrdeleteDepartment extends Component {
             departmentId: this.state.departmentValueId,
         })
         swal("Success!", `Add Successful`, "success");
+    }
+        
+        else { swal("Cannot!", `Please fill out this form completely`, "warning"); } 
         this.setState({
             firstnameDoctor: '',
             lastnameDoctor: '',
