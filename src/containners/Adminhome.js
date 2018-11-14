@@ -860,8 +860,6 @@ class Adminhome extends Component {
             insertList.push(tmp)
           })
       }
-      console.log("insertList", insertList)
-      console.log(checkRoomBack)
       if (insertList.length > 0) {
         insertList.map(async list => {
           // console.log("List", list)
@@ -1312,7 +1310,6 @@ class Adminhome extends Component {
   }
   //-----------------------------------------
   addList = (i) => {
-    console.log(this.state.forwardDepartments)
     this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
     this.setState({
       forwardDepartments: this.state.forwardDepartments,
@@ -1333,7 +1330,6 @@ class Adminhome extends Component {
           getNameDoctor = dep.roomId.split('-')
         }
         let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
-        console.log(dep)
         if (!dep.editStatus) {
           return <Table.Row key={i}
             disabled={dep.statusId === 4 ? true : false}>
