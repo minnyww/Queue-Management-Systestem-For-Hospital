@@ -27,18 +27,18 @@ class addOrdeleteDepartment extends Component {
 
         Date: new Date(),
 
-        roomNumber: 0,
-        floor: 0,
+        roomNumber: '',
+        floor: '',
         building: '',
         allDepartments: [{ key: "", text: "", value: "" }],
-        departmentValueId: 0,
+        departmentValueId: '',
 
         patientLimit: '',
 
         firstnameDoctor: '',
         lastnameDoctor: '',
-        employeeId: 0,
-        avgTimeDoctor: 0,
+        employeeId: '',
+        avgTimeDoctor: '',
 
         activeItem: 'department',
         todayItem: 'today',
@@ -306,61 +306,72 @@ class addOrdeleteDepartment extends Component {
     updateLimit = async (i) => {
         let timetableId = this.state.listDoctors[i].timetableId
         // console.log(this.state.patientLimit)
-        if(this.state.patientLimit !== ''){
-        await axios.post("/updateLimit", {
-            timetableId: timetableId,
-            patientLimit: this.state.patientLimit,
-        })
-        swal("Poof! Doctor Limit has been update", {
-            icon: "success",
-        });
-        }else { 
-                swal("Please fill Limit of doctor", {
-                    icon: "warning",
+        if (this.state.patientLimit !== '') {
+            await axios.post("/updateLimit", {
+                timetableId: timetableId,
+                patientLimit: this.state.patientLimit,
+            })
+            swal("Poof! Doctor Limit has been update", {
+                icon: "success",
+            });
+        } else {
+            swal("Please fill Limit of doctor", {
+                icon: "warning",
             });
         }
         this.setState({
-            patientLimit : ''
+            patientLimit: ''
         })
         await this.getDoctors()
     }
 
     addPatient = async () => {
         //addPatient
-
-        await axios.post("/addPatient", {
-            firstName: this.state.firstnamePatient,
-            lastName: this.state.lastnamePatient,
-            HN: this.state.HNPatient,
-            dob: this.state.dob,
-            gender: this.state.gender,
-            phonenumber: this.state.phonenumber
-        })
-        this.setState({
-            firstnamePatient: '',
-            lastnamePatient: '',
-            HNPatient: '',
-            dob: '',
-            gender: '',
-            phonenumber: ''
-        })
-        swal("Success!", `Add Successful`, "success");
+        if (this.state.firstnamePatient !== ''
+            && this.state.lastnamePatient !== ''
+            && this.state.HNPatient !== ''
+            && this.state.dob !== ''
+            && this.state.gender !== ''
+            && this.state.phonenumber !== ''
+        ) {
+            await axios.post("/addPatient", {
+                firstName: this.state.firstnamePatient,
+                lastName: this.state.lastnamePatient,
+                HN: this.state.HNPatient,
+                dob: this.state.dob,
+                gender: this.state.gender,
+                phonenumber: this.state.phonenumber
+            })
+            this.setState({
+                firstnamePatient: '',
+                lastnamePatient: '',
+                HNPatient: '',
+                dob: '',
+                gender: '',
+                phonenumber: ''
+            })
+            swal("Success!", `Add Successful`, "success");
+        } else {
+            swal("Please fill Limit of doctor", {
+                icon: "warning",
+            });
+        }
         await this.getListPatient()
     }
 
     addDepartment = async () => {
         //addDepartment
-        if(this.state.departmentName !== '' && this.state.typeOfDepartment !== ''){
-        await axios.post("/addDepartment", {
-            Department: this.state.departmentName,
-            type: this.state.typeOfDepartment === 'Lab' ? 2 : 1
-        })
-        swal("Success!", `Add Successful`, "success");
-        this.setState({
-            departmentName: '',
-            typeOfDepartment: ''
-        })
-        }else { 
+        if (this.state.departmentName !== '' && this.state.typeOfDepartment !== '') {
+            await axios.post("/addDepartment", {
+                Department: this.state.departmentName,
+                type: this.state.typeOfDepartment === 'Lab' ? 2 : 1
+            })
+            swal("Success!", `Add Successful`, "success");
+            this.setState({
+                departmentName: '',
+                typeOfDepartment: ''
+            })
+        } else {
             swal("Cannot!", `Please fill out this form completely `, "warning");
             this.setState({
                 departmentName: '',
@@ -371,26 +382,28 @@ class addOrdeleteDepartment extends Component {
     }
 
     addRooms = async () => {
-        if((this.state.roomNumber !== 0 || this.state.roomNumber !== '') 
-        && this.state.building !== '' && this.state.floor !== '' && this.state.departmentValueId !== ''
-        ){
-        //addDepartment
-        await axios.post("/addRoom", {
-            roomId: this.state.roomNumber,
-            floor: this.state.floor,
-            departmentId: this.state.departmentValueId,
-            building: this.state.building,
-        })
-        swal("Success!", `Add Successful`, "success");
-        this.setState({
-            roomId: '',
-            floor: '',
-            departmentId: '',
-            building: ''
-        })
-    }else { 
-        swal("Cannot!", `Please fill out this form completely`, "warning");
-    }
+        if (this.state.roomNumber !== ''
+            && this.state.building !== ''
+            && this.state.floor !== ''
+            && this.state.departmentValueId !== ''
+        ) {
+            //addDepartment
+            await axios.post("/addRoom", {
+                roomId: this.state.roomNumber,
+                floor: this.state.floor,
+                departmentId: this.state.departmentValueId,
+                building: this.state.building,
+            })
+            swal("Success!", `Add Successful`, "success");
+            this.setState({
+                roomId: '',
+                floor: '',
+                departmentId: '',
+                building: ''
+            })
+        } else {
+            swal("Cannot!", `Please fill out this form completely`, "warning");
+        }
         await this.getListRooms()
     }
 
@@ -473,24 +486,24 @@ class addOrdeleteDepartment extends Component {
     }
 
     addDoctors = async () => {
-        if(this.state.firstnameDoctor !== '' && this.state.lastnameDoctor !== ''
-        && this.state.avgTimeDoctor !== '' && this.state.employeeId  !== ''
-        && this.state.departmentValueId !== ''){
-        await axios.post("/addDoctors", {
-            firstname: this.state.firstnameDoctor,
-            lastname: this.state.lastnameDoctor,
-            avgtime: this.state.avgTimeDoctor,
-            empId: this.state.employeeId,
-            departmentId: this.state.departmentValueId,
-        })
-        swal("Success!", `Add Successful`, "success");
-    }
-        
-        else { swal("Cannot!", `Please fill out this form completely`, "warning"); } 
+        if (this.state.firstnameDoctor !== '' && this.state.lastnameDoctor !== ''
+            && this.state.avgTimeDoctor !== '' && this.state.employeeId !== ''
+            && this.state.departmentValueId !== '') {
+            await axios.post("/addDoctors", {
+                firstname: this.state.firstnameDoctor,
+                lastname: this.state.lastnameDoctor,
+                avgtime: this.state.avgTimeDoctor,
+                empId: this.state.employeeId,
+                departmentId: this.state.departmentValueId,
+            })
+            swal("Success!", `Add Successful`, "success");
+        }
+        else { swal("Cannot!", `Please fill out this form completely`, "warning"); }
         this.setState({
             firstnameDoctor: '',
             lastnameDoctor: '',
             avgTimeDoctor: '',
+            employeeId: '',
             departmentValueId: ''
         })
         await this.getListAllDoctors()

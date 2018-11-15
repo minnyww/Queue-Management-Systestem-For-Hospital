@@ -714,7 +714,6 @@ class Adminhome extends Component {
   forward = async () => {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
     //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
-    console.log(this.state.forwardDepartments)
     const date = this.pharseDate();
     let stepCurrent = null;
     let updateWaitStatus = false
@@ -731,7 +730,6 @@ class Adminhome extends Component {
       if (forwardList.data.length > 1) {
         if (forwardList.data.length < this.state.forwardDepartments.length) {
           let tmp = ''
-          console.log('เข้า if ', forwardList.data.length, this.state.forwardDepartments)
           this.state.forwardDepartments
             .map(async (dep, i) => {
               if (dep.statusId === 3) {
@@ -779,7 +777,6 @@ class Adminhome extends Component {
           // console.log('เข้า For', index, forwardList.data.length)
           let result = null;
           if (+forwardList.data[index].roomId !== +this.state.forwardDepartments[index].roomId) {
-            console.log('เข้า if2', this.state.forwardDepartments)
             this.state.forwardDepartments
               .map(async (dep, i) => {
                 // console.log(i, dep)
@@ -810,7 +807,6 @@ class Adminhome extends Component {
                       roomBack: dep.roomId === this.state.roomId ? 1 : 0,
                       step: i + 1
                     }
-                    console.log("tmp ที่ inert,", tmp)
                     if (!insertList) {
                       insertList.push(tmp)
                     }
@@ -838,7 +834,6 @@ class Adminhome extends Component {
           }
         }
       } else {
-        console.log('เข้า else 3', this.state.forwardDepartments)
         //แรกเข้า ไม่เคยมี Q มาก่อน
         // console.log('this.state.forwardDepartments ', this.state.forwardDepartments)
         this.state.forwardDepartments
@@ -1049,7 +1044,6 @@ class Adminhome extends Component {
       // forwardComeback: null,
       // addForwardNew:true
     })
-    console.log(this.state.forwardDepartments)
   }
   //------------------------------------------------------
   showDropdownDepartment = () => {
@@ -1313,7 +1307,6 @@ class Adminhome extends Component {
   }
   //-----------------------------------------
   addList = (i) => {
-    console.log(this.state.forwardDepartments)
     this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
     this.setState({
       forwardDepartments: this.state.forwardDepartments,

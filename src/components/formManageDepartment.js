@@ -119,6 +119,7 @@ const showFormRoom = props => {
                             required
                             control={Input}
                             value={props.roomNumber}
+                            type='number'
                             label='Room Number'
                             placeholder='Room Number'
                             onChange={(e, { value }) => props.setField("roomNumber", value)} />
@@ -174,7 +175,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.roomNumber}
+                            value={props.firstnameDoctor}
                             label='Firstname'
                             placeholder='Firstname'
                             onChange={(e, { value }) => props.setField("firstnameDoctor", value)} />
@@ -184,7 +185,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.building}
+                            value={props.lastnameDoctor}
                             label='Lastname'
                             placeholder='Lastname'
                             onChange={(e, { value }) => props.setField("lastnameDoctor", value)} />
@@ -193,7 +194,8 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.floor}
+                            type='number'
+                            value={props.employeeId}
                             label='Employee Id'
                             placeholder='Employee Id'
                             onChange={(e, { value }) => props.setField("employeeId", value)} />
@@ -202,7 +204,8 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.floor}
+                            value={props.avgTimeDoctor}
+                            type='number'
                             label='Average Time'
                             placeholder='Average Time'
                             onChange={(e, { value }) => props.setField("avgTimeDoctor", value)} />
@@ -211,7 +214,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Select}
-                            // value={props.departmentValueId}
+                            value={props.departmentValueId}
                             label='Choose Department'
                             options={props.allDepartments}
                             placeholder='Choose Department'
@@ -238,7 +241,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.roomNumber}
+                            value={props.firstnamePatient}
                             label='Firstname'
                             placeholder='Firstname'
                             onChange={(e, { value }) => props.setField("firstnamePatient", value)} />
@@ -248,7 +251,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.building}
+                            value={props.lastnamePatient}
                             label='Lastname'
                             placeholder='Lastname'
                             onChange={(e, { value }) => props.setField("lastnamePatient", value)} />
@@ -257,7 +260,7 @@ const showFormRoom = props => {
                         <Form.Field
                             required
                             control={Input}
-                            // value={props.floor}
+                            value={props.HNPatient}
                             label='Hospital Number'
                             placeholder='Hospital Number'
                             onChange={(e, { value }) => props.setField("HNPatient", value)} />
@@ -267,7 +270,7 @@ const showFormRoom = props => {
                             required
                             type='date'
                             // control={CustomCalendar}
-                            // value={props.floor}
+                            value={props.dob}
                             label='Date of birth'
                             placeholder='Date of birth'
                             onChange={(e, { value }) => props.setField("dob", value)} />
@@ -276,14 +279,15 @@ const showFormRoom = props => {
                         <Form.Input
                             required
                             control={Input}
-                            // value={props.departmentValueId}
+                            type="number"
+                            value={props.phonenumber}
                             label='Phone Number'
                             placeholder='Phone Number'
                             onChange={(e, { value }) => props.setField("phonenumber", value)} />
                         <Form.Input
                             required
                             control={Select}
-                            // value={props.departmentValueId}
+                            value={props.gender}
                             label='Gender'
                             options={gender}
                             placeholder='Gender'
@@ -306,20 +310,20 @@ const showFormRoom = props => {
 
 const gender = [
     {
-      key: 1,
-      text: "Male",
-      value: "Male"
+        key: 1,
+        text: "Male",
+        value: "Male"
     },
     {
-      key: 2,
-      text: "Female",
-      value: "Female"
+        key: 2,
+        text: "Female",
+        value: "Female"
     },
-  ];
+];
 
 
 const formManageDepartment = props => {
-    
+
     return (
         <div>
             <Grid centered style={{
