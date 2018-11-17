@@ -3,8 +3,8 @@
 #box {
   overflow-y: scroll;
   /* height: 30%; */
-  max-height:   300px;
-  min-height:  300px;
+  max-height: 300px;
+  min-height: 300px;
   background-color: white;
 }
 #boxshow {
@@ -14,8 +14,8 @@
 #boxLab {
   overflow-y: scroll;
   /* height: 40%; */
-  max-height:   300px;
-  min-height:  300px;
+  max-height: 300px;
+  min-height: 300px;
   background-color: white;
 }
 
@@ -45,6 +45,10 @@ span.rbc-btn-group {
   margin-top: 2%;
 }
 
+.rbc-header + .rbc-header {
+  border-left: 0px  !important;
+}
+
 .rbc-off-range-bg {
   background: #f1f0f0 !important ;
 }
@@ -59,22 +63,31 @@ span.rbc-btn-group {
   display: none;
 }
 
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+  /* background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); */
+  background-color: #00b5ad !important;
+  border-color: #dddddd !important;
+  color: white !important;
+}
+
 /* .active.item:after {
   background: #00a39b!important;
   background-color: #00a39b!important
 } */
 
-.ui.inverted.pointing.menu .active.item:after{
+.ui.inverted.pointing.menu .active.item:after {
   background: #00a39b !important;
 }
 
 .ui.secondary.menu .active.item {
-  -webkit-box-shadow: none ;
+  -webkit-box-shadow: none;
   box-shadow: none;
-  background: rgb(0, 181, 173)!important;
-  color: rgb(255, 255, 255)!important;
-  border-radius: .28571429rem!important;
-  padding: 8px!important;
+  background: rgb(0, 181, 173) !important;
+  color: rgb(255, 255, 255) !important;
+  border-radius: 0.28571429rem !important;
+  padding: 8px !important;
 }
 
 i.right.arrow.icon {

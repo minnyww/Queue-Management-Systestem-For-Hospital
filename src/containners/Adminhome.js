@@ -453,12 +453,11 @@ class Adminhome extends Component {
     // console.log(this.state.currentQueue)
     if (this.state.currentQueue.firstName !== undefined) {
       if (this.state.currentQueue.roomBack == 1) {
-
+        console.log('เข้า if 1')
         var checkGroup = await axios.post("/checkGroupRoomback", {
           group: this.state.currentQueue.group,
           // roomId: this.state.roomId
         })
-        // console.log(checkGroup.data[0].HN, checkGroup.data[0].runningNumber, checkGroup.data[0].queueId)
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
@@ -478,6 +477,7 @@ class Adminhome extends Component {
         group: this.state.currentQueue.group
       })
       if (checkGroup.data.length === 0) {
+        console.log('เข้า if 2')
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
@@ -991,7 +991,7 @@ class Adminhome extends Component {
     let tmp = "";
     if (!R.isEmpty(data)) {
       tmp = data
-        // .filter(data => (data.HN != this.state.queues.HN))
+        .filter(data => (data.HN != this.state.queues.HN))
         .map((queue, i) => (
           <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
             <Table.Body>

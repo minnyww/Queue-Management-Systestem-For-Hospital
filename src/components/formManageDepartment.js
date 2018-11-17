@@ -329,44 +329,47 @@ const formManageDepartment = props => {
             <Grid centered style={{
                 // marginTop: "1.5%",
             }}>
-                <Header as='h2' color='teal'>Department Management</Header>
+                <Header as='h2' color='teal'>Admin Management</Header>
                 <Grid.Row stretched style={{ paddingRight: '5%', paddingLeft: '3%' }}>
                     <Grid.Column width={4}
                         style={{ maxHeight: '250px', minHeight: '150px', height: 450, }} >
-                        <Menu pointing vertical color='teal'>
-                            <Menu.Item
-                                name='Add or Delete Department'
-                                onClick={() => {
-                                    props.setField('activeItem', 'department');
-                                }}
-                                active={props.activeItem === 'department' ? true : false}
-                            >Department
+                        <Segment color='teal'>
+                        <Header as='h2'>Menu</Header>
+                            <Menu fluid vertical tabular color='teal'>
+                                <Menu.Item
+                                    name='Add or Delete Department'
+                                    onClick={() => {
+                                        props.setField('activeItem', 'department');
+                                    }}
+                                    active={props.activeItem === 'department' ? true : false}
+                                >Department
                             </Menu.Item>
-                            <Menu.Item
-                                name='Rooms'
-                                onClick={() => {
-                                    props.setField('activeItem', 'rooms');
-                                }}
-                                active={props.activeItem === 'rooms' ? true : false}
-                            >Rooms
+                                <Menu.Item
+                                    name='Rooms'
+                                    onClick={() => {
+                                        props.setField('activeItem', 'rooms');
+                                    }}
+                                    active={props.activeItem === 'rooms' ? true : false}
+                                >Rooms
                             </Menu.Item>
-                            <Menu.Item
-                                name='Doctors'
-                                onClick={() => {
-                                    props.setField('activeItem', 'doctors');
-                                }}
-                                active={props.activeItem === 'doctors' ? true : false}
-                            >Doctors
+                                <Menu.Item
+                                    name='Doctors'
+                                    onClick={() => {
+                                        props.setField('activeItem', 'doctors');
+                                    }}
+                                    active={props.activeItem === 'doctors' ? true : false}
+                                >Doctors
                             </Menu.Item>
-                            <Menu.Item
-                                name='Doctors'
-                                onClick={() => {
-                                    props.setField('activeItem', 'patients');
-                                }}
-                                active={props.activeItem === 'patients' ? true : false}
-                            >Patients
+                                <Menu.Item
+                                    name='Doctors'
+                                    onClick={() => {
+                                        props.setField('activeItem', 'patients');
+                                    }}
+                                    active={props.activeItem === 'patients' ? true : false}
+                                >Patients
                             </Menu.Item>
-                        </Menu>
+                            </Menu>
+                        </Segment>
                     </Grid.Column>
                     <Grid.Column width={6}
                         style={{ maxHeight: '400px', minHeight: '400px', overflowY: 'scroll', }}>
