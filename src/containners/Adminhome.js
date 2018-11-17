@@ -4,26 +4,44 @@ import ListQueue from "./../components/listQueue";
 import "./../css/Q.css";
 import Headerbar from "./../components/headerbar";
 import axios from "./../lib/axios";
-import swal from "sweetalert"
+import swal from "sweetalert";
 import {
-  Segment, Icon, Header, List, Message, Dropdown, Menu,
-  Table, Radio, Button, TextArea, Label, Divider, Responsive, Statistic, Form, Input, Item, Image, Grid, Card
+  Segment,
+  Icon,
+  Header,
+  List,
+  Message,
+  Dropdown,
+  Menu,
+  Table,
+  Radio,
+  Button,
+  TextArea,
+  Label,
+  Divider,
+  Responsive,
+  Statistic,
+  Form,
+  Input,
+  Item,
+  Image,
+  Grid,
+  Card
 } from "semantic-ui-react";
 // import Modal from "react-modal";
-import Modal from 'react-responsive-modal';
-import * as R from 'ramda'
+import Modal from "react-responsive-modal";
+import * as R from "ramda";
 
-import { extendMoment } from 'moment-range';
+import { extendMoment } from "moment-range";
 import * as Moment from "moment";
 import { fail } from "assert";
 
-import logo from './../img/patient.png';
-import cardiogram from './../img/cardiogram.png';
-import notes from './../img/notes.png';
-import error from './../img/drug.png'
+import logo from "./../img/patient.png";
+import cardiogram from "./../img/cardiogram.png";
+import notes from "./../img/notes.png";
+import error from "./../img/drug.png";
 
 const moment = extendMoment(Moment);
-
 
 class Adminhome extends Component {
   state = {
@@ -31,7 +49,7 @@ class Adminhome extends Component {
     showModal: false,
     modalIsOpen: false,
     modalOpen: false,
-    dropdownValue: '',
+    dropdownValue: "",
 
     errorHN: "",
     errorGetName: "",
@@ -82,17 +100,18 @@ class Adminhome extends Component {
 
     editList: false,
 
-    loginName: '',
+    loginName: "",
     addForwardNew: false,
 
     activeBox: 1,
-    listAbsent: [],
-
+    listAbsent: []
   };
 
   componentWillMount = async () => {
-    const { empId, departmentId, type } = JSON.parse(localStorage.getItem('userData'))
-    const userData = JSON.parse(localStorage.getItem('userData'))
+    const { empId, departmentId, type } = JSON.parse(
+      localStorage.getItem("userData")
+    );
+    const userData = JSON.parse(localStorage.getItem("userData"));
     this.setState({
       nurseId: empId,
       departmentId,
@@ -139,10 +158,13 @@ class Adminhome extends Component {
     var datas = await axios.get(`/getQueue/${doctors.data[0].roomId}`);
     var datasLab = await axios.get(`/getLabQueue/${doctors.data[0].roomId}`);
     var dataLabQueue = await axios.get(`/getListLabQueue`);
-    const currentQinThisRoom = await axios.get(`/currentQwithDoctor/${doctorsOption[0].value}`);
+    const currentQinThisRoom = await axios.get(
+      `/currentQwithDoctor/${doctorsOption[0].value}`
+    );
 
     this.setState({
-      currentQueue: currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0],
+      currentQueue:
+        currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0],
       doctorList: doctors.data,
       departments: departmentsOption,
       allDepartment: allDepartmentOption,
@@ -159,27 +181,30 @@ class Adminhome extends Component {
         month: date.month,
         year: date.year
       },
-      userType: type,
-    })
-    this.getAbsent()
-    this.forwardList(currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0])
+      userType: type
+    });
+    this.getAbsent();
+    this.forwardList(
+      currentQinThisRoom.data.length === 0 ? {} : currentQinThisRoom.data[0]
+    );
   };
   //สิ้นสุด Willmount
-  forwardList = async (currentQueue) => {
-    let forwardList
+  forwardList = async currentQueue => {
+    let forwardList;
     if (!R.isEmpty(currentQueue)) {
-      forwardList = await axios.post('/getAllStepQueue', {
-        HN: currentQueue.length === 0 ? '' : currentQueue.HN,
-        group: currentQueue.length === 0 ? '' : currentQueue.group
-      })
+      forwardList = await axios.post("/getAllStepQueue", {
+        HN: currentQueue.length === 0 ? "" : currentQueue.HN,
+        group: currentQueue.length === 0 ? "" : currentQueue.group
+      });
       this.setState({
-        forwardDepartments: forwardList.data.length <= 1 ? [] : forwardList.data,
+        forwardDepartments:
+          forwardList.data.length <= 1 ? [] : forwardList.data,
         addForwardNew: this.state.forwardDepartments.length > 0 ? true : false
-      })
-      return forwardList.data
+      });
+      return forwardList.data;
     } else {
     }
-  }
+  };
 
   setField = (field, value) => {
     this.setState({ [field]: value });
@@ -226,8 +251,14 @@ class Adminhome extends Component {
         " (ห้อง " +
         roomDoctor.roomId +
         " ) ",
-      value: roomDoctor.doctorId + "/" + roomDoctor.roomId
-        + '-' + roomDoctor.firstname + " " + roomDoctor.lastname
+      value:
+        roomDoctor.doctorId +
+        "/" +
+        roomDoctor.roomId +
+        "-" +
+        roomDoctor.firstname +
+        " " +
+        roomDoctor.lastname
     }));
     return dropdownAndRooms;
   };
@@ -274,9 +305,9 @@ class Adminhome extends Component {
     return {
       day: day[curr_date],
       month: month[curr_month],
-      year: curr_year,
-    }
-  }
+      year: curr_year
+    };
+  };
 
   //Add เข้าคิว
   addQueue = async e => {
@@ -306,8 +337,8 @@ class Adminhome extends Component {
           doctorId: this.state.doctorId,
           nurseId: this.state.nurseId,
           departmentId: this.state.departmentId,
-          //CHECK ว่า กดจากตรงไหน Forward Function หรือ Add Function 
-          queueDefault: 'queueDefault',
+          //CHECK ว่า กดจากตรงไหน Forward Function หรือ Add Function
+          queueDefault: "queueDefault",
           step: 1
           // forward: this.state.forward,
           // date: this.state.Date,
@@ -319,7 +350,7 @@ class Adminhome extends Component {
           lastNamePatient: "",
           errorGetName: { status: false, message: "" },
           errorHN: { status: false, message: "" },
-          HN: '',
+          HN: ""
         });
       } else {
         this.setState({
@@ -336,26 +367,38 @@ class Adminhome extends Component {
   showMessage = (message, i) => {
     // this.setState({ showMsg : i })
     if (message) {
-      return <Label color='teal'
-        onClick={() => this.setState({ modalOpen: true, index: i })}>
-        <Icon className="exclamation circle" />
-        Message
+      return (
+        <Label
+          color="teal"
+          onClick={() => this.setState({ modalOpen: true, index: i })}
+          style={{ fontWeigth :'100' }}
+        >
+          <Icon className="exclamation circle" />
+          Message
         </Label>
+      );
     }
-  }
+  };
   renderModal = () => {
     // if (this.state.queues[this.state.index]) {
     return (
       <Modal
         center
-        styles={{ modal: { width: 500, top: "30%", height: '30%' } }}
+        styles={{ modal: { width: 500, top: "30%", height: "30%" } }}
         open={this.state.modalOpen}
-        onClose={() => this.setField("modalOpen", false)}>
-        {this.state.queues.length > 0 ? this.state.queues[this.state.index].Forward : ''}
+        onClose={() => this.setField("modalOpen", false)}
+      >
+        <Label color="teal" style={{ fontWeigth: "100" }}>
+          Message :{" "}
+        </Label>{" "}
+        <br /> <br />
+        {this.state.queues.length > 0
+          ? this.state.queues[this.state.index].Forward
+          : ""}
       </Modal>
-    )
+    );
     // }
-  }
+  };
   showPatient = () => {
     let tmp = "";
     const data = this.state.queues;
@@ -363,18 +406,27 @@ class Adminhome extends Component {
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
-          <Table key={i} stackable style={{
-            border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)',
-          }}>
-            <Table.Body >
+          <Table
+            key={i}
+            stackable
+            style={{
+              border: "none",
+              marginTop: "-2%",
+              borderBottom: "1px solid rgb(224, 224, 224)"
+            }}
+          >
+            <Table.Body>
               <Table.Row>
-                <Table.Cell style={{ fontSize: "38px", color: "teal" }}>{queue.queueId}</Table.Cell>
-                <Table.Cell style={{ fontSize: "16px" }} >
-                  Name : {queue.firstName} {queue.lastName}<br />
+                <Table.Cell style={{ fontSize: "38px", color: "teal" }}>
+                  {queue.queueId}
+                </Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }}>
+                  Name : {queue.firstName} {queue.lastName}
+                  <br />
                   HN: {queue.HN}
                 </Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell textAlign='right'>
+                <Table.Cell />
+                <Table.Cell textAlign="right">
                   <Icon name="time" size="large" style={{ marginTop: "3%" }} />
                   {queue.avgtime.toFixed(0)} Min <br />
                   {this.showMessage(queue.Forward, i)}
@@ -384,13 +436,15 @@ class Adminhome extends Component {
           </Table>
         ));
     } else {
-      cardiogram//
-      tmp = <center>
-        <Image
-          src={cardiogram} style={{ width: '25%', height: '25%' }}>
-        </Image>
-        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
-      </center>
+      cardiogram; //
+      tmp = (
+        <center>
+          <Image src={cardiogram} style={{ width: "25%", height: "25%" }} />
+          <Label style={{ marginTop: "2%" }} basic color="orange">
+            ไม่มีคิว
+          </Label>
+        </center>
+      );
     }
     return tmp;
   };
@@ -416,7 +470,6 @@ class Adminhome extends Component {
         errorHN: { status: false, message: "" },
         errorGetName: { status: false, message: "" },
         errorAdd: { status: false, message: "" }
-
       });
     } else {
       this.setState({
@@ -433,7 +486,7 @@ class Adminhome extends Component {
   getQueue = async () => {
     const datas = await axios.get(`/getQueue/${this.state.roomId}`);
     this.setState({
-      queues: datas.data,
+      queues: datas.data
     });
     // console.log(datas.data)
   };
@@ -449,15 +502,15 @@ class Adminhome extends Component {
     // //ถ้า current q มี !comback
     // //เอากรุปของ currentQ ไป select มา เรียงจากน้อยไปมาก
     // //select group ทั้งหมด ของ currentq where status4 , roomId
-    //check ว่ามีห้องที่ต้องกลับไหมถ้ามี ให้เอา col แรก status = 1 
+    //check ว่ามีห้องที่ต้องกลับไหมถ้ามี ให้เอา col แรก status = 1
     // console.log(this.state.currentQueue)
     if (this.state.currentQueue.firstName !== undefined) {
       if (this.state.currentQueue.roomBack == 1) {
         // console.log('เข้า if 1')
         var checkGroup = await axios.post("/checkGroupRoomback", {
-          group: this.state.currentQueue.group,
+          group: this.state.currentQueue.group
           // roomId: this.state.roomId
-        })
+        });
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
@@ -469,13 +522,13 @@ class Adminhome extends Component {
         // console.log('เข้า !== null')
       }
     }
-    // // เชคว่าผู้ป่วยมคิวต่อไหม (currentQ >> where group , sort running number ) >>>>> API post 
+    // // เชคว่าผู้ป่วยมคิวต่อไหม (currentQ >> where group , sort running number ) >>>>> API post
     // // (select * from queue where group = current.group asd )
     // // if ที่ queues[0] ให้ update status เป็น 1 { }
     if (this.state.currentQueue.firstName !== undefined) {
       var checkGroup = await axios.post("/checkGroupId", {
         group: this.state.currentQueue.group
-      })
+      });
       if (checkGroup.data.length === 0) {
         // console.log('เข้า if 2')
         await axios.post("/updateQueue", {
@@ -483,18 +536,20 @@ class Adminhome extends Component {
           date: this.state.Date,
           HN: this.state.currentQueue.HN,
           runningNumber: this.state.currentQueue.runningNumber,
-          queueId: this.state.currentQueue.queueId,
+          queueId: this.state.currentQueue.queueId
           // roomBack : 0
         });
-      }
-      else {
+      } else {
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
           HN: checkGroup.data[0].HN,
           runningNumber: checkGroup.data[0].runningNumber,
           queueId: checkGroup.data[0].queueId,
-          roomBack: checkGroup.data[0].roomBack === 1 ? null : checkGroup.data[0].roomBack
+          roomBack:
+            checkGroup.data[0].roomBack === 1
+              ? null
+              : checkGroup.data[0].roomBack
         });
       }
     }
@@ -526,12 +581,12 @@ class Adminhome extends Component {
           HN: tmp.HN,
           statusId: 3,
           runningNumber: tmp.runningNumber,
-          queueId: tmp.queueId,
+          queueId: tmp.queueId
           // roomBack : 0
         });
         this.setState({
           currentQueue: tmp
-        })
+        });
         check = true;
         // console.log("ห้อง" + this.state.roomId + " /" + tmp.HN);
       }
@@ -550,9 +605,9 @@ class Adminhome extends Component {
         });
         this.setState({
           currentQueue: {}
-        })
+        });
       } else {
-        //ในห้องนี้มีคิว >> update status q[0] = 3 , update status currentQ = 4 
+        //ในห้องนี้มีคิว >> update status q[0] = 3 , update status currentQ = 4
         await axios.post("/updateQueue", {
           date: this.state.Date,
           HN: tmp.HN,
@@ -569,7 +624,7 @@ class Adminhome extends Component {
         });
         this.setState({
           currentQueue: tmp
-        })
+        });
       }
     }
     await this.getQueue();
@@ -581,7 +636,7 @@ class Adminhome extends Component {
     // console.log('alllllupdate')
     await axios.get(`/updateAllPerDay`);
     // console.log('alllllupdate')
-  }
+  };
   getListLabQueue = async () => {
     const datas = await axios.get(`/getListLabQueue`);
     this.setState({
@@ -593,151 +648,298 @@ class Adminhome extends Component {
     if (this.state.userType === 1 && !R.isEmpty(data)) {
       return (
         <div>
-          <Image src={logo} circular style={{ width: '30%', height: '30%', marginTop: '4%' }} />
-          <Item >
-            <Label color='teal' size='massive'
-              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+          <Image
+            src={logo}
+            circular
+            style={{ width: "30%", height: "30%", marginTop: "4%" }}
+          />
+          <Item>
+            <Label
+              color="teal"
+              size="massive"
+              style={{
+                fontSize: "26px",
+                marginLeft: "15%",
+                marginRight: "5%",
+                marginTop: "3%"
+              }}
+            >
               {data.queueId}
             </Label>
-            <Label basic color='teal'
-              size='massive'
+            <Label
+              basic
+              color="teal"
+              size="massive"
               style={{
-                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
-                border: 'none', borderLeft: '1px solid green'
-              }}>
+                fontSize: "26px",
+                marginRight: "10%",
+                borderRadius: "0px",
+                border: "none",
+                borderLeft: "1px solid green"
+              }}
+            >
               {data.firstName} {data.lastName}
             </Label>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic
-                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "22px", border: "none" }}
+              >
                 Hospital Number : {data.HN}
               </Label>
             </Item.Content>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic size='massive'
-                style={{ fontSize: '20px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
                 Room : {data.roomId}
               </Label>
-              <Label basic
-                size='massive' style={{ fontSize: '20px', border: 'none' }}>
-                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
+                Department :{" "}
+                {this.state.userType === 1 ? data.department : data.Forward}
               </Label>
             </Item.Content>
           </Item>
         </div>
-
       );
     } else if (this.state.userType === 2 && !R.isEmpty(data)) {
       return (
         <div>
-          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
-          <Item >
-            <Label color='teal' size='massive'
-              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+          <img
+            src={logo}
+            style={{ width: "15%", height: "15%", marginTop: "2%" }}
+          />
+          <Item>
+            <Label
+              color="teal"
+              size="massive"
+              style={{
+                fontSize: "26px",
+                marginLeft: "15%",
+                marginRight: "5%",
+                marginTop: "3%"
+              }}
+            >
               {data.queueId}
             </Label>
-            <Label basic color='teal'
-              size='massive'
+            <Label
+              basic
+              color="teal"
+              size="massive"
               style={{
-                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
-                border: 'none', borderLeft: '1px solid green'
-              }}>
+                fontSize: "26px",
+                marginRight: "10%",
+                borderRadius: "0px",
+                border: "none",
+                borderLeft: "1px solid green"
+              }}
+            >
               {data.firstName} {data.lastName}
             </Label>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic
-                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "22px", border: "none" }}
+              >
                 Hospital Number : {data.HN}
               </Label>
             </Item.Content>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic size='massive'
-                style={{ fontSize: '20px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
                 Room : {data.roomId}
               </Label>
-              <Label basic
-                size='massive' style={{ fontSize: '20px', border: 'none' }}>
-                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
+                Department :{" "}
+                {this.state.userType === 1 ? data.department : data.Forward}
               </Label>
             </Item.Content>
           </Item>
         </div>
-      )
-    }
-    else if (this.state.userType === 3 && !R.isEmpty(data)) {
+      );
+    } else if (this.state.userType === 3 && !R.isEmpty(data)) {
       return (
         <div>
-          <img src={logo} style={{ width: '15%', height: '15%', marginTop: '2%' }} />
-          <Item >
-            <Label color='teal' size='massive'
-              style={{ fontSize: '26px', marginLeft: '15%', marginRight: '5%', marginTop: '3%' }}>
+          <img
+            src={logo}
+            style={{ width: "15%", height: "15%", marginTop: "2%" }}
+          />
+          <Item>
+            <Label
+              color="teal"
+              size="massive"
+              style={{
+                fontSize: "26px",
+                marginLeft: "15%",
+                marginRight: "5%",
+                marginTop: "3%"
+              }}
+            >
               {data.queueId}
             </Label>
-            <Label basic color='teal'
-              size='massive'
+            <Label
+              basic
+              color="teal"
+              size="massive"
               style={{
-                fontSize: '26px', marginRight: '10%', borderRadius: '0px',
-                border: 'none', borderLeft: '1px solid green'
-              }}>
+                fontSize: "26px",
+                marginRight: "10%",
+                borderRadius: "0px",
+                border: "none",
+                borderLeft: "1px solid green"
+              }}
+            >
               {data.firstName} {data.lastName}
             </Label>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic
-                size='massive' style={{ fontSize: '22px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "22px", border: "none" }}
+              >
                 Hospital Number : {data.HN}
               </Label>
             </Item.Content>
-            <Item.Content style={{ marginTop: '2.5%' }}>
-              <Label basic size='massive'
-                style={{ fontSize: '20px', border: 'none' }}>
+            <Item.Content style={{ marginTop: "2.5%" }}>
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
                 Room : {data.roomId}
               </Label>
-              <Label basic
-                size='massive' style={{ fontSize: '20px', border: 'none' }}>
-                Department : {this.state.userType === 1 ? data.department : data.Forward}
+              <Label
+                basic
+                size="massive"
+                style={{ fontSize: "20px", border: "none" }}
+              >
+                Department :{" "}
+                {this.state.userType === 1 ? data.department : data.Forward}
               </Label>
             </Item.Content>
           </Item>
         </div>
-      )
-    }
-    else {
-      return <center>
-        <Image
-          src={cardiogram} style={{ marginTop: '17%', width: '30%', height: '30%' }}>
-        </Image>
-        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
-      </center>
+      );
+    } else {
+      return (
+        <center>
+          <Image
+            src={cardiogram}
+            style={{ marginTop: "17%", width: "30%", height: "30%" }}
+          />
+          <Label style={{ marginTop: "2%" }} basic color="orange">
+            ไม่มีคิว
+          </Label>
+        </center>
+      );
     }
   };
 
   forward = async () => {
     // insert Q ของ forward ทั้งหมด ([0] status =1 , [ที่เหลือ] status = 5)
-    //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null 
+    //check ว่ากลับมาห้องเดิมหรือไม่ >> insert this.state.roomId ที่ queues สุดท้าย desc ถ้าไม่กลับก็ null
     const date = this.pharseDate();
     let stepCurrent = null;
-    let updateWaitStatus = false
+    let updateWaitStatus = false;
     let indexStep = 0;
-    let insertList = []
+    let insertList = [];
     let insertIndex = null;
-    let checkRoomBack = false
+    let checkRoomBack = false;
 
     if (this.state.forwardDepartments.length > 0) {
-      const forwardList = await axios.post('/getAllStepQueue', {
+      const forwardList = await axios.post("/getAllStepQueue", {
         HN: this.state.currentQueue.HN,
         group: this.state.currentQueue.group
-      })
+      });
       if (forwardList.data.length > 1) {
         if (forwardList.data.length < this.state.forwardDepartments.length) {
-          let tmp = ''
-          this.state.forwardDepartments
-            .map(async (dep, i) => {
+          let tmp = "";
+          this.state.forwardDepartments.map(async (dep, i) => {
+            if (dep.statusId === 3) {
+              stepCurrent = dep.step;
+            }
+            if (this.state.addForwardNew) {
+              if (dep.addStatus) {
+                tmp = {
+                  roomId: dep.roomId,
+                  day: date.day,
+                  month: date.month,
+                  year: date.year,
+                  statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
+                  // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
+                  HN: this.state.currentQueue.HN,
+                  doctorId: dep.doctorId,
+                  forward: dep.message,
+                  nurseId: this.state.nurseId,
+                  departmentId: dep.departmentId,
+                  queueDefault: "forwardType",
+                  groupId: this.state.currentQueue.group,
+                  roomBack: dep.roomId === this.state.roomId ? 1 : 0,
+                  // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+                  step: i + 1
+                };
+                // console.log("tmp ที่ inert,", tmp)
+                insertList.push(tmp);
+
+                if (tmp.statusId === 1) {
+                  updateWaitStatus = true;
+                }
+              }
+            }
+            if (
+              stepCurrent &&
+              dep.step === stepCurrent + 1 &&
+              dep.status != 1 &&
+              !updateWaitStatus
+            ) {
+              // console.log('update status ', stepCurrent, dep)
+              await axios.post("/updateStatus", {
+                statusId: 1,
+                runningNumber: dep.runningNumber
+              });
+            }
+          });
+          // console.log('insertList', insertList)
+        }
+        for (let index = 0; index < forwardList.data.length; index++) {
+          // console.log('เข้า For', index, forwardList.data.length)
+          let result = null;
+          if (
+            +forwardList.data[index].roomId !==
+            +this.state.forwardDepartments[index].roomId
+          ) {
+            this.state.forwardDepartments.map(async (dep, i) => {
+              // console.log(i, dep)
               if (dep.statusId === 3) {
-                stepCurrent = dep.step
+                stepCurrent = dep.step;
+              }
+              if (+forwardList.data[index].roomId === +dep.roomId) {
+                result = {
+                  index: i,
+                  step: dep.step,
+                  runningNumber: dep.runningNumber
+                };
               }
               if (this.state.addForwardNew) {
                 if (dep.addStatus) {
-                  tmp = {
+                  // เจอตัวที่แทรกเข้ามาแล้ว
+                  // insertIndex = i;
+                  let tmp = {
                     roomId: dep.roomId,
                     day: date.day,
                     month: date.month,
@@ -749,82 +951,34 @@ class Adminhome extends Component {
                     forward: dep.message,
                     nurseId: this.state.nurseId,
                     departmentId: dep.departmentId,
-                    queueDefault: 'forwardType',
+                    queueDefault: "forwardType",
                     groupId: this.state.currentQueue.group,
                     roomBack: dep.roomId === this.state.roomId ? 1 : 0,
-                    // roomBack: this.state.forwardComeback === true && i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
                     step: i + 1
+                  };
+                  if (!insertList) {
+                    insertList.push(tmp);
                   }
-                  // console.log("tmp ที่ inert,", tmp)
-                  insertList.push(tmp)
-
                   if (tmp.statusId === 1) {
-                    updateWaitStatus = true
+                    updateWaitStatus = true;
                   }
                 }
               }
-              if (stepCurrent && dep.step === stepCurrent + 1 && dep.status != 1 && !updateWaitStatus) {
+              // console.log("forwardList.data[i].roomId === dep.roomId", +forwardList.data[index].roomId, +dep.roomId)
+
+              if (
+                stepCurrent &&
+                dep.step === stepCurrent + 1 &&
+                dep.status != 1 &&
+                !updateWaitStatus
+              ) {
                 // console.log('update status ', stepCurrent, dep)
                 await axios.post("/updateStatus", {
                   statusId: 1,
                   runningNumber: dep.runningNumber
                 });
               }
-            })
-          // console.log('insertList', insertList)
-        }
-        for (let index = 0; index < forwardList.data.length; index++) {
-          // console.log('เข้า For', index, forwardList.data.length)
-          let result = null;
-          if (+forwardList.data[index].roomId !== +this.state.forwardDepartments[index].roomId) {
-            this.state.forwardDepartments
-              .map(async (dep, i) => {
-                // console.log(i, dep)
-                if (dep.statusId === 3) {
-                  stepCurrent = dep.step
-                }
-                if (+forwardList.data[index].roomId === +dep.roomId) {
-                  result = { index: i, step: dep.step, runningNumber: dep.runningNumber }
-                }
-                if (this.state.addForwardNew) {
-                  if (dep.addStatus) {
-                    // เจอตัวที่แทรกเข้ามาแล้ว
-                    // insertIndex = i;
-                    let tmp = {
-                      roomId: dep.roomId,
-                      day: date.day,
-                      month: date.month,
-                      year: date.year,
-                      statusId: stepCurrent && i + 1 === stepCurrent + 1 ? 1 : 5,
-                      // stepCurrent = 0 >> stepCurrent = 2 ตัวที่เข้ามาจะต้องเชคว่ามี step > 2 ไหม ถ้ามากกว่าอยู่ 1 ให้ status 1 ถ้าไม่ใช้ให้เป๋น 5
-                      HN: this.state.currentQueue.HN,
-                      doctorId: dep.doctorId,
-                      forward: dep.message,
-                      nurseId: this.state.nurseId,
-                      departmentId: dep.departmentId,
-                      queueDefault: 'forwardType',
-                      groupId: this.state.currentQueue.group,
-                      roomBack: dep.roomId === this.state.roomId ? 1 : 0,
-                      step: i + 1
-                    }
-                    if (!insertList) {
-                      insertList.push(tmp)
-                    }
-                    if (tmp.statusId === 1) {
-                      updateWaitStatus = true
-                    }
-                  }
-                }
-                // console.log("forwardList.data[i].roomId === dep.roomId", +forwardList.data[index].roomId, +dep.roomId)
-
-                if (stepCurrent && dep.step === stepCurrent + 1 && dep.status != 1 && !updateWaitStatus) {
-                  // console.log('update status ', stepCurrent, dep)
-                  await axios.post("/updateStatus", {
-                    statusId: 1,
-                    runningNumber: dep.runningNumber
-                  });
-                }
-              })
+            });
             if (result) {
               await axios.post("/updateStepQ", {
                 runningNumber: result.runningNumber,
@@ -836,33 +990,33 @@ class Adminhome extends Component {
       } else {
         //แรกเข้า ไม่เคยมี Q มาก่อน
         // console.log('this.state.forwardDepartments ', this.state.forwardDepartments)
-        this.state.forwardDepartments
-          .map((dep, i) => {
-            checkRoomBack = dep.roomId.split('-')[0] == this.state.roomId ? 1 : null
-            let tmp = {
-              roomId: dep.roomId,
-              day: date.day,
-              month: date.month,
-              year: date.year,
-              statusId: i === 0 ? 1 : 5,
-              HN: this.state.currentQueue.HN,
-              doctorId: dep.doctorId,
-              forward: dep.message,
-              nurseId: this.state.nurseId,
-              departmentId: dep.departmentId,
-              queueDefault: 'forwardType',
-              groupId: this.state.currentQueue.group,
-              roomBack: checkRoomBack,
-              // roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
-              step: i + 2
-            }
-            insertList.push(tmp)
-          })
+        this.state.forwardDepartments.map((dep, i) => {
+          checkRoomBack =
+            dep.roomId.split("-")[0] == this.state.roomId ? 1 : null;
+          let tmp = {
+            roomId: dep.roomId,
+            day: date.day,
+            month: date.month,
+            year: date.year,
+            statusId: i === 0 ? 1 : 5,
+            HN: this.state.currentQueue.HN,
+            doctorId: dep.doctorId,
+            forward: dep.message,
+            nurseId: this.state.nurseId,
+            departmentId: dep.departmentId,
+            queueDefault: "forwardType",
+            groupId: this.state.currentQueue.group,
+            roomBack: checkRoomBack,
+            // roomBack: i === this.state.forwardDepartments.length - 1 ? this.state.roomId : null,
+            step: i + 2
+          };
+          insertList.push(tmp);
+        });
       }
       if (insertList.length > 0) {
         insertList.map(async list => {
-          await axios.post("/addPatientQ", list)
-        })
+          await axios.post("/addPatientQ", list);
+        });
       }
 
       await axios.post("/updateQueue", {
@@ -873,7 +1027,7 @@ class Adminhome extends Component {
         queueId: this.state.currentQueue.queueId,
         runningNumber: this.state.currentQueue.runningNumber
       });
-      await this.getLabQueue(this.state.roomId)
+      await this.getLabQueue(this.state.roomId);
       // console.log('hihihihihihihihi lab')
       this.setState({
         currentQueue: {},
@@ -881,148 +1035,179 @@ class Adminhome extends Component {
         HN: "",
         forward: "",
         forwardDepartments: [],
-        message: ''
-
-      })
+        message: ""
+      });
     } else {
       swal("Cannot Forward Queue to Another department", {
-        icon: "warning",
+        icon: "warning"
       });
     }
-  }
-  callAbsent = async (i) => {
+  };
+  callAbsent = async i => {
     // console.log(this.state.listAbsent[i])
     await axios.post("/updateQueueAbsent", {
       runningNumber: this.state.listAbsent[i].runningNumber
     });
-    await this.getAbsent()
-    await this.getQueue()
+    await this.getAbsent();
+    await this.getQueue();
     // console.log('Success')
-  }
+  };
   getAbsent = async () => {
-    const data = await axios.get('/getListAbsent')
+    const data = await axios.get("/getListAbsent");
     await this.setState({
-      listAbsent: data.data,
-
-    })
-    return data
-  }
+      listAbsent: data.data
+    });
+    return data;
+  };
 
   absent = async () => {
     await axios.post("/updateAbsent", {
-      runningNumber: this.state.currentQueue.runningNumber,
+      runningNumber: this.state.currentQueue.runningNumber
     });
     this.setState({
-      currentQueue: '',
+      currentQueue: "",
       activeBox: 2
-
-    })
-    const data = await this.getAbsent()
+    });
+    const data = await this.getAbsent();
     // console.log(this.state.currentQueue)
-  }
-  cancelQueue = async (i) => {
+  };
+  cancelQueue = async i => {
     // console.log(this.state.listAbsent[i])
 
     swal({
       title: "Patient is Absent ? ",
-      text: this.state.listAbsent[i].firstName + ' ' + this.state.listAbsent[i].lastName + 'is Absent',
+      text:
+        this.state.listAbsent[i].firstName +
+        " " +
+        this.state.listAbsent[i].lastName +
+        "is Absent",
       icon: "warning",
       buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
+      dangerMode: true
+    }).then(async willDelete => {
       if (willDelete) {
-        await axios.delete(`/deletePatientQ/${this.state.listAbsent[i].runningNumber}`)
+        await axios.delete(
+          `/deletePatientQ/${this.state.listAbsent[i].runningNumber}`
+        );
         swal("Queue has been deleted!", {
-          icon: "success",
+          icon: "success"
         });
-        const data = await this.getAbsent()
+        const data = await this.getAbsent();
       }
     });
-
-  }
+  };
 
   showAbsent = () => {
-    let data = this.state.listAbsent
-    let tmp = ''
+    let data = this.state.listAbsent;
+    let tmp = "";
     if (!R.isEmpty(data)) {
       tmp = data
         .filter(queue => queue.roomId === this.state.roomId)
         .map((queue, i) => (
-          <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+          <Table
+            key={i}
+            stackable
+            style={{
+              border: "none",
+              marginTop: "-2%",
+              borderBottom: "1px solid rgb(224, 224, 224)"
+            }}
+          >
             <Table.Body>
               <Table.Row>
-                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
-                <Table.Cell style={{ fontSize: "16px" }} >
-                  Name : {queue.firstName} {queue.lastName}<br />
+                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>
+                  {queue.queueId}
+                </Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }}>
+                  Name : {queue.firstName} {queue.lastName}
+                  <br />
                   HN: {queue.HN}
                 </Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell textAlign='right' >
-                  <Button size='tiny' color='red'
+                <Table.Cell />
+                <Table.Cell textAlign="right">
+                  <Button
+                    size="tiny"
+                    color="red"
                     onClick={() => this.cancelQueue(i)}
                   >
                     Cancel
-              </Button>
-                  <Button size='tiny' color='teal'
-                    onClick={() => this.callAbsent(i)}>
+                  </Button>
+                  <Button
+                    size="tiny"
+                    color="teal"
+                    onClick={() => this.callAbsent(i)}
+                  >
                     Call
-              </Button>
+                  </Button>
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>
-        ))
+        ));
     } else {
-      tmp = <center>
-        <Image
-          src={cardiogram} style={{ width: '25%', height: '25%' }}>
-        </Image>
-        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
-      </center>
+      tmp = (
+        <center>
+          <Image src={cardiogram} style={{ width: "25%", height: "25%" }} />
+          <Label style={{ marginTop: "2%" }} basic color="orange">
+            ไม่มีคิว
+          </Label>
+        </center>
+      );
     }
 
-    return tmp
-  }
-
+    return tmp;
+  };
 
   //show patient at lab queues
   showPatientLabQueue = () => {
-    const data = this.state.labQueues
+    const data = this.state.labQueues;
     let tmp = "";
     if (!R.isEmpty(data)) {
       tmp = data
-        .filter(data => (data.HN != this.state.queues.HN))
+        .filter(data => data.HN != this.state.queues.HN)
         .map((queue, i) => (
-          <Table key={i} stackable style={{ border: 'none', marginTop: '-2%', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+          <Table
+            key={i}
+            stackable
+            style={{
+              border: "none",
+              marginTop: "-2%",
+              borderBottom: "1px solid rgb(224, 224, 224)"
+            }}
+          >
             <Table.Body>
               <Table.Row>
-                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>{queue.queueId}</Table.Cell>
-                <Table.Cell style={{ fontSize: "16px" }} >
-                  Name : {queue.firstName} {queue.lastName}<br />
+                <Table.Cell style={{ fontSize: "42px", color: "teal" }}>
+                  {queue.queueId}
+                </Table.Cell>
+                <Table.Cell style={{ fontSize: "16px" }}>
+                  Name : {queue.firstName} {queue.lastName}
+                  <br />
                   HN: {queue.HN}
                 </Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell textAlign='right' >
-                  <Label color='orange'>Wait</Label>
+                <Table.Cell />
+                <Table.Cell textAlign="right">
+                  <Label color="orange">Wait</Label>
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>
-        ))
-    }
-    else if (R.isEmpty(data)) {
-      tmp = <center>
-        <Image
-          src={cardiogram} style={{ width: '25%', height: '25%' }}>
-        </Image>
-        <Label style={{ marginTop: '2%' }} basic color='orange'>ไม่มีคิว</Label>
-      </center>
+        ));
+    } else if (R.isEmpty(data)) {
+      tmp = (
+        <center>
+          <Image src={cardiogram} style={{ width: "25%", height: "25%" }} />
+          <Label style={{ marginTop: "2%" }} basic color="orange">
+            ไม่มีคิว
+          </Label>
+        </center>
+      );
     }
     return tmp;
   };
 
   addMoreForward = async () => {
-    let getRoomAndDoctors = this.state.forwardDoctorId.split('/')
+    let getRoomAndDoctors = this.state.forwardDoctorId.split("/");
     let tmp = {
       type: this.state.forwardType,
       departmentId: this.state.forwardDepartmentId,
@@ -1030,100 +1215,161 @@ class Adminhome extends Component {
       roomId: getRoomAndDoctors[1],
       message: this.state.forwardMessage,
       editStatus: false,
-      departmentOption: this.state.forwardType === "Department" ? this.state.allDepartment : this.state.allLab,
+      departmentOption:
+        this.state.forwardType === "Department"
+          ? this.state.allDepartment
+          : this.state.allLab,
       doctorOption: this.state.forwardRoomAndDoctors,
       addStatus: true
-    }
+    };
     await this.setState({
       forwardDepartments: [...this.state.forwardDepartments, tmp],
       forwardType: "",
       forwardDepartmentId: "",
       forwardDoctorId: " ",
-      forwardMessage: '',
-      forwardRoomAndDoctors: [],
+      forwardMessage: "",
+      forwardRoomAndDoctors: []
       // forwardComeback: null,
       // addForwardNew:true
-    })
-  }
+    });
+  };
   //------------------------------------------------------
   showDropdownDepartment = () => {
-    let tmp = <div>
-      <center>
-        <Menu compact style={{ width: '100%' }} >
-          {/* <Dropdown.Menu>  */}
-          <Dropdown style={{ border: 'none', maxWidth: '30%', minWidth: '30%', margin: '1px' }}
-            disabled={this.state.currentQueue.step !== 1 ? true : false}
-            selection
-            placeholder="Department/Lab"
-            options={labOrDepartment}
-            onChange={async (e, { value }) => {
-              this.setState({ forwardType: value })
-            }} />
-          <Dropdown style={{ border: 'none', maxWidth: '35%', minWidth: '35%', margin: '1px' }}
+    let tmp = (
+      <div>
+        <center>
+          <Menu compact style={{ width: "100%" }}>
+            {/* <Dropdown.Menu>  */}
+            <Dropdown
+              style={{
+                border: "none",
+                maxWidth: "30%",
+                minWidth: "30%",
+                margin: "1px"
+              }}
+              disabled={this.state.currentQueue.step !== 1 ? true : false}
+              selection
+              placeholder="Department/Lab"
+              options={labOrDepartment}
+              onChange={async (e, { value }) => {
+                this.setState({ forwardType: value });
+              }}
+            />
+            <Dropdown
+              style={{
+                border: "none",
+                maxWidth: "35%",
+                minWidth: "35%",
+                margin: "1px"
+              }}
+              disabled={
+                this.state.forwardType === "Department" ||
+                this.state.forwardType === "Lab"
+                  ? false
+                  : true
+              }
+              search
+              selection
+              placeholder="Department or Lab"
+              options={
+                this.state.forwardType === "Department"
+                  ? this.state.allDepartment
+                  : this.state.allLab
+              }
+              onChange={async (e, { value }) => {
+                this.setState({
+                  forwardDepartmentId: value,
+                  forwardRoomAndDoctors: await this.doctorInDepartment(value)
+                });
+              }}
+            />
+            <br />
+            <Dropdown
+              style={{
+                border: "none",
+                margin: "1px",
+                maxWidth: "35%",
+                minWidth: "34%"
+              }}
+              disabled={this.state.forwardRoomAndDoctors.length === 0}
+              search
+              selection
+              placeholder="Room and Doctor"
+              options={this.state.forwardRoomAndDoctors}
+              onChange={async (e, { value }) => {
+                this.setState({
+                  forwardDoctorId: value
+                });
+              }}
+            />
+          </Menu>
+        </center>
+        <Image
+          src={notes}
+          circular
+          style={{
+            width: "15%",
+            height: "15%",
+            marginRight: "10%",
+            marginLeft: " 6%",
+            marginTop: "-15%"
+          }}
+          verticalAlign="middle"
+        />
+        <TextArea
+          disabled={
+            this.state.forwardDoctorId.length === 0 ||
+            this.state.forwardDoctorId === " "
+              ? true
+              : false
+          }
+          style={{
+            height: "100px",
+            width: "60%",
+            padding: "10px",
+            marginTop: "5%",
+            borderRadius: "5px",
+            border: "1px solid #dededf",
+            marginBottom: "2%"
+          }}
+          value={this.state.forwardMessage}
+          placeholder="Tell us more , Leave Message to Doctor"
+          onChange={async (e, { value }) => {
+            this.setField("forwardMessage", value);
+          }}
+        />
+        <center>
+          <Button
             disabled={
-              this.state.forwardType === "Department" || this.state.forwardType === "Lab" ? false : true
+              this.state.forwardDoctorId.length === 0 ||
+              this.state.forwardDoctorId === " "
+                ? true
+                : false
             }
-            search
-            selection
-            placeholder="Department or Lab"
-            options={this.state.forwardType === "Department" ? this.state.allDepartment : this.state.allLab}
-            onChange={async (e, { value }) => {
-              this.setState({
-                forwardDepartmentId: value,
-                forwardRoomAndDoctors: await this.doctorInDepartment(value)
-              })
-            }} />
-          <br />
-          <Dropdown style={{ border: 'none', margin: '1px', maxWidth: '35%', minWidth: '34%' }}
-            disabled={this.state.forwardRoomAndDoctors.length === 0}
-            search
-            selection
-            placeholder="Room and Doctor"
-            options={this.state.forwardRoomAndDoctors}
-            onChange={async (e, { value }) => {
-              this.setState({
-                forwardDoctorId: value,
-              })
-            }} />
-        </Menu >
-      </center>
-      <Image src={notes} circular
-        style={{
-          width: '15%', height: '15%', marginRight: '10%',
-          marginLeft: ' 6%', marginTop: '-15%'
-        }} verticalAlign='middle' />
-      <TextArea
-        disabled={this.state.forwardDoctorId.length === 0 || this.state.forwardDoctorId === " " ? true : false}
-        style={{
-          height: '100px', width: "60%", padding: "10px",
-          marginTop: "5%", borderRadius: "5px", border: "1px solid #dededf", marginBottom: '2%'
-        }}
-        value={this.state.forwardMessage}
-        placeholder="Tell us more , Leave Message to Doctor"
-        onChange={async (e, { value }) => {
-          this.setField("forwardMessage", value);
-        }} />
-      <center>
-        <Button
-          disabled={this.state.forwardDoctorId.length === 0 || this.state.forwardDoctorId === " " ? true : false}
-          color="teal"
-          onClick={() => { this.addMoreForward(); }}>
-          Add to List
-        </Button>
-      </center>
-    </div >
-    return tmp
-  }
+            color="teal"
+            onClick={() => {
+              this.addMoreForward();
+            }}
+          >
+            Add to List
+          </Button>
+        </center>
+      </div>
+    );
+    return tmp;
+  };
   //------------------------------------------------------
-  deleteListForward = async (i) => {
+  deleteListForward = async i => {
     // console.log('เข้า DELETE')
-    let tmp = this.state.forwardDepartments
+    let tmp = this.state.forwardDepartments;
     if (tmp.length > 0) {
-      axios.delete(`/deleteListQueue/${this.state.forwardDepartments[i].runningNumber}`)
-      tmp.splice(i, 1)
+      axios.delete(
+        `/deleteListQueue/${this.state.forwardDepartments[i].runningNumber}`
+      );
+      tmp.splice(i, 1);
       this.setState({
         forwardDepartments: tmp
-      })
+      });
     }
     // console.log(tmp[i])
     // console.log(this.state.forwardDepartments[i])
@@ -1137,133 +1383,145 @@ class Adminhome extends Component {
     //(this.state.forwardDepartments)
     this.setState({
       forwardDepartments: tmp
-    })
-  }
+    });
+  };
 
-  openConfirm = (i) => {
+  openConfirm = i => {
     //(this.state.forwardDepartments)
     //('เข้า Confirm')
-    let swl = ''
+    let swl = "";
     swl = swal({
       title: "Are you sure?",
       icon: "warning",
       buttons: true,
-      dangerMode: true,
-    })
-      .then((willDelete) => {
-        if (willDelete) {
-          this.deleteListForward(i)
-          swal("List has been deleted!", {
-            icon: "success",
-          });
-        }
-      });
-    return swl
-  }
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        this.deleteListForward(i);
+        swal("List has been deleted!", {
+          icon: "success"
+        });
+      }
+    });
+    return swl;
+  };
   //----------- Edit DropdownList Before Forward-----------
   editStatus = (i, status, dep = null) => {
     let tmp = this.state.forwardDepartments;
     //('dep', dep)
     if (dep) {
-      // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown 
-      tmp[i] = dep
+      // เปลี่ยนให้มันแก้ไข้ได้ เป็น dropdown
+      tmp[i] = dep;
     }
 
     if (!tmp[i].alreadyValue) {
-      tmp[i].alreadyValue = { ...tmp[i] }
+      tmp[i].alreadyValue = { ...tmp[i] };
     }
 
-    tmp[i].editStatus = status
+    tmp[i].editStatus = status;
     //check แอดล่างสุด แก้ไขล่างสุด ยังซ้ำได้อยุ่
-    if (!this.state.forwardDepartments[i + 1] || !this.state.forwardDepartments[i - 1]) {
+    if (
+      !this.state.forwardDepartments[i + 1] ||
+      !this.state.forwardDepartments[i - 1]
+    ) {
       //('eDokkk')
       this.setState({
         forwardDepartments: tmp
-      })
+      });
     }
 
     if (this.state.forwardDepartments[i + 1]) {
       this.setState({
         forwardDepartments: tmp
-      })
-    }
-    else if (!this.state.forwardDepartments[i + 1]) {
+      });
+    } else if (!this.state.forwardDepartments[i + 1]) {
       //(tmp[i].roomId)
       if (tmp[i].roomId === undefined) {
-        tmp.splice(i, 1)
+        tmp.splice(i, 1);
         this.setState({
           forwardDepartments: tmp
-        })
-        let swl = ''
+        });
+        let swl = "";
         swl = swal({
           title: "Cannot add empty dropdown",
           text: "Please select dropdown",
           icon: "warning",
           button: "Ok",
-          dangerMode: true,
-        })
-      }
-      else if (!this.state.forwardDepartments[i - 1]) {
+          dangerMode: true
+        });
+      } else if (!this.state.forwardDepartments[i - 1]) {
         this.setState({
           forwardDepartments: tmp
-        })
-      }
-      else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)) {
-        let swl = ''
+        });
+      } else if (
+        tmp[i].roomId
+          .toString()
+          .includes(this.state.forwardDepartments[i - 1].roomId)
+      ) {
+        let swl = "";
         swl = swal({
           title: "Cannot add same room",
           text: "Please select another room",
           icon: "warning",
           button: "Ok",
-          dangerMode: true,
-        })
+          dangerMode: true
+        });
         this.setState({
-          forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
-        })
+          forwardDepartments: this.state.forwardDepartments.filter(
+            item => item !== tmp[i]
+          )
+        });
       }
     }
     //check ระหว่างตรงกลาง แอดได้ แก้ไขได้ ห้ามซ้ำ บนล่าง
-    else if (tmp[i].roomId.toString().includes(this.state.forwardDepartments[i - 1].roomId)
-      || tmp[i].roomId.toString().includes(this.state.forwardDepartments[i + 1].roomId)) {
+    else if (
+      tmp[i].roomId
+        .toString()
+        .includes(this.state.forwardDepartments[i - 1].roomId) ||
+      tmp[i].roomId
+        .toString()
+        .includes(this.state.forwardDepartments[i + 1].roomId)
+    ) {
       //('tmp ในสุด')
-      let swl = ''
+      let swl = "";
       swl = swal({
         title: "Cannot add same room",
         text: "Please select another room",
         icon: "warning",
         button: "Ok",
-        dangerMode: true,
-      })
+        dangerMode: true
+      });
       this.setState({
-        forwardDepartments: this.state.forwardDepartments.filter(item => item !== tmp[i])
-      })
+        forwardDepartments: this.state.forwardDepartments.filter(
+          item => item !== tmp[i]
+        )
+      });
       //('succsee')
-    }
-    else {
+    } else {
       this.setState({
         forwardDepartments: tmp
-      })
+      });
     }
-  }
+  };
   cancelList = (i, status, dep) => {
-    let tmp = this.state.forwardDepartments
+    let tmp = this.state.forwardDepartments;
     if (dep.editStatus) {
       if (!dep.alreadyValue) {
         // if (!dep.alreadyValue.status) {
-        tmp.splice(i, 1)
-        this.setState({ forwardDepartments: tmp })
-        return
+        tmp.splice(i, 1);
+        this.setState({ forwardDepartments: tmp });
+        return;
       } else {
-        tmp[i] = dep.alreadyValue
+        tmp[i] = dep.alreadyValue;
       }
       // }
-      tmp[i].editStatus = false
+      tmp[i].editStatus = false;
       this.setState({
         forwardDepartments: tmp
-      })
+      });
       // this.editStatus(i, false, dep)
     }
-  }
+  };
 
   // cancelList = (i, status, dep) => {
   //   let tmp = this.state.forwardDepartments
@@ -1300,133 +1558,199 @@ class Adminhome extends Component {
 
   editForward = (field, value, i) => {
     let tmp = this.state.forwardDepartments;
-    tmp[i][field] = value
+    tmp[i][field] = value;
     this.setState({
       forwardDepartments: tmp
-    })
-  }
+    });
+  };
   //-----------------------------------------
-  addList = (i) => {
-    this.state.forwardDepartments.splice(i + 1, 0, { editStatus: true, addStatus: true })
+  addList = i => {
+    this.state.forwardDepartments.splice(i + 1, 0, {
+      editStatus: true,
+      addStatus: true
+    });
     this.setState({
       forwardDepartments: this.state.forwardDepartments,
       addForwardNew: true
-    })
+    });
     //('forward Department (addList)  ', this.state.forwardDepartments)
-  }
+  };
   //---------------
   showListDepartment = () => {
-    let getDoctor
-    let getNameDoctor
+    let getDoctor;
+    let getNameDoctor;
     if (this.state.forwardDepartments.length > 0) {
       let tmp = this.state.forwardDepartments.map((dep, i) => {
         if (typeof dep.departmentId === "string") {
-          getDoctor = dep.departmentId.split('/')
+          getDoctor = dep.departmentId.split("/");
         }
-        if (typeof dep.roomId === "string" || typeof dep.doctorId === "string") {
-          getNameDoctor = dep.roomId.split('-')
+        if (
+          typeof dep.roomId === "string" ||
+          typeof dep.doctorId === "string"
+        ) {
+          getNameDoctor = dep.roomId.split("-");
         }
-        let label = dep.addStatus ? <Label color='yellow' ribbon> New </Label> : ''
+        let label = dep.addStatus ? (
+          <Label color="yellow" ribbon>
+            {" "}
+            New{" "}
+          </Label>
+        ) : (
+          ""
+        );
         if (!dep.editStatus) {
-          return <Table.Row key={i}
-            disabled={dep.statusId === 4 ? true : false}>
-            <Table.Cell>{label}{dep.type === 1 || dep.type === 'Department' ? 'Department ' : 'Lab'}</Table.Cell>
-            <Table.Cell>{typeof dep.departmentId === "string" ? getDoctor[1] : dep.department}</Table.Cell>
-            <Table.Cell >{typeof dep.doctorId === "string" ? getNameDoctor[1] : dep.firstname + ' ' + dep.lastname}
-              / {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}</Table.Cell>
-            <Table.Cell
-              style={{ maxHeight: '100px', wordBreak: 'break-word' }} >{dep.message || dep.Forward}
-            </Table.Cell>
-            <Table.Cell>
-              {dep.statusId === 4 || dep.statusId === 3 || dep.statusId === 5 ? '' :
-                <Icon name='pencil' color='orange'
-                  onClick={() => this.editStatus(i, true)} />}
-              {dep.statusId === 4 || dep.statusId === 3 ? '' :
-                <Icon name="trash" color='red' disabled={dep.statusId === 3 ? true : false}
-                  onClick={() => this.openConfirm(i)} />}
-              <Icon name="plus" color='green' disabled={dep.statusId === 4 ? true : false}
-                onClick={() => this.addList(i)} />
-            </Table.Cell>
-          </Table.Row>
+          return (
+            <Table.Row key={i} disabled={dep.statusId === 4 ? true : false}>
+              <Table.Cell>
+                {label}
+                {dep.type === 1 || dep.type === "Department"
+                  ? "Department "
+                  : "Lab"}
+              </Table.Cell>
+              <Table.Cell>
+                {typeof dep.departmentId === "string"
+                  ? getDoctor[1]
+                  : dep.department}
+              </Table.Cell>
+              <Table.Cell>
+                {typeof dep.doctorId === "string"
+                  ? getNameDoctor[1]
+                  : dep.firstname + " " + dep.lastname}
+                /{" "}
+                {typeof dep.roomId === "string" ? getNameDoctor[0] : dep.roomId}
+              </Table.Cell>
+              <Table.Cell
+                style={{ maxHeight: "100px", wordBreak: "break-word" }}
+              >
+                {dep.message || dep.Forward}
+              </Table.Cell>
+              <Table.Cell>
+                {dep.statusId === 4 ||
+                dep.statusId === 3 ||
+                dep.statusId === 5 ? (
+                  ""
+                ) : (
+                  <Icon
+                    name="pencil"
+                    color="orange"
+                    onClick={() => this.editStatus(i, true)}
+                  />
+                )}
+                {dep.statusId === 4 || dep.statusId === 3 ? (
+                  ""
+                ) : (
+                  <Icon
+                    name="trash"
+                    color="red"
+                    disabled={dep.statusId === 3 ? true : false}
+                    onClick={() => this.openConfirm(i)}
+                  />
+                )}
+                <Icon
+                  name="plus"
+                  color="green"
+                  disabled={dep.statusId === 4 ? true : false}
+                  onClick={() => this.addList(i)}
+                />
+              </Table.Cell>
+            </Table.Row>
+          );
+        } else {
+          return (
+            <Table.Row key={i}>
+              <Table.Cell>
+                <Dropdown
+                  style={{ maxWidth: "50%", minWidth: "50%" }}
+                  value={dep.type}
+                  placeholder="Department/Lab"
+                  options={labOrDepartment}
+                  onChange={async (e, { value }) => {
+                    dep.type = value;
+                    this.editForward("type", value, i);
+                  }}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <Dropdown
+                  style={{ maxWidth: "40%", minWidth: "40%" }}
+                  value={dep.departmentId}
+                  placeholder="Department or Lab"
+                  options={
+                    dep.type === "Department"
+                      ? this.state.allDepartment
+                      : this.state.allLab
+                  }
+                  onChange={async (e, { value }) => {
+                    this.editForward("departmentId", value, i);
+                    this.editForward(
+                      "doctorOption",
+                      await this.doctorInDepartment(value),
+                      i
+                    );
+                  }}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <Dropdown
+                  style={{ maxWidth: "60%", minWidth: "60%" }}
+                  value={dep.doctorId + "/" + dep.roomId}
+                  placeholder="Room and Doctor"
+                  options={dep.doctorOption}
+                  onChange={async (e, { value }) => {
+                    let tmp = value.split("/");
+                    this.editForward("doctorId", tmp[0], i);
+                    this.editForward("roomId", tmp[1], i);
+                  }}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <TextArea
+                  placeholder="Tell us more"
+                  value={dep.message}
+                  onChange={async (e, { value }) => {
+                    this.editForward("message", value, i);
+                  }}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <Icon
+                  name="save"
+                  color="green"
+                  onClick={() => this.editStatus(i, false, dep)}
+                />
+                <Icon
+                  className="cancel"
+                  color="red"
+                  onClick={() => this.cancelList(i, false, dep)}
+                />
+              </Table.Cell>
+            </Table.Row>
+          );
         }
-        else {
-          return <Table.Row key={i}>
-            <Table.Cell>
-              <Dropdown
-                style={{ maxWidth: '50%', minWidth: '50%' }}
-                value={dep.type}
-                placeholder="Department/Lab"
-                options={labOrDepartment}
-                onChange={async (e, { value }) => {
-                  dep.type = value
-                  this.editForward('type', value, i)
-                }} />
-            </Table.Cell>
-            <Table.Cell>
-              <Dropdown
-                style={{ maxWidth: '40%', minWidth: '40%' }}
-                value={dep.departmentId}
-                placeholder="Department or Lab"
-                options={dep.type === "Department" ? this.state.allDepartment : this.state.allLab}
-                onChange={async (e, { value }) => {
-                  this.editForward('departmentId', value, i)
-                  this.editForward('doctorOption', await this.doctorInDepartment(value), i)
-                }} />
-            </Table.Cell>
-            <Table.Cell >
-              <Dropdown
-                style={{ maxWidth: '60%', minWidth: '60%' }}
-                value={dep.doctorId + '/' + dep.roomId}
-                placeholder="Room and Doctor"
-                options={dep.doctorOption}
-                onChange={async (e, { value }) => {
-                  let tmp = value.split('/')
-                  this.editForward('doctorId', tmp[0], i)
-                  this.editForward('roomId', tmp[1], i)
-                }} />
-            </Table.Cell>
-            <Table.Cell>
-              <TextArea
-                placeholder="Tell us more"
-                value={dep.message}
-                onChange={async (e, { value }) => {
-                  this.editForward('message', value, i)
-                }} />
-            </Table.Cell>
-            <Table.Cell>
-              <Icon name='save' color="green"
-                onClick={() => this.editStatus(i, false, dep)} />
-              <Icon className="cancel" color='red'
-                onClick={() => this.cancelList(i, false, dep)}
-              />
-            </Table.Cell>
-          </Table.Row>
-        }
-      })
-      return tmp
+      });
+      return tmp;
     }
-  }
+  };
 
   logOut = () => {
-    localStorage.removeItem('userData');
-  }
-
+    localStorage.removeItem("userData");
+  };
 
   render() {
     return (
       <div>
-        <Responsive  {...Responsive.onlyComputer}>
-          <div style={{
-            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png) ',
-            backgroundRepeat: 'repeat',
-            backgroundAttachment: 'fixed',
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover'
-          }}>
-            <Headerbar
-              loginName={this.state.loginName}
-              logOut={this.logOut}
-            />
+        <Responsive {...Responsive.onlyComputer}>
+          <div
+            style={{
+              backgroundImage:
+                "url(https://www.picz.in.th/images/2018/10/11/kum9gq.png) ",
+              backgroundRepeat: "repeat",
+              backgroundAttachment: "fixed",
+              backgroundPosition: "center center",
+              backgroundSize: "cover"
+            }}
+          >
+            <Headerbar loginName={this.state.loginName} logOut={this.logOut} />
             <DropdownQueue
               //state
               doctorId={this.state.doctorId}
@@ -1480,20 +1804,20 @@ class Adminhome extends Component {
               absent={this.absent}
               showAbsent={this.showAbsent}
             />
-          </div >
+          </div>
         </Responsive>
-        <Responsive  {...Responsive.onlyTablet}>
-          <div style={{
-            backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
-            backgroundRepeat: 'repeat',
-            backgroundAttachment: 'fixed',
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover'
-          }}>
-            <Headerbar
-              loginName={this.state.loginName}
-              logOut={this.logOut}
-            />
+        <Responsive {...Responsive.onlyTablet}>
+          <div
+            style={{
+              backgroundImage:
+                "url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)",
+              backgroundRepeat: "repeat",
+              backgroundAttachment: "fixed",
+              backgroundPosition: "center center",
+              backgroundSize: "cover"
+            }}
+          >
+            <Headerbar loginName={this.state.loginName} logOut={this.logOut} />
             <DropdownQueue
               //state
               doctorId={this.state.doctorId}
@@ -1556,15 +1880,15 @@ class Adminhome extends Component {
               <Card.Content>
                 <Card.Header>Don't Support</Card.Header>
                 <Card.Meta>Queue Management System</Card.Meta>
-                <Card.Description>Don't Support on mobile screen</Card.Description>
+                <Card.Description>
+                  Don't Support on mobile screen
+                </Card.Description>
               </Card.Content>
-              <Card.Content extra>
-
-              </Card.Content>
+              <Card.Content extra />
             </Card>
           </center>
         </Responsive>
-      </div >
+      </div>
     );
   }
 }
@@ -1578,6 +1902,6 @@ const labOrDepartment = [
     key: 2,
     text: "Department",
     value: "Department"
-  },
+  }
 ];
 export default Adminhome;

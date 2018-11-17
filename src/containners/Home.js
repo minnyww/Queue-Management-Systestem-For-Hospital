@@ -199,7 +199,8 @@ class Home extends Component {
     if (tmp >= 0) {
       if (tmp === 0) {
         NotificationManager.info('ถึงคิว')
-        this.setState({ textmessage: "ถึงคิว" })
+        this.setState({ textmessage: "ถึงคิว" + ' แผนก: '
+        + this.state.queueData.department + ' ห้อง : ' + this.state.queueData.roomId})
         this.sendText()
       } else if (tmp === 1) {
         NotificationManager.warning('เหลืออีก 1 คิว ' + ' อีก ' + time + ' นาที ' + ' แผนก: '

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import * as R from 'ramda'
+import * as R from "ramda";
 import {
   Grid,
   Button,
@@ -12,7 +12,9 @@ import {
   Segment,
   Table,
   Label,
-  Divider, Dimmer, Loader
+  Divider,
+  Dimmer,
+  Loader
 } from "semantic-ui-react";
 import Modal from "react-responsive-modal";
 
@@ -20,9 +22,16 @@ const showCurrentQueue = props => {
   let tmp = "";
   if (props.userType === 1 || props.userType === 2 || props.userType === 3) {
     tmp = (
-      <Segment.Group style={{ width: "80%", height: '600px', }} >
-        <Segment attached='bottom' color='teal' style={{ padding: '13px', height: '600px', }}>
-          <Header as="h2" style={{ borderBottom: '1px solid #dededf', padding: '1%' }}>
+      <Segment.Group style={{ width: "80%", height: "600px" }}>
+        <Segment
+          attached="bottom"
+          color="teal"
+          style={{ padding: "13px", height: "600px" }}
+        >
+          <Header
+            as="h2"
+            style={{ borderBottom: "1px solid #dededf", padding: "1%" }}
+          >
             Current Queue
           </Header>
           {props.getPatientName()}
@@ -38,10 +47,8 @@ const listQueue = props => {
   if (props.userType === 1) {
     tmp = (
       <Segment.Group id="boxLab">
-        <Segment inverted color="teal" >
-          <Header  >
-            Waiting List
-          </Header>
+        <Segment inverted color="teal">
+          <Header>Waiting List</Header>
         </Segment>
         {props.showPatientLabQueue()}
       </Segment.Group>
@@ -50,10 +57,10 @@ const listQueue = props => {
   return tmp;
 };
 
-const forward = (props) => {
-  props.setField("showModal", true)
-  props.forwardList(props.currentQueue)
-}
+const forward = props => {
+  props.setField("showModal", true);
+  props.forwardList(props.currentQueue);
+};
 
 const Queue = props => {
   const setField = props.setField;
@@ -66,7 +73,12 @@ const Queue = props => {
             {/* ----------------------- Queue Box -------------------- */}
             <Segment.Group id="box">
               <Segment color="teal">
-                <Label color='teal' style={{ fontWeight: 100, fontSize: '14px' }}>Queue</Label>
+                <Label
+                  color="teal"
+                  style={{ fontWeight: 100, fontSize: "14px" }}
+                >
+                  Queue
+                </Label>
               </Segment>
               {/* <Dimmer.Dimmable dimmed={R.isEmpty(props.queues) ? true : false}>
                 <Dimmer active={R.isEmpty(props.queues) ? true : false} inverted>
@@ -77,33 +89,40 @@ const Queue = props => {
               {props.renderModal()}
             </Segment.Group>
             <center>
-              <Button color="teal" onClick={() => setField("modalIsOpen", true)}
-                style={{ marginBottom: '2%', backgroudColor: 'white' }}>
+              <Button
+                color="teal"
+                onClick={() => setField("modalIsOpen", true)}
+                style={{ marginBottom: "2%", backgroudColor: "white" }}
+              >
                 Add Patient
-            </Button>
+              </Button>
             </center>
             {/* ----------------------- Queue Box -------------------- */}
             {/* ----------------------- Lab and Absent Box -------------------- */}
             <Segment.Group id="boxLab">
               <Segment color="teal">
-                <Menu secondary >
+                <Menu secondary>
                   <Menu.Item
                     active={props.activeBox === 1 ? true : false}
                     onClick={() => {
-                      props.setField('activeBox', 1);
-                    }}>
+                      props.setField("activeBox", 1);
+                    }}
+                  >
                     Waiting List
-                </Menu.Item>
+                  </Menu.Item>
                   <Menu.Item
                     active={props.activeBox === 2 ? true : false}
                     onClick={() => {
-                      props.setField('activeBox', 2);
-                    }}>
+                      props.setField("activeBox", 2);
+                    }}
+                  >
                     Absent
-                </Menu.Item>
+                  </Menu.Item>
                 </Menu>
               </Segment>
-              {props.activeBox === 1 ? props.showPatientLabQueue() : props.showAbsent()}
+              {props.activeBox === 1
+                ? props.showPatientLabQueue()
+                : props.showAbsent()}
             </Segment.Group>
             {/* ----------------------- Lab and Absent Box -------------------- */}
             {/* ----------------------- Modal Add Patient  -------------------- */}
@@ -111,20 +130,27 @@ const Queue = props => {
               <Modal
                 open={props.modalIsOpen}
                 onClose={() => {
-                  setField("modalIsOpen", false)
-                  setField("namePatient", '')
-                  setField("lastNamePatient", '')
-                  setField("errorGetName", { status: false, message: "" })
-                  setField("errorHN", { status: false, message: "" })
-                  setField("errorAdd", { status: false, message: "" })
-                  setField("HN", '')
-                }
-                }
-                styles={{ modal: { width: 550, top: "30%", borderRadius: '5px' } }}
+                  setField("modalIsOpen", false);
+                  setField("namePatient", "");
+                  setField("lastNamePatient", "");
+                  setField("errorGetName", { status: false, message: "" });
+                  setField("errorHN", { status: false, message: "" });
+                  setField("errorAdd", { status: false, message: "" });
+                  setField("HN", "");
+                }}
+                styles={{
+                  modal: { width: 550, top: "30%", borderRadius: "5px" }
+                }}
               >
-                <Form onSubmit={e => { props.addQueue(e); }} style={{ marginTop: '5%' }}>
+                <Form
+                  onSubmit={e => {
+                    props.addQueue(e);
+                  }}
+                  style={{ marginTop: "5%" }}
+                >
                   <br />
-                  <Form.Input onBlur={() => props.validateHN()}
+                  <Form.Input
+                    onBlur={() => props.validateHN()}
                     icon="search"
                     fluid
                     name="HN"
@@ -145,7 +171,7 @@ const Queue = props => {
                   <center>
                     <List>
                       <List.Item>
-                        <List.Content style={{ fontSize: '16px' }}>
+                        <List.Content style={{ fontSize: "16px" }}>
                           Name: {props.namePatient}
                           {props.lastNamePatient}
                         </List.Content>
@@ -155,7 +181,7 @@ const Queue = props => {
                     <br />
                     <Button type="submit" basic color="teal">
                       Add
-                  </Button>
+                    </Button>
                   </center>
                 </Form>
               </Modal>
@@ -163,8 +189,9 @@ const Queue = props => {
             {/* ----------------------- Modal Add Patient  -------------------- */}
           </Grid.Column>
 
-          <Grid.Column width={10}
-          // style={{ marginTop: "3%" }}
+          <Grid.Column
+            width={10}
+            // style={{ marginTop: "3%" }}
           >
             {/* ------------------------- Current Queue Box ----------------------------- */}
             <center>
@@ -173,68 +200,90 @@ const Queue = props => {
               {/* ------------------------- Current Queue Box ----------------------------- */}
               {/* ------------------------- Button Group Under Current Queue Box ---------- */}
               <Button.Group>
-                <Button color='teal'
+                <Button
+                  color="teal"
                   onClick={() => {
-                    props.callPatient()
-                  }} >
-                  {props.currentQueue.firstName === undefined ? 'Call' : 'Call Next'}
+                    props.callPatient();
+                  }}
+                >
+                  {props.currentQueue.firstName === undefined
+                    ? "Call"
+                    : "Call Next"}
                 </Button>
                 <Button.Or />
 
-                <Button positive
-                  disabled={props.currentQueue.firstName === undefined ? true : false}
-                  onClick={() =>
-                    forward(props)}>Forward
+                <Button
+                  positive
+                  disabled={
+                    props.currentQueue.firstName === undefined ? true : false
+                  }
+                  onClick={() => forward(props)}
+                >
+                  Forward
                 </Button>
                 <Button.Or />
-                <Button color='orange'
+                <Button
+                  color="orange"
                   disabled={props.currentQueue.firstName === undefined}
-                  onClick={() => { props.absent() }}>
+                  onClick={() => {
+                    props.absent();
+                  }}
+                >
                   Absent
-                  </Button>
+                </Button>
               </Button.Group>
               {/* ------------------------- Button Group Under Current Queue Box ---------- */}
               {/*  ---------------------- Modal Forwad ------------------------- */}
               <Modal
-                styles={{ modal: { width: 800, } }}
+                styles={{ modal: { width: 800 } }}
                 open={props.showModal}
-                onClose={() =>
-                  setField("showModal", false)
-                }>
+                onClose={() => setField("showModal", false)}
+              >
                 <br />
                 <br />
-                {props.currentQueue.step === 1 && props.forwardDepartments.length !== props.forwardDepartments.length + 1 ? ' ' :
+                {props.currentQueue.step === 1 &&
+                props.forwardDepartments.length !==
+                  props.forwardDepartments.length + 1 ? (
+                  " "
+                ) : (
                   <Message
                     info
                     attached
-                    header='Need more help ? '
-                    list={['Please press + icon in the column Edit or Delete instead of select dropdown', 'หากต้องการให้คนไข้กลับมาที่ห้องเดิม กรุณาเพิ่มแผนกตัวเองอีกครั้ง']}
-                  />}
-                <Table color='teal' >
+                    header="Need more help ? "
+                    list={[
+                      "To add more Department, Please press + icon in the column Edit or Delete instead of select dropdown",
+                      "If you want to let patient comeback to this room again, Please add same room"
+                    ]}
+                  />
+                )}
+                <Table color="teal">
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell>Lab Or Department</Table.HeaderCell>
                       <Table.HeaderCell>Department</Table.HeaderCell>
                       <Table.HeaderCell>Doctor / Room</Table.HeaderCell>
-                      <Table.HeaderCell >Message</Table.HeaderCell>
+                      <Table.HeaderCell>Message</Table.HeaderCell>
                       <Table.HeaderCell>Edit Or Delete</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
-                  <Table.Body>
-                    {props.showListDepartment()}
-                  </Table.Body>
+                  <Table.Body>{props.showListDepartment()}</Table.Body>
                 </Table>
                 <br />
                 {props.showDropdownDepartment()}
                 <br />
                 <center>
                   <Divider horizontal>Or</Divider>
-                  <Button color="blue" onClick={() => props.forward()}
+                  <Button
+                    color="blue"
+                    onClick={() => props.forward()}
                     disabled={
-                      R.isEmpty(props.forwardDepartments)
-                        || (!R.isEmpty(props.forwardDepartments)
-                          && props.forwardDepartments.filter(data => (data.addStatus) === true).length < 1)
-                        ? true : false
+                      R.isEmpty(props.forwardDepartments) ||
+                      (!R.isEmpty(props.forwardDepartments) &&
+                        props.forwardDepartments.filter(
+                          data => data.addStatus === true
+                        ).length < 1)
+                        ? true
+                        : false
                     }
                   >
                     Forward
@@ -246,11 +295,8 @@ const Queue = props => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    </div >
+    </div>
   );
 };
 
-
-
 export default Queue;
-
