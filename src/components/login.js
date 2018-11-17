@@ -126,7 +126,7 @@ class Login extends Component {
       requestId: this.state.requestId,
       code: otp
     });
-    console.log(check.data.message.status);
+    // console.log(check.data.message.status);
     if (check.data.message.status === "0") {
       //Check API
       var data = await axios.post("/checkHN", {
@@ -149,7 +149,7 @@ class Login extends Component {
         });
       }
     } else {
-      console.log("เข้า cancel");
+      // console.log("เข้า cancel");
       swal(check.data.message.error_text, {
         icon: "warning"
       });
@@ -168,9 +168,9 @@ class Login extends Component {
     const recipient = this.state.recipient;
     if (this.state.requestId) {
       let check = await this.cancel(this.state.requestId);
-      console.log(check);
+      // console.log(check);
       if (check.data.message.status !== "0") {
-        console.log(check);
+        // console.log(check);
         this.setState({
           errorHN: { status: true, message: check.data.message.error_text }
         });

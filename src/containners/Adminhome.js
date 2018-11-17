@@ -453,7 +453,7 @@ class Adminhome extends Component {
     // console.log(this.state.currentQueue)
     if (this.state.currentQueue.firstName !== undefined) {
       if (this.state.currentQueue.roomBack == 1) {
-        console.log('เข้า if 1')
+        // console.log('เข้า if 1')
         var checkGroup = await axios.post("/checkGroupRoomback", {
           group: this.state.currentQueue.group,
           // roomId: this.state.roomId
@@ -477,7 +477,7 @@ class Adminhome extends Component {
         group: this.state.currentQueue.group
       })
       if (checkGroup.data.length === 0) {
-        console.log('เข้า if 2')
+        // console.log('เข้า if 2')
         await axios.post("/updateQueue", {
           statusId: 1,
           date: this.state.Date,
