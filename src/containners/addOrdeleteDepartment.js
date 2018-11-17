@@ -214,10 +214,10 @@ class addOrdeleteDepartment extends Component {
           });
         }
       });
-    }else {
-        swal("Cannot remove Queue", {
-            icon: "warning"
-          });
+    } else {
+      swal("Cannot remove Queue", {
+        icon: "warning"
+      });
     }
   };
 
@@ -243,7 +243,6 @@ class addOrdeleteDepartment extends Component {
   showAllQueue = () => {
     let tmp = "";
     const datas = this.state.listAllQueue;
-    if(R.isEmpty(this.state.listAllQueue)){
     tmp = datas.map((data, i) => (
       <List.Item key={i}>
         <List.Content floated="right">
@@ -275,7 +274,7 @@ class addOrdeleteDepartment extends Component {
           </List.Header>
         </List.Content>
       </List.Item>
-    ));}
+    ));
     return tmp;
   };
 
