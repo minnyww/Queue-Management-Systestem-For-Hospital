@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import "./../css/Q.css";
 import Modal from "react-responsive-modal";
 import swal from "sweetalert";
+import * as R from "ramda";
 
 import FormAddAppointment from "../components/formAddAppointment";
 import {
@@ -166,17 +167,23 @@ class Login extends Component {
   };
   sendOTP = async () => {
     const recipient = this.state.recipient;
-    if (this.state.requestId) {
+    // console.log(this.state.requestId);
+    if (!R.isEmpty(this.state.requestId)) {
       let check = await this.cancel(this.state.requestId);
       // console.log(check);
-      if (check.data.message.status !== "0") {
+      if (
+        check.data.message.status !== "0" ||
+        check.data.message.status !== 200
+      ) {
         // console.log(check);
-        this.setState({
-          errorHN: { status: true, message: check.data.message.error_text }
-        });
-        swal(check.data.message.error_text, {
-          icon: "warning"
-        });
+        swal(
+          check.data.message.status !== "0"
+            ? check.data.message.error_text
+            : "Request Success",
+          {
+            icon: "warning"
+          }
+        );
         return;
       }
     }
@@ -212,6 +219,7 @@ class Login extends Component {
     this.setState({
       requestId: ""
     });
+    // console.log(check);
     return check;
   };
 
@@ -269,7 +277,7 @@ class Login extends Component {
             <Modal
               center
               styles={{
-                modal: { width: 320, top: "40%", borderRadius: "10px" }
+                modal: { width: 400, top: "40%", borderRadius: "10px" }
               }}
               open={this.state.openOTP}
               onClose={() => {
@@ -279,82 +287,89 @@ class Login extends Component {
                 });
               }}
             >
-              <Form name="OTP">
-                <label>Please fill your OTP</label>
-                <Form.Group style={{ marginLeft: 30, marginTop: "2%" }}>
-                  <Grid.Column>
-                    <Form.Field style={{ paddingRight: 15 }}>
-                      <input
-                        className="OTP"
-                        width={2}
-                        style={{ width: 40 }}
-                        maxLength={1}
-                        id="1"
-                        autoFocus
-                        ref={input => (this.input["0"] = input)}
-                        type="text"
-                        onChange={this.onChange}
-                        value={this.state.pin1}
-                      />
-                    </Form.Field>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Form.Field style={{ paddingRight: 15 }}>
-                      <input
-                        className="OTP"
-                        width={2}
-                        style={{ width: 40 }}
-                        maxLength={1}
-                        id="2"
-                        ref={input => (this.input["1"] = input)}
-                        type="text"
-                        onChange={this.onChange}
-                        value={this.state.pin2}
-                      />
-                    </Form.Field>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Form.Field style={{ paddingRight: 15 }}>
-                      <input
-                        className="OTP"
-                        width={2}
-                        style={{ width: 40 }}
-                        maxLength={1}
-                        id="3"
-                        ref={input => (this.input["2"] = input)}
-                        type="text"
-                        onChange={this.onChange}
-                        value={this.state.pin3}
-                      />
-                    </Form.Field>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Form.Field style={{ paddingRight: 15 }}>
-                      <input
-                        className="OTP"
-                        width={2}
-                        style={{ width: 40 }}
-                        maxLength={1}
-                        id="4"
-                        ref={input => (this.input["3"] = input)}
-                        type="text"
-                        onChange={this.onChange}
-                        value={this.state.pin4}
-                      />
-                    </Form.Field>
-                  </Grid.Column>
-                </Form.Group>
-                <center>
+              <center>
+                <Form name="OTP" style={{ marginTop: "5%" }}>
+                  <label>Please fill your OTP</label>
+                  <Form.Group
+                    style={{
+                      marginLeft: "12%",
+                      marginTop: "2%"
+                    }}
+                  >
+                    <Grid.Column>
+                      <Form.Field style={{ paddingRight: 15 }}>
+                        <input
+                          className="OTP"
+                          width={2}
+                          style={{ width: 50 }}
+                          maxLength={1}
+                          id="1"
+                          autoFocus
+                          ref={input => (this.input["0"] = input)}
+                          type="number"
+                          onChange={this.onChange}
+                          value={this.state.pin1}
+                        />
+                      </Form.Field>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Form.Field style={{ paddingRight: 15 }}>
+                        <input
+                          className="OTP"
+                          width={2}
+                          style={{ width: 50 }}
+                          maxLength={1}
+                          id="2"
+                          ref={input => (this.input["1"] = input)}
+                          type="number"
+                          onChange={this.onChange}
+                          value={this.state.pin2}
+                        />
+                      </Form.Field>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Form.Field style={{ paddingRight: 15 }}>
+                        <input
+                          className="OTP"
+                          width={2}
+                          style={{ width: 50 }}
+                          maxLength={1}
+                          id="3"
+                          ref={input => (this.input["2"] = input)}
+                          type="number"
+                          onChange={this.onChange}
+                          value={this.state.pin3}
+                        />
+                      </Form.Field>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Form.Field style={{ paddingRight: 15 }}>
+                        <input
+                          className="OTP"
+                          width={2}
+                          style={{ width: 50 }}
+                          maxLength={1}
+                          id="4"
+                          ref={input => (this.input["3"] = input)}
+                          type="number"
+                          onChange={this.onChange}
+                          value={this.state.pin4}
+                        />
+                      </Form.Field>
+                    </Grid.Column>
+                  </Form.Group>
                   <Button
                     style={{ marginTop: "2.5%" }}
-                    color="blue"
+                    color="teal"
+                    basic
+                    size="small"
                     type="submit"
-                    onClick={this.validateOTP}
+                    onClick={() => this.sendOTP()}
                   >
-                    Verify OTP
+                    Request New OTP
                   </Button>
-                </center>
-              </Form>
+                </Form>
+              </center>
               {/* <Label onClick={() => this.sendOTP()}>Request OTP Again</Label> */}
             </Modal>
           </Grid.Column>
