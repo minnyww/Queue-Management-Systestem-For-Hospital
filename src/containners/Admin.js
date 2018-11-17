@@ -65,7 +65,8 @@ class Admin extends Component {
         style={{
           // backgroundImage: 'url(https://www.picz.in.th/images/2018/10/11/kum9gq.png)',
           backgroundColor: "white",
-          height: "100vh"
+          height: "100vh",
+          backgroundRepeat: "repeat"
         }}
       >
         <Responsive {...Responsive.onlyComputer}>
@@ -83,7 +84,74 @@ class Admin extends Component {
                   borderRadius: "7px"
                 }}
               >
-                <Grid.Column style={{ maxWidth: "450px",marginTop : '2%' }}>
+                <Grid.Column style={{ maxWidth: "450px", marginTop: "2%" }}>
+                  <br />
+                  <Header as="h2" color="blue" style={{ fontSize: "36px" }}>
+                    Queue Management System
+                  </Header>
+                  <br />
+                  <br />
+                  <Header as="h2" color="blue" style={{ fontSize: "24px" }}>
+                    Login
+                  </Header>
+                  <Form onSubmit={this.submit}>
+                    <Input
+                      action={{ color: "blue", icon: "user" }}
+                      actionPosition="left"
+                      fluid
+                      // label='Username'
+                      name="Username"
+                      placeholder="Username"
+                      type="text"
+                      required
+                      error={this.state.errorUsername.status}
+                      value={this.state.Username}
+                      onChange={(e, { value }) =>
+                        this.setState({ Username: value })
+                      }
+                    />
+                    <br />
+                    <Form.Input
+                      action={{ color: "blue", icon: "lock" }}
+                      actionPosition="left"
+                      fluid
+                      // label='Password'
+                      name="Password"
+                      placeholder="Password"
+                      type="password"
+                      required
+                      value={this.state.Password}
+                      onChange={(e, { value }) =>
+                        this.setState({ Password: value })
+                      }
+                    />
+                    <Message negative hidden={!this.state.errorUsername.status}>
+                      Username or Password does not match
+                    </Message>
+                    <Button
+                      color="blue"
+                      type="submit"
+                      style={{ width: "100%" }}
+                    >
+                      Sign in
+                    </Button>
+                  </Form>
+                </Grid.Column>
+                <Grid.Column>
+                  <Image src={welcome} style={{ width: "90%" }} />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </center>
+        </Responsive>
+        <Responsive {...Responsive.onlyTablet}>
+          <center>
+            <Grid divided="vertically" centered>
+              <Grid.Row
+                columns={2}
+                style={{ marginLeft: "3%", marginRight: "3%" }}
+              >
+                <Grid.Column style={{ maxWidth: "450px" }}>
                   <br />
                   <Header as="h2" color="blue" style={{ fontSize: "36px" }}>
                     Queue Management System
@@ -143,73 +211,7 @@ class Admin extends Component {
             </Grid>
           </center>
         </Responsive>
-        <Responsive {...Responsive.onlyTablet}>
-          <center>
-            <Grid divided="vertically" centered>
-              <Grid.Row
-                columns={2}
-                style={{ marginLeft: "3%", marginRight: "3%" }}
-              >
-                <Grid.Column style={{ maxWidth: "450px" }}>
-                  <br />
-                  <Header as="h2" color="blue" style={{ fontSize: "36px" }}>
-                    Queue Management System
-                  </Header>
-                  <br />
-                  <br />
-                  <Header as="h2" color="blue" style={{ fontSize: "24px" }}>
-                    Login
-                  </Header>
-                  <Form onSubmit={this.submit}>
-                    <Input
-                      action={{ color: "teal", icon: "user" }}
-                      actionPosition="left"
-                      fluid
-                      // label='Username'
-                      name="Username"
-                      placeholder="Username"
-                      type="text"
-                      required
-                      error={this.state.errorUsername.status}
-                      value={this.state.Username}
-                      onChange={(e, { value }) =>
-                        this.setState({ Username: value })
-                      }
-                    />
-                    <br />
-                    <Form.Input
-                      action={{ color: "teal", icon: "lock" }}
-                      actionPosition="left"
-                      fluid
-                      // label='Password'
-                      name="Password"
-                      placeholder="Password"
-                      type="password"
-                      required
-                      value={this.state.Password}
-                      onChange={(e, { value }) =>
-                        this.setState({ Password: value })
-                      }
-                    />
-                    <Message negative hidden={!this.state.errorUsername.status}>
-                      Username or Password does not match
-                    </Message>
-                    <Button
-                      color="teal"
-                      type="submit"
-                      style={{ width: "100%" }}
-                    >
-                      Sign in
-                    </Button>
-                  </Form>
-                </Grid.Column>
-                <Grid.Column>
-                  <Image src={welcome} />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </center>
-        </Responsive>
+
         <Responsive {...Responsive.onlyMobile}>
           <Headerbar />
           <center>

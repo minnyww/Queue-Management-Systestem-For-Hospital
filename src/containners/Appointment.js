@@ -495,7 +495,8 @@ class Appointment extends Component {
       endTime,
       HN,
       timetable,
-      appointment
+      appointment,
+      appointmentDepId
     } = this.state;
     debugger;
     if (this.state.appointmentDepId && startTime && endTime && HN) {
@@ -512,10 +513,10 @@ class Appointment extends Component {
           // data.doctorId == tmp[0]
           // &&
           data.timeStart.substr(0, 5) == startTime &&
-          data.date === new Date(this.state.Date).getDate()
+          data.date === new Date(this.state.Date).getDate() &&
+          data.doctorId === +tmp[0]
       );
       // console.log(check)
-
       let getSumQueue = await axios.post(`/getCountQueue`, {
         doctorId: tmp[0],
         date: new Date(this.state.Date)
@@ -543,8 +544,6 @@ class Appointment extends Component {
       if (
         check.length > 0 ||
         sumCount > this.state.doctorWithRemaining.remaining
-        // || this.state.HN === "" || this.state.Date === "" || this.state.startTime === ""
-        // || this.state.endTime === ""
       ) {
         swal(
           "Cannot !",
@@ -570,7 +569,9 @@ class Appointment extends Component {
           endTime: " ",
           HN: "",
           addSuccess: true,
-          errorAdd: { status: false, message: "" }
+          errorAdd: { status: false, message: "" },
+          namePatient: "",
+          lastNamePatient: ""
         });
         // console.log("เข้า DB");
       } else {
@@ -905,11 +906,7 @@ class Appointment extends Component {
       await this.checkCount(getDoctor[0], false, undefined);
       // console.log(this.state.doctorWithRemaining)
     } else {
-      swal(
-        "Cannot!",
-        `Doctor Can't recieve more patient`,
-        "warning"
-      );
+      swal("Cannot!", `Doctor Can't recieve more patient`, "warning");
     }
 
     // console.log(sumCount, this.state.doctorWithRemaining.remaining)

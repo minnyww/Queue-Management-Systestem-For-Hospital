@@ -371,7 +371,7 @@ class Adminhome extends Component {
         <Label
           color="teal"
           onClick={() => this.setState({ modalOpen: true, index: i })}
-          style={{ fontWeigth :'100' }}
+          style={{ fontWeigth: "100" }}
         >
           <Icon className="exclamation circle" />
           Message
@@ -1872,6 +1872,7 @@ class Adminhome extends Component {
             />
           </div>
         </Responsive>
+
         <Responsive {...Responsive.onlyMobile}>
           <Headerbar />
           <center>
