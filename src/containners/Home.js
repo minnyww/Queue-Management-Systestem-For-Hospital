@@ -270,11 +270,8 @@ class Home extends Component {
           //state
           queueData={this.state.queueData}
           allStepQueue={this.state.allStepQueue}
-
           //method
           showStepQueue={this.showStepQueue}
-
-
         />
       </div>
     );

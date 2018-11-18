@@ -9,6 +9,7 @@ import Appointment from './containners/Appointment'
 import Main from './containners/Main'
 import Timetable from './containners/timetable'
 import AddOrDeletetDepartment from './containners/addOrdeleteDepartment'
+import NotFound from './containners/NotFound'
 import {
     BrowserRouter as Router,
     Route,
@@ -32,6 +33,7 @@ export default class Root extends Component {
                     <Route path="/Main" component={Main} />
                     <Route path="/Timetable" component={Timetable} />
                     <Route path="/AddOrDeleteDepartment" component={AddOrDeletetDepartment} />
+                    <Route path="*" component={NotFound} />
                 </Switch>
 
 
