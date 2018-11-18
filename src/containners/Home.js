@@ -58,7 +58,7 @@ class Home extends Component {
       var dataQueue = await axios.post(`/getQueueData`, {
         HN: this.state.HN
       });
-
+      console.log('เข้าๆๆๆ')
       const { dataAllStepQueue, tmp } = await this.getQueue(dataQueue)
       var dataPhone = await axios.post(`/getPhoneNumber`, {
         HN: this.state.HN,
@@ -81,7 +81,7 @@ class Home extends Component {
         // console.log(this.state.queueData)
         this.sendNotification();
       }
-    }, 1000)
+    }, 10000)
   }
 
   getQueue = async (dataQueue) => {
