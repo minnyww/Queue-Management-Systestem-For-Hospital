@@ -81,7 +81,7 @@ class Home extends Component {
         // console.log(this.state.queueData)
         this.sendNotification();
       }
-    }, 10000)
+    }, 7000)
   }
 
   getQueue = async (dataQueue) => {
