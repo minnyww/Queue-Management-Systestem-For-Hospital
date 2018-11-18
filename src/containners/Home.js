@@ -58,7 +58,6 @@ class Home extends Component {
       var dataQueue = await axios.post(`/getQueueData`, {
         HN: this.state.HN
       });
-      console.log('เข้าๆๆๆ')
       const { dataAllStepQueue, tmp } = await this.getQueue(dataQueue)
       var dataPhone = await axios.post(`/getPhoneNumber`, {
         HN: this.state.HN,
