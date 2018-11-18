@@ -702,9 +702,17 @@ class Adminhome extends Component {
                 size="massive"
                 style={{ fontSize: "20px", border: "none" }}
               >
-                Department :{" "}
-                {this.state.userType === 1 ? data.department : data.Forward}
+                Department :{data.department}
               </Label>
+              <Item.Content style={{ marginTop: "2.5%" }}>
+                <Label
+                  basic
+                  size="massive"
+                  style={{ fontSize: "20px", border: "none" }}
+                >
+                  Message : {data.Forward}
+                </Label>
+              </Item.Content>
             </Item.Content>
           </Item>
         </div>
@@ -765,9 +773,17 @@ class Adminhome extends Component {
                 size="massive"
                 style={{ fontSize: "20px", border: "none" }}
               >
-                Department :{" "}
-                {this.state.userType === 1 ? data.department : data.Forward}
+                Department :{data.department}
               </Label>
+              <Item.Content style={{ marginTop: "2.5%" }}>
+                <Label
+                  basic
+                  size="massive"
+                  style={{ fontSize: "20px", border: "none" }}
+                >
+                  Message : {data.Forward}
+                </Label>
+              </Item.Content>
             </Item.Content>
           </Item>
         </div>

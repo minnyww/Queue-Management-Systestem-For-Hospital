@@ -167,23 +167,18 @@ class Login extends Component {
   };
   sendOTP = async () => {
     const recipient = this.state.recipient;
-    // console.log(this.state.requestId);
     if (!R.isEmpty(this.state.requestId)) {
       let check = await this.cancel(this.state.requestId);
-      // console.log(check);
-      if (
-        check.data.message.status !== "0" ||
-        check.data.message.status !== 200
-      ) {
-        // console.log(check);
-        swal(
-          check.data.message.status !== "0"
-            ? check.data.message.error_text
-            : "Request Success",
-          {
+      if (check.data.message.status !== "0" || check.status === 200) {
+        if (check.status === 200) {
+          swal("Request Successful", {
+            icon: "success"
+          });
+        } else if (check.data.message.status !== "0") {
+          swal(check.data.message.error_text, {
             icon: "warning"
-          }
-        );
+          });
+        }
         return;
       }
     }

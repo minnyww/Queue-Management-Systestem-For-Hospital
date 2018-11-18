@@ -8,7 +8,6 @@ import flask from './../img/flask.png'
 import "./../css/Q.css";
 
 const mainButton = props => {
-    console.log(props.nurseData)
     return (
         <div style={{ marginTop: '3%' }}>
             <center>

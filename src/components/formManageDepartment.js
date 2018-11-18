@@ -145,6 +145,7 @@ const showContent = props => {
           <Header>
             Queue{" "}
             <Label
+              as="a"
               floated="right"
               color="red"
               onClick={() => {
